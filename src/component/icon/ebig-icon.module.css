@@ -1,0 +1,128 @@
+.ebig-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    font-size: 1.6rem;
+    color: var(--neutral-text-subtitle-color, light-dark(#61616B, #A2A2AA));
+}
+
+.ebig-icon:not(.simple-icon) {
+    padding: max(0.2rem, 1px);
+}
+
+.ebig-icon * {
+    color: inherit;
+}
+
+.ebig-icon>svg {
+    width: 1em !important;
+    height: 1em !important;
+}
+
+.ebig-icon[class~="link-icon"]>svg {
+    width: auto !important;
+    height: auto !important;
+}
+
+.ebig-icon[class~="fill-icon"]>svg>*[fill^="#"] {
+    fill: currentColor;
+}
+
+.ebig-icon[class~="outline-icon"]>svg>*[stroke^="#"] {
+    stroke: currentColor;
+}
+
+.ebig-icon.clickable {
+    cursor: pointer;
+}
+
+.ebig-icon[class~="icon-button"] {
+    border-radius: 50%;
+    background-color: var(--neutral-main-background-color, light-dark(#EFEFF0, #313135));
+}
+
+.ebig-icon[class~="icon-button"][class~="light"] {
+    background-color: transparent;
+}
+
+.ebig-icon[class~="border"] {
+    border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
+}
+
+.ebig-icon[class~="dashed"] {
+    border-style: dashed;
+}
+
+.ebig-icon[class~="size64"] {
+    width: 6.4rem;
+    height: 6.4rem;
+    font-size: 1.6rem;
+}
+
+.ebig-icon[class~="size56"] {
+    width: 5.6rem;
+    height: 5.6rem;
+    font-size: 1.6rem;
+}
+
+.ebig-icon[class~="size48"] {
+    width: 4.8rem;
+    height: 4.8rem;
+    font-size: 1.6rem;
+}
+
+.ebig-icon[class~="size40"] {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.4rem;
+}
+
+.ebig-icon[class~="size32"] {
+    width: 3.2rem;
+    height: 3.2rem;
+    font-size: 1.4rem;
+}
+
+.ebig-icon[class~="size24"] {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.2rem;
+}
+
+@keyframes on-open-tooltip {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.tooltip-container {
+    position: fixed;
+    z-index: 999;
+    animation: on-open-tooltip 0.2s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.tooltip-container>.tooltip-message {
+    color: var(--neutral-text-body-reverse-color, #EAEAEC);
+    background-color: var(--neutral-main-reverse-background-color, light-dark(#242428, #EFEFF0));
+    padding: 0.4rem 1.2rem;
+    border-radius: 0.8rem;
+    max-width: 21.2rem;
+    text-align: center;
+}
+
+.ebig-icon[class~="icon-button"]:hover {
+    background-color: var(--neutral-hover-background-color, light-dark(#18181B0A, #FFFFFF0A));
+}
+
+.ebig-icon[class~="icon-button"][class~="light"]:hover {
+    background-color: transparent;
+    opacity: 0.8;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, .09);
+}

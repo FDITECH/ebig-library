@@ -1,0 +1,13 @@
+.rating-container {
+    gap: 0.8rem;
+    height: fit-content;
+    width: fit-content;
+}
+
+.rating-container svg {
+    cursor: pointer;
+}
+
+.rating-container svg > * {
+    pointer-events: none !important;
+}

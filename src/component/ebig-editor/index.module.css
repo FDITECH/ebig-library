@@ -1,0 +1,98 @@
+.ebig-editor-container {
+    gap: 0.8rem;
+    border-radius: 0.8rem;
+    border: 1px solid var(--neutral-main-border-color, light-dark(#EAEAEC, #313135));
+    padding: 1.6rem 0.8rem 0.8rem;
+    min-height: 14.8rem;
+    max-height: 24rem
+}
+
+.ebig-editor-container.disabled {
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950));
+    pointer-events: none;
+}
+
+.ebig-editor-container:focus-within {
+    border-color: var(--primary-main-color, #287CF0);
+}
+
+.ebig-editor-input {
+    font: inherit;
+    color: inherit;
+    flex: 1;
+    outline: none;
+    overflow: hidden auto;
+}
+
+.ebig-editor-input * {
+    font-family: inherit;
+    color: inherit;
+    font-size: 1em;
+}
+
+.ebig-editor-input .emoji {
+    width: 1em;
+    height: 1em;
+}
+
+.ebig-editor-input a {
+    font-size: 1.1em;
+    font-weight: 600;
+    background-color: var(--infor-background, light-dark(#ECF3FE, #031630));
+    color: var(--primary-main-color, #287CF0);
+    text-decoration: underline;
+}
+
+.ebig-editor-input:empty::after {
+    content: attr(placeholder);
+    color: inherit;
+    font: inherit;
+    opacity: 0.6;
+}
+
+@keyframes show-dropdown {
+    0% {
+        opacity: 0;
+        height: 0;
+        width: 0;
+        transform: scale(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.dropdown {
+    position: fixed;
+    animation: show-dropdown 0.4s ease-in-out;
+    z-index: 999;
+}
+
+.link-prompt {
+    background-color: var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+    border: 1px solid var(--neutral-main-border-color, light-dark(#EAEAEC, #313135));
+    border-radius: 0.8rem;
+    box-shadow: 2px 0px 16px 0px hsla(0, 0%, 0%, 0.04);
+    padding: 1.6rem;
+    gap: 0.8rem;
+}
+
+.ebig-editor-container.helper-text {
+    overflow: visible !important;
+    border-color: var(--helper-text-color, #E14337) !important;
+}
+
+.ebig-editor-container.helper-text::after {
+    content: attr(helper-text);
+    color: var(--helper-text-color, #E14337);
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    width: max-content;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-family: inherit;
+    transform: translateY(100%);
+}

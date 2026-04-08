@@ -1,0 +1,67 @@
+.checkbox-container {
+    position: relative;
+    border-radius: 4px;
+    border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
+    color: var(--primary-main-color, #287CF0);
+    background-color: transparent !important;
+    transition: border, background-color 0.4s;
+    cursor: pointer;
+}
+
+.checkbox-container>input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkbox-container>svg {
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    opacity: 0 !important;
+    transition: visibility, opacity 0.4s;
+}
+
+.checkbox-container>svg>path {
+    fill: currentColor;
+}
+
+.checkbox-container>input:checked~svg,
+.checkbox-container[is-null-value="true"]>svg {
+    visibility: visible;
+    opacity: 1 !important;
+}
+
+.checkbox-container:has(> input:checked),
+.checkbox-container[is-null-value="true"] {
+    background-color: currentColor !important;
+    border: none;
+}
+
+.checkbox-container>svg>path:first-child {
+    display: none;
+}
+
+.checkbox-container>svg>path:last-child {
+    display: block;
+}
+
+.checkbox-container[is-null-value="true"]>svg>path:first-child {
+    display: block;
+}
+
+.checkbox-container[is-null-value="true"]>svg>path:last-child {
+    display: none;
+}
+
+.checkbox-container:has(> input:disabled) {
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950)) !important;
+    border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
+}
+
+.checkbox-container:has(> input:disabled)>svg {
+    color: var(--neutral-text-disabled-color, light-dark(#A2A2AA, #61616B)) !important;
+}

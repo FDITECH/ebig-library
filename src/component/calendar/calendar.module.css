@@ -1,0 +1,153 @@
+.calendar-container {
+    background-color: var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+    border-radius: 0.8rem;
+    align-items: stretch;
+    border: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+    width: fit-content;
+}
+
+.calendar-sidebar-options {
+    padding: 0.8rem 2.4rem 0.8rem 0;
+    border-right: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+}
+
+.calendar-sidebar-options>.calendar-sidebar-option-buttton {
+    color: var(--neutral-text-title-color, light-dark(#18181B, #F4F4F5));
+    padding: 0.8rem 1.6rem;
+}
+
+.picker-time-container {
+    border-left: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+    height: 34.2rem;
+    align-items: center;
+}
+
+.picker-time-container>div[class*="heading-7"]:first-child {
+    width: 100%;
+    padding: 1.2rem 1.6rem;
+    border-bottom: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+    text-align: center;
+}
+
+.picker-time-container div[class*="scroll-picker-"] {
+    flex: 1;
+    height: 100%;
+    gap: 0.4rem;
+    padding: 0.4rem 0;
+    overflow: hidden auto;
+    scrollbar-width: thin;
+}
+
+.picker-time-container .scroll-picker-minutes {
+    border-left: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+    border-right: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+}
+
+.picker-time-container div[class*="scroll-picker-"]>button {
+    width: 5.6rem;
+    padding: 0.4rem 0;
+}
+
+.picker-time-container div[class*="scroll-picker-"]>button.selected {
+    background-color: var(--primary-background, light-dark(#ECF3FE, #031630));
+    color: var(--primary-main-color);
+}
+
+.picker-date-header {
+    padding: 1.2rem 1.6rem;
+    gap: 1.2rem;
+    background-color: transparent !important;
+    border-bottom: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+    justify-content: space-between;
+}
+
+.picker-date-header>span {
+    width: 100%;
+    max-width: 15rem;
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.8rem;
+}
+
+.picker-date-header>span:hover {
+    background-color: var(--neutral-hover-background-color, light-dark(#18181B0A, #FFFFFF0A));
+}
+
+.picker-date-header>button {
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.picker-date-header>button>svg {
+    font-size: 1.4rem;
+    color: var(--neutral-text-title-color, light-dark(#18181B, #F4F4F5));
+    pointer-events: none;
+}
+
+.picker-date-body {
+    padding: 1.2rem 1.6rem;
+    width: 31.2rem;
+    flex-wrap: wrap;
+    gap: 0.8rem 0;
+}
+
+.picker-date-body>div {
+    height: 3.2rem;
+    padding: 0 0.4rem;
+    display: flex;
+}
+
+.picker-date-body>div>* {
+    border: 1px solid transparent;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.date-picker-circle {
+    width: calc(100% / 7);
+}
+
+.date-picker-circle>* {
+    border-radius: 50%;
+}
+
+.month-picker-circle,
+.year-picker-circle {
+    width: calc(100% / 3);
+}
+
+.month-picker-circle>*,
+.year-picker-circle>* {
+    border-radius: 2.4rem;
+}
+
+.picker-date-body>.in-range {
+    background-color: var(--neutral-main-background-color, light-dark(#EFEFF0, #313135));
+}
+
+.picker-date-body:has(>.in-range, >.end-range)>.start-range {
+    background-image: linear-gradient(to right, transparent 50%, var(--neutral-main-background-color, light-dark(#EFEFF0, #313135)) 50%);
+}
+
+.end-range {
+    background-image: linear-gradient(to left, transparent 50%, var(--neutral-main-background-color, light-dark(#EFEFF0, #313135)) 50%) !important;
+}
+
+.picker-date-body>.today>* {
+    border-color: var(--primary-main-color)
+}
+
+.picker-date-body>.selected>* {
+    background-color: var(--primary-main-color);
+    color: var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+}
+
+.picker-date-body>.invalid {
+    opacity: 0.24 !important;
+    pointer-events: none !important;
+}

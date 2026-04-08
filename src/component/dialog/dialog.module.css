@@ -1,0 +1,111 @@
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.dialog-container {
+    position: relative;
+    background-color: var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+    padding: 2.4rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    gap: 2.4rem;
+    overflow: visible;
+}
+
+.dialog-container button {
+    outline: none;
+    padding: 0;
+    border: none;
+}
+
+.dialog-body {
+    gap: 1.6rem;
+}
+
+.dialog-body>div:last-child {
+    width: 100%;
+    align-items: inherit;
+    gap: 8px;
+}
+
+.dialog-body>div:last-child>* {
+    width: 100%;
+}
+
+.dialog-body>.dialog-status {
+    width: 5.6rem;
+    height: 5.6rem;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog-footer {
+    gap: 8px;
+    justify-content: end;
+    width: 100%;
+}
+
+.dialog-footer>.dialog-action {
+    height: 4rem;
+    justify-content: center;
+    padding: 0 1.6rem;
+    border-radius: 0.8rem;
+    background-color: var(--neutral-main-background-color, light-dark(#EFEFF0, #313135));
+}
+
+.dialog-footer>.dialog-action>* {
+    color: var(--neutral-text-subtitle-color, --neutral-text-subtitle-color);
+}
+
+.dialog-footer>.dialog-submit>* {
+    color: var(--neutral-text-title-reverse-color, #F4F4F5);
+}
+
+/* 
+INFOR = 1
+ERROR = 2
+WARNING = 3
+SUCCSESS = 4
+*/
+
+.dialog-container[dialog-type="1"] .dialog-status {
+    background-color: var(--infor-background, light-dark(#ECF3FE, #031630));
+}
+
+.dialog-container[dialog-type="2"] .dialog-status {
+    background-color: var(--error-background, light-dark(#FCEEED, #2C0907));
+}
+
+.dialog-container[dialog-type="3"] .dialog-status {
+    background-color: var(--warning-background, light-dark(#FFF3EB, #321501));
+}
+
+.dialog-container[dialog-type="4"] .dialog-status {
+    background-color: var(--success-background, light-dark(#E8F7EF, #0D2618));
+}
+
+.dialog-container[dialog-type="1"] .dialog-footer>.dialog-submit {
+    background-color: var(--infor-main-color, #287CF0);
+}
+
+.dialog-container[dialog-type="2"] .dialog-footer>.dialog-submit {
+    background-color: var(--error-main-color, #E14337);
+}
+
+.dialog-container[dialog-type="3"] .dialog-footer>.dialog-submit {
+    background-color: var(--warning-main-color, #FC7A1C);
+}
+
+.dialog-container[dialog-type="4"] .dialog-footer>.dialog-submit {
+    background-color: var(--success-main-color, #3AAC6D);
+}

@@ -1,0 +1,66 @@
+.simple-text-area,
+.text-area-container {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.text-area-container {
+    height: 4.8rem;
+    position: relative;
+    gap: 0.8rem;
+    border-radius: 0.8rem;
+    border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
+    padding: 0.8rem 1.6rem;
+    align-items: start;
+}
+
+.text-area-container:has(> textarea:disabled) {
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950)) !important;
+    color: var(--neutral-text-disabled-color, light-dark(#A2A2AA, #61616B)) !important;
+    pointer-events: none !important;
+}
+
+.text-area-container:focus-within {
+    border-color: var(--primary-main-color, #287CF0);
+}
+
+.text-area-container>textarea,
+.simple-text-area>textarea {
+    flex: 1;
+    padding: 0;
+    width: 100%;
+    height: inherit;
+    max-height: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    text-overflow: inherit;
+    resize: inherit;
+}
+
+.text-area-container.helper-text,
+.simple-text-area.helper-text {
+    overflow: visible !important;
+    border-color: var(--helper-text-color, #E14337) !important;
+}
+
+.text-area-container.helper-text::after,
+.simple-text-area.helper-text::after {
+    content: attr(helper-text);
+    color: var(--helper-text-color, #E14337);
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    width: max-content;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-family: inherit;
+    transform: translateY(100%);
+}

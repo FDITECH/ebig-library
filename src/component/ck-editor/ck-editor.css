@@ -1,0 +1,281 @@
+:root {
+    /* === Base colors mapped to Ebig design tokens === */
+
+    --ck-color-base-foreground: var(--neutral-lighter-background-color) !important;
+    --ck-color-base-background: var(--neutral-absolute-background-color) !important;
+    --ck-color-base-border: var(--neutral-main-border-color) !important;
+    --ck-color-base-action: var(--secondary2-main-color) !important;
+    --ck-color-base-focus: var(--primary-lighter-color) !important;
+    --ck-color-base-text: var(--neutral-text-body-color) !important;
+    --ck-color-base-active: var(--primary-main-color) !important;
+    --ck-color-base-active-focus: var(--primary-bolder-color) !important;
+    --ck-color-base-error: var(--error-main-color) !important;
+    --ck-content-font-color: var(--neutral-text-body-color) !important;
+
+    --ck-content-color-mention-background: color-mix(in srgb, var(--secondary6-main-color) 10%, transparent) !important;
+    --ck-content-color-mention-text: var(--secondary6-bolder-color) !important;
+
+    /* -- Generic colors ------------------------------------------------------------------------ */
+
+    --ck-color-focus-border: var(--primary-main-color) !important;
+    --ck-color-focus-outer-shadow: var(--primary-background) !important;
+    --ck-color-focus-disabled-shadow: color-mix(in srgb, var(--primary-lighter-color) 30%, transparent) !important;
+    --ck-color-focus-error-shadow: color-mix(in srgb, var(--error-main-color) 30%, transparent) !important;
+    --ck-color-text: var(--ck-color-base-text) !important;
+    --ck-color-shadow-drop: hsla(0, 0%, 0%, 0.15) !important;
+    --ck-color-shadow-drop-active: hsla(0, 0%, 0%, 0.2) !important;
+    --ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1) !important;
+
+    /* -- Buttons ------------------------------------------------------------------------------- */
+
+    --ck-color-button-default-background: transparent !important;
+    --ck-color-button-default-hover-background: var(--neutral-hover-background-color) !important;
+    --ck-color-button-default-active-background: var(--neutral-selected-background-color) !important;
+    --ck-color-button-default-disabled-background: transparent !important;
+
+    --ck-color-button-on-background: var(--primary-background) !important;
+    --ck-color-button-on-hover-background: var(--primary-border-color) !important;
+    --ck-color-button-on-active-background: var(--primary-border-color) !important;
+    --ck-color-button-on-disabled-background: var(--neutral-disable-background-color) !important;
+    --ck-color-button-on-color: var(--primary-main-color) !important;
+
+    --ck-color-button-action-background: var(--ck-color-base-action) !important;
+    --ck-color-button-action-hover-background: var(--secondary2-bolder-color) !important;
+    --ck-color-button-action-active-background: var(--secondary2-bolder-color) !important;
+    --ck-color-button-action-disabled-background: var(--secondary2-lighter-color) !important;
+    --ck-color-button-action-text: var(--ck-color-base-background) !important;
+
+    --ck-color-button-save: var(--secondary2-bolder-color) !important;
+    --ck-color-button-cancel: var(--error-main-color) !important;
+
+    --ck-color-switch-button-off-background: var(--neutral-text-placeholder-color) !important;
+    --ck-color-switch-button-off-hover-background: var(--neutral-text-subtitle-color) !important;
+    --ck-color-switch-button-on-background: var(--ck-color-button-action-background) !important;
+    --ck-color-switch-button-on-hover-background: var(--secondary2-bolder-color) !important;
+    --ck-color-switch-button-inner-background: var(--ck-color-base-background) !important;
+    --ck-color-switch-button-inner-shadow: hsla(0, 0%, 0%, 0.1) !important;
+
+    /* -- Dropdown ------------------------------------------------------------------------------ */
+
+    --ck-color-dropdown-panel-background: var(--ck-color-base-background) !important;
+    --ck-color-dropdown-panel-border: var(--ck-color-base-border) !important;
+
+    /* -- Dialog -------------------------------------------------------------------------------- */
+
+    --ck-color-dialog-background: var(--neutral-absolute-background-color) !important;
+    --ck-color-dialog-form-header-border: var(--neutral-bolder-border-color) !important;
+
+    /* -- Input --------------------------------------------------------------------------------- */
+
+    --ck-color-input-background: var(--ck-color-base-background) !important;
+    --ck-color-input-border: var(--ck-color-base-border) !important;
+    --ck-color-input-error-border: var(--ck-color-base-error) !important;
+    --ck-color-input-text: var(--ck-color-base-text) !important;
+    --ck-color-input-disabled-background: var(--neutral-disable-background-color) !important;
+    --ck-color-input-disabled-border: var(--ck-color-base-border) !important;
+    --ck-color-input-disabled-text: var(--neutral-text-disabled-color) !important;
+
+    /* -- List ---------------------------------------------------------------------------------- */
+
+    --ck-color-list-background: var(--ck-color-base-background) !important;
+    --ck-color-list-button-hover-background: var(--ck-color-button-default-hover-background) !important;
+    --ck-color-list-button-on-background: var(--ck-color-button-on-color) !important;
+    --ck-color-list-button-on-background-focus: var(--ck-color-button-on-color) !important;
+    --ck-color-list-button-on-text: var(--ck-color-base-background) !important;
+
+    /* -- Panel --------------------------------------------------------------------------------- */
+
+    --ck-color-panel-background: var(--ck-color-base-background) !important;
+    --ck-color-panel-border: var(--ck-color-base-border) !important;
+
+    /* -- Toolbar ------------------------------------------------------------------------------- */
+
+    --ck-color-toolbar-background: var(--ck-color-base-background) !important;
+    --ck-color-toolbar-border: var(--ck-color-base-border) !important;
+
+    /* -- Tooltip ------------------------------------------------------------------------------- */
+
+    --ck-color-tooltip-background: var(--neutral-text-title-color) !important;
+    --ck-color-tooltip-text: var(--neutral-absolute-background-color) !important;
+
+    /* -- Engine -------------------------------------------------------------------------------- */
+
+    --ck-color-engine-placeholder-text: var(--neutral-text-placeholder-color) !important;
+
+    /* -- Upload -------------------------------------------------------------------------------- */
+
+    --ck-color-upload-bar-background: var(--primary-lighter-color) !important;
+
+    /* -- Link ---------------------------------------------------------------------------------- */
+
+    --ck-color-link-default: var(--primary-bolder-color) !important;
+    --ck-color-link-selected-background: color-mix(in srgb, var(--primary-main-color) 10%, transparent) !important;
+    --ck-color-link-fake-selection: color-mix(in srgb, var(--primary-main-color) 30%, transparent) !important;
+
+    /* -- Search result highlight ---------------------------------------------------------------- */
+
+    --ck-color-highlight-background: var(--secondary3-tag-color) !important;
+
+    /* -- Generic colors ------------------------------------------------------------------------- */
+
+    --ck-color-light-red: var(--error-background) !important;
+}
+
+.editor-container {
+    position: relative;
+    border: 1px solid var(--neutral-bolder-border-color, light-dark(#D7D7DB, #494950));
+    overflow: hidden visible;
+}
+
+.editor-container:has(.ck-read-only) {
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950)) !important;
+    pointer-events: none !important;
+}
+
+.editor-container:focus-within {
+    border-color: var(--primary-main-color, #287CF0);
+}
+
+.editor-container.helper-text {
+    overflow: visible !important;
+    border-color: var(--helper-text-color, #E14337) !important;
+}
+
+.editor-container.helper-text::after {
+    content: attr(helper-text);
+    color: var(--helper-text-color, #E14337);
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    width: max-content;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-family: inherit;
+    transform: translateY(100%);
+}
+
+.ck-content h3.category {
+    font-weight: bold;
+    padding: 0;
+}
+
+.ck-content h2.document-title {
+    font-weight: bold;
+    padding: 0;
+    border: 0;
+}
+
+.ck-content h3.document-subtitle {
+    margin: 0 0 1em;
+    font-weight: bold;
+    padding: 0;
+}
+
+.ck-content blockquote.side-quote {
+    font-style: normal;
+    float: right;
+    width: 35%;
+    position: relative;
+    border: 0;
+    overflow: visible;
+    z-index: 1;
+    margin-left: 1em;
+}
+
+.ck-content blockquote.side-quote::before {
+    content: '“';
+    position: absolute;
+    top: -37px;
+    left: -10px;
+    display: block;
+    font-size: 200px;
+    color: #e7e7e7;
+    z-index: -1;
+    line-height: 1;
+}
+
+.ck-content blockquote.side-quote p {
+    font-size: 2em;
+    line-height: 1;
+}
+
+.ck-content p:has(>code),
+.ck-content span:has(>code) {
+    line-height: 1.8em;
+}
+
+.ck-content li {
+    margin: 0 0 0.4em;
+    line-height: 1.8em;
+}
+
+.editor-container__editor {
+    flex: 1;
+    height: 100%;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-container__editor>div,
+.ck.ck-reset.ck-editor.ck-rounded-corners {
+    flex: 1;
+    height: 100%;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.ck-fullscreen__editable .ck.ck-editor__editable {
+    background-color: var(--neutral-absolute-background-color) !important;
+}
+
+.ck.ck-label {
+    background-color: transparent !important;
+}
+
+.ck-content pre {
+    color: var(--neutral-text-title-color) !important;
+}
+
+.ck-fullscreen__toolbar .ck.ck-toolbar {
+    border-radius: var(--ck-border-radius) !important;
+}
+
+.editor-container_classic-editor .editor-container__editor .ck-editor .ck-editor__editable {
+    border-radius: 0;
+}
+
+.ck.ck-editor__main>.ck.ck-content.ck-rounded-corners {
+    min-height: 100%;
+}
+
+.ck.ck-toolbar {
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.ck-fullscreen__toolbar .ck.ck-toolbar {
+    border-radius: var(--ck-border-radius) !important;
+}
+
+.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    height: 40px;
+    border: none !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.ck.ck-editor__main {
+    flex: 1;
+    height: 100% !important;
+    overflow: hidden auto !important;
+}
+
+.ck.ck-editor__main>div {
+    background-color: transparent !important;
+    border: none !important;
+    font-size: 16px !important;
+}
+
+.ck.ck-color-grid>button {
+    border-radius: 4px !important;
+}

@@ -1,0 +1,124 @@
+.simple-color-picker,
+.color-picker-container {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.color-picker-container {
+    padding: 0.8rem 1.5rem;
+    border: var(--neutral-main-border, 1px solid light-dark(#EAEAEC, #313135));
+    border-radius: 0.8rem;
+    gap: 0.8rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.color-picker-container[class~="size48"] {
+    padding: 1.2rem 1.5rem;
+}
+
+.color-picker-container[class~="size32"] {
+    padding: 0.4rem 1.1rem;
+}
+
+.color-picker-container[class~="size24"] {
+    padding: 0 0.7rem;
+}
+
+.color-picker-container:has(> input:disabled) {
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950)) !important;
+    color: var(--neutral-text-disabled-color, light-dark(#A2A2AA, #61616B)) !important;
+    pointer-events: none !important;
+}
+
+.color-picker-container:focus-within {
+    border-color: var(--primary-main-color, #287CF0);
+}
+
+.color-picker-container>label:has(>input[type="color"]),
+.simple-color-picker>label:has(>input[type="color"]) {
+    border-radius: 0.6rem;
+    aspect-ratio: 1 / 1;
+    min-height: 1.4rem;
+    min-width: 1.4rem;
+    width: 1em;
+    border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
+}
+
+.color-picker-container input[type="color"],
+.simple-color-picker input[type="color"] {
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+}
+
+.color-picker-container>label:has(>input[type="number"]),
+.simple-color-picker>label:has(>input[type="number"]) {
+    width: 24%;
+    border: inherit;
+    border-left: inherit;
+    border-color: inherit;
+    border-style: solid;
+    border-width: 1px;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    min-width: 5.4rem;
+    padding-left: 0.6rem;
+    font: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    letter-spacing: inherit;
+    text-overflow: inherit;
+    text-decoration: inherit;
+    font-style: inherit;
+}
+
+.color-picker-container input:not([type="color"]),
+.simple-color-picker input:not([type="color"]) {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0;
+    background-color: transparent;
+    font: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    letter-spacing: inherit;
+    text-overflow: inherit;
+    text-decoration: inherit;
+    font-style: inherit;
+}
+
+.color-picker-container.helper-text,
+.simple-color-picker.helper-text {
+    overflow: visible !important;
+    border-color: var(--helper-text-color, #E14337) !important;
+}
+
+.color-picker-container.helper-text::after,
+.simple-color-picker.helper-text::after {
+    content: attr(helper-text);
+    color: var(--helper-text-color, #E14337);
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    width: max-content;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-family: inherit;
+    transform: translateY(100%);
+}

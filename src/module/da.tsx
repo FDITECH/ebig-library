@@ -1,0 +1,162 @@
+import { Ebigicon } from "../component/icon/ebig-icon"
+
+export enum ComponentType {
+    text = 'Text',
+    img = 'Image',
+    icon = 'Icon',
+    checkbox = 'Checkbox',
+    switch = 'Switch',
+    textField = 'Textfield',
+    button = 'Button',
+    calendar = 'Calendar',
+    datePicker = 'DatePicker',
+    radio = 'Radio',
+    selectDropdown = 'SelectDropdown',
+    textArea = 'Textarea',
+    table = 'Table',
+    dateTimePicker = 'DateTimePicker',
+    navLink = 'Navlink',
+    rate = 'Rate',
+    video = 'Video',
+    audio = 'Audio',
+    iframe = 'Iframe',
+    progressBar = 'ProgressBar',
+    progressCircle = 'ProgressCircle',
+    upload = 'Upload',
+    numberPicker = 'NumberPicker',
+    importMultipleFile = 'ImportMultiple',
+    ckEditor = 'CkEditor',
+    range = 'Range',
+    container = "Container",
+    chart = "Chart",
+    form = "Form",
+    card = "Card",
+    view = "View",
+    report = "Report",
+    popup = "Popup",
+    colorPicker = "ColorPicker",
+    emoji = "Emoji",
+    ebigEditor = "EbigEditor",
+    pagination = "Pagination",
+    none = "none"
+}
+
+export enum FEDataType {
+    UNIQUE = "UNIQUE",
+    STRING = "STRING",
+    NUMBER = "NUMBER",
+    BOOLEAN = "BOOLEAN",
+    DATE = "DATE",
+    DATETIME = "DATETIME",
+    MONEY = "MONEY",
+    PASSWORD = "PASSWORD",
+    LIST = "LIST",
+    HTML = "HTML",
+    FILE = "FILE",
+}
+
+export enum ValidateType {
+    required = 1,
+    email = 2,
+    minLength = 3,
+    maxLength = 4,
+    number = 5,
+    phone = 6,
+    // date = 7,
+    // dateTime = 8,
+    // earliestDate = 9,
+    // latestDate = 10,
+    // earliestTime = 11,
+    // latestTime = 12,
+    equality = 13,
+    greaterThan = 14,
+    greaterThanOrEqualTo = 15,
+    lessThanOrEqualTo = 16,
+    lessThan = 17,
+    odd = 18,
+    even = 19,
+    async = 20
+}
+
+export enum TriggerType {
+    init = "init",
+    click = "click",
+    rightClick = "rightClick",
+    dbclick = "dbclick",
+    hover = "hover",
+    keydown = "keydown",
+    mouseenter = "mouseenter",
+    mouseleave = "mouseleave",
+    mousedown = "mousedown",
+    mouseup = "mouseup",
+    focus = "focus",
+    change = "change",
+    blur = "blur",
+    submit = "submit",
+    scroll = "scroll",
+    loaded = "loaded",
+    locationChange = "locationChange",
+}
+
+export enum ActionType {
+    navigate = "navigate",
+    reload = "reload",
+    back = "back",
+    toastMessage = "toastMessage",
+    submit = "submit",
+    setValue = "setValue",
+    loadMore = "loadMore",
+    showDialog = "showDialog",
+    custom = "custom",
+}
+
+export interface ProjectItem {
+    Id: string,
+    Name: string,
+    CustomerId: string,
+    DateCreated: number,
+    Description: string,
+    LogoId: string,
+    Sort?: number,
+    Domain: string,
+    FileDomain: string,
+    GGClientId: string,
+}
+
+export enum DesignTokenType {
+    group = "group",
+    color = "color",
+    font = "font",
+    border = "border",
+    boxShadow = "box-shadow",
+    custom = "custom",
+}
+
+export enum ColDataType {
+    text = "text",
+    icon = "icon",
+    label = "label",
+    datetime = "datetime",
+    money = "money",
+    website = "website",
+    formula = "formula",
+    people = "people",
+    files = "files",
+    progress = "progress",
+    rate = "rate"
+}
+
+export const ColDataTypeIcon = {
+    [ColDataType.text]: <Ebigicon src='outline/text/text' size={"1.2rem"} />,
+    [ColDataType.icon]: <Ebigicon src='fill/development/icon' size={"1.2rem"} />,
+    [ColDataType.people]: <Ebigicon src='outline/location/explore-user' size={"1.2rem"} />,
+    [ColDataType.label]: <Ebigicon src='outline/shopping/tag' size={"1.2rem"} />,
+    [ColDataType.datetime]: <Ebigicon src='outline/user interface/calendar-date-2' size={"1.2rem"} />,
+    [ColDataType.money]: <Ebigicon src='outline/business/round-dollar' size={"1.2rem"} />,
+    [ColDataType.website]: <Ebigicon src='outline/user interface/web-link' size={"1.2rem"} />,
+    [ColDataType.formula]: <Ebigicon src='outline/business/math' size={"1.2rem"} />,
+    [ColDataType.files]: <Ebigicon src='outline/files/document' size={"1.2rem"} />,
+    [ColDataType.progress]: <Ebigicon src='outline/user interface/progress-indicator' size={"1.2rem"} />,
+    [ColDataType.rate]: <Ebigicon src='outline/user interface/star' size={"1.2rem"} />,
+    [""]: <Ebigicon src='outline/text/text' size={"1.2rem"} />
+}

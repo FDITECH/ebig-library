@@ -1,0 +1,83 @@
+.icon-library-container {
+    padding: 0 0.8rem;
+    width: 400px;
+    height: 400px;
+    overflow: hidden auto;
+    gap: 0.8rem;
+    border-radius: 0.8rem;
+    background-color: var(--neutral-absolute-background-color);
+    box-shadow: 2px 0 16px #0000000a;
+    border: var(--neutral-main-border);
+}
+
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    overflow: visible;
+    gap: 0.8rem;
+    padding: 0.8rem;
+    background-color: var(--neutral-absolute-background-color);
+}
+
+.search-input {
+    flex: 1;
+    padding: 2px 0.8rem !important;
+    background-color: var(--neutral-main-background-color);
+}
+
+.filter-options {
+    position: absolute;
+    bottom: 0;
+    right: 0.4rem;
+    transform: translateY(100%);
+    background-color: var(--neutral-absolute-background-color);
+    border-radius: 0.8rem;
+    padding: 0.8rem;
+    border: var(--neutral-main-border);
+    width: 10.8rem;
+    gap: 2px;
+}
+
+.filter-options>.option {
+    border-radius: 0.8rem;
+    padding: 5px 0.8rem;
+}
+
+.option:hover {
+    background-color: var(--neutral-hover-background-color);
+}
+
+.option.selected {
+    width: 100%;
+    background-color: var(--neutral-selected-background-color);
+}
+
+
+.icon-item {
+    gap: 0.8rem;
+    --gutter: 0.8rem;
+    padding: 0.8rem;
+    align-items: center;
+    border-radius: 0.8rem;
+    cursor: pointer;
+}
+
+.icon-item:hover {
+    background-color: var(--neutral-hover-background-color);
+}
+
+.icon-item.selected {
+    background-color: var(--neutral-selected-background-color);
+}
+
+.preview-container {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background-color: var(--neutral-absolute-background-color);
+    padding: 0.8rem;
+    gap: 0.8rem;
+    width: 100%;
+    border-top: var(--neutral-main-border);
+}

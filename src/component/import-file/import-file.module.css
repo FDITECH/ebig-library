@@ -1,0 +1,73 @@
+.import-file-container, .import-file-simple-style {
+    position: relative;
+}
+
+.import-file-container:has(input:disabled) {
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950)) !important;
+    pointer-events: none !important;
+}
+
+.import-file-container:not(.button-only) {
+    max-width: 57rem;
+    padding: 2.4rem;
+    gap: 1.6rem;
+    border-radius: 0.8rem;
+    border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
+}
+
+.import-file-container:not(.button-only):has(svg.preview-icon) {
+    border-style: dashed;
+}
+
+.import-file-prefix:not(*:has(>img)) {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    background-color: var(--primary-background, light-dark(#ECF3FE, #031630));
+}
+
+.import-file-prefix>img {
+    max-width: 14rem;
+    max-height: 8.8rem;
+    border-radius: 0.8rem;
+}
+
+.file-preview-content {
+    max-width: 100%;
+    flex: 1;
+    gap: 0.4rem;
+    display: flex;
+    flex-direction: inherit;
+    align-items: inherit;
+    flex-wrap: wrap;
+}
+
+.remove-preview-file {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-left: 0.6rem;
+}
+
+div[class*="Toastify__toast-body"]>div:last-child {
+    font: 500 1.2rem/1.6rem;
+}
+
+.import-file-container.helper-text,
+.import-file-simple-style.helper-text {
+    overflow: visible !important;
+    border-color: var(--helper-text-color, #E14337);
+}
+
+.import-file-container.helper-text::after,
+.import-file-simple-style.helper-text::after {
+    content: attr(helper-text);
+    color: var(--helper-text-color, #E14337);
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    width: max-content;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-family: inherit;
+    transform: translateY(100%);
+}

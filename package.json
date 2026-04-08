@@ -1,0 +1,81 @@
+{
+  "name": "ebig-library",
+  "private": false,
+  "description": "A modern UI component library for React by eBig",
+  "version": "1.0.0",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-react": ">=9",
+    "axios": "^1.13.5",
+    "date-fns": "^4.1.0",
+    "emoji-picker-react": "^4.18.0",
+    "i18next": "^25.8.13",
+    "react": ">=18",
+    "react-awesome-slider": "^4.1.0",
+    "react-dom": ">=18",
+    "react-hook-form": "^7.71.2",
+    "react-i18next": "^16.5.4",
+    "react-paginate": "^8.3.0",
+    "react-router-dom": "^7.13.1",
+    "react-toastify": "^11.0.5",
+    "validate.js": "^0.13.1",
+    "xlsx": "^0.18.5",
+    "ckeditor5": ">=47"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.6",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "path": "^0.12.7",
+    "sass": "^1.97.3",
+    "tslib": "^2.8.1",
+    "tsup": "^8.5.1",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.48.0",
+    "url": "^0.11.4",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FDITECH/ebig-library.git"
+  },
+  "keywords": [
+    "ebig",
+    "web",
+    "components",
+    "react",
+    "ui"
+  ],
+  "author": "thunt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FDITECH/ebig-library/issues"
+  },
+  "homepage": "https://github.com/FDITECH/ebig-library#readme"
+}

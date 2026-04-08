@@ -1,0 +1,103 @@
+.slider-container {
+    position: relative;
+    height: 1.6rem;
+    width: 28rem;
+}
+
+.range-bar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: var(--range-width, 6px);
+    border-radius: 10rem;
+    background: var(--neutral-main-background-color, light-dark(#EFEFF0, #313135));
+}
+
+.value-bar {
+    border-radius: 10rem;
+    height: 100%;
+    background: var(--primary-main-color, #287CF0);
+}
+
+.slider-container.vertical {
+    top: unset;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--range-width, 6px);
+    height: 100%;
+}
+
+.thumb-dot {
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    height: inherit;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: 2px solid var(--primary-main-color, #287CF0);
+    background-color: var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+}
+
+.thumb-dot:focus {
+    box-shadow: 0px 0px 0px 4px var(--primary-background, light-dark(#ECF3FE, #031630));
+}
+
+.slider-container.vertical {
+    top: 0;
+    left: 50%;
+    height: unset;
+    width: inherit;
+}
+
+@keyframes on-open-tooltip {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.tooltip-container {
+    position: fixed;
+    z-index: 999;
+    animation: on-open-tooltip 0.2s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.tooltip-container>.tooltip-message {
+    color: var(--neutral-text-body-reverse-color, #EAEAEC);
+    background-color: var(--neutral-main-reverse-background-color, light-dark(#242428, #EFEFF0));
+    padding: 0.4rem 1.2rem;
+    border-radius: 0.8rem;
+    max-width: 21.2rem;
+    text-align: center;
+}
+
+.mark-point {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: calc(var(--range-width, 6px) + max(0.3rem, 1.5px));
+    width: calc(var(--range-width, 6px) + max(0.3rem, 1.5px));
+    border-radius: 50%;
+    border: 2px solid var(--primary-main-color, #287CF0);
+    background-color: var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+}
+
+.mark-text {
+    position: absolute;
+    bottom: -2px;
+    transform: translate(-50%, 100%);
+    font: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    text-overflow: inherit;
+}

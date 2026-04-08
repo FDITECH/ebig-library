@@ -1,0 +1,22 @@
+.comp-text {
+    display: inline-block;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--max-line, none);
+    line-clamp: var(--max-line, none);
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-pack: center;
+    text-align: start;
+    vertical-align: middle;
+    display: -webkit-box;
+    white-space: pre-line;
+}
+
+.comp-text.type-button {
+    cursor: pointer;
+}
+
+.comp-text-innerhtml {
+    overflow: hidden;
+}

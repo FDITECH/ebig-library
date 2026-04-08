@@ -1,0 +1,15 @@
+.iframe-player:empty {
+    position: relative;
+}
+
+.iframe-player:empty::after {
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    color: var(--neutral-text-title-color, light-dark(#18181B, #F4F4F5));
+}

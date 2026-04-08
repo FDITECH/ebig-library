@@ -1,0 +1,34 @@
+.infinite-scroll.loading::after {
+    content: '';
+    position: sticky;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 0.4rem solid var(--neutral-absolute-background-color, light-dark(#FFFFFF, #14181b));
+    border-radius: 50%;
+    border-top: 0.4rem solid var(--infor-main-color, #287CF0);
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
+    order: 100000;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

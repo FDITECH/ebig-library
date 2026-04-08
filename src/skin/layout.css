@@ -1,0 +1,704 @@
+* {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    text-underline-position: under;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+}
+
+.row>.remain {
+    width: auto !important;
+    flex: 1 !important;
+}
+
+.col>.remain {
+    height: auto !important;
+    flex: 1 !important;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.row>.col0 {
+    display: none !important;
+}
+
+.row>.col1 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+}
+
+.row>.col2 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+}
+
+.row>.col3 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+}
+
+.row>.col4 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+}
+
+.row>.col6 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+}
+
+.row>.col8 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+}
+
+.row>.col10 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+}
+
+.row>.col12 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+}
+
+.row>.col16 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+}
+
+.row>.col18 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+}
+
+.row>.col20 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+}
+
+.row>.col24 {
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 100% !important;
+}
+
+/* Extra small devices (phones, 576px and down) min*/
+@media only screen and (max-width: 576px) {
+    .row>.remain-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 1 !important;
+    }
+
+    .row>.col0-min {
+        display: none !important;
+    }
+
+    .row>.col1-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+    }
+
+    .row>.col2-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+    }
+
+    .row>.col3-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+    }
+
+    .row>.col4-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col6-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+    }
+
+    .row>.col8-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+    }
+
+    .row>.col10-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col12-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+    }
+
+    .row>.col16-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+    }
+
+    .row>.col18-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+    }
+
+    .row>.col20-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+    }
+
+    .row>.col24-min {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 100% !important;
+    }
+
+    /* more config responsive */
+}
+
+/* Small devices (portrait tablets and large phones, 576px and up) Small (sm)*/
+@media only screen and (min-width: 576px) and (max-width: 768px) {
+    .row>.remain-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 1 !important;
+    }
+
+    .row>.col0-sm {
+        display: none !important;
+    }
+
+    .row>.col1-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+    }
+
+    .row>.col2-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+    }
+
+    .row>.col3-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+    }
+
+    .row>.col4-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col6-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+    }
+
+    .row>.col8-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+    }
+
+    .row>.col10-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+
+    .row>.col12-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+    }
+
+    .row>.col16-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+    }
+
+    .row>.col18-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+    }
+
+    .row>.col20-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+    }
+
+    .row>.col24-sm {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 100% !important;
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) Medium (md)*/
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    .row>.remain-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 1 !important;
+    }
+
+    .row>.col0-md {
+        display: none !important;
+    }
+
+    .row>.col1-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+    }
+
+    .row>.col2-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+    }
+
+    .row>.col3-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+    }
+
+    .row>.col4-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col6-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+    }
+
+    .row>.col8-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+    }
+
+    .row>.col10-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col12-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+    }
+
+    .row>.col16-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+    }
+
+    .row>.col18-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+    }
+
+    .row>.col20-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+    }
+
+    .row>.col24-md {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 100% !important;
+    }
+
+    /* more config resposive */
+}
+
+/* Large devices (laptops/desktops, 992px and up) Large (lg)*/
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    .row>.remain-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 1 !important;
+    }
+
+    .row>.col0-lg {
+        display: none !important;
+    }
+
+    .row>.col1-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+    }
+
+    .row>.col2-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+    }
+
+    .row>.col3-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+    }
+
+    .row>.col4-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col6-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+    }
+
+    .row>.col8-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+    }
+
+    .row>.col10-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col12-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+    }
+
+    .row>.col16-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+    }
+
+    .row>.col18-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+    }
+
+    .row>.col20-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+    }
+
+    .row>.col24-lg {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 100% !important;
+    }
+
+    /* more config resposive */
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) X-large (xl)*/
+@media only screen and (min-width: 1200px) {
+    .row>.remain-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 1 !important;
+    }
+
+    .row>.col0-xl {
+        display: none !important;
+    }
+
+    .row>.col1-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+    }
+
+    .row>.col2-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+    }
+
+    .row>.col3-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+    }
+
+    .row>.col4-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col6-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+    }
+
+    .row>.col8-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+    }
+
+    .row>.col10-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col12-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+    }
+
+    .row>.col16-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+    }
+
+    .row>.col18-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+    }
+
+    .row>.col20-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+    }
+
+    .row>.col24-xl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 100% !important;
+    }
+
+    /* more config resposive */
+}
+
+/* Extra large devices (large laptops and desktops, 1600px and up) XX-large (xxl) */
+@media only screen and (min-width: 1600px) {
+    .row>.remain-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 1 !important;
+    }
+
+    .row>.col0-xxl {
+        display: none !important;
+    }
+
+    .row>.col1-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 1 / 24) - var(--gutter) * 23 / 24) !important;
+    }
+
+    .row>.col2-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 2 / 24) - var(--gutter) * 11 / 12) !important;
+    }
+
+    .row>.col3-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 3 / 24) - var(--gutter) * 7 / 8) !important;
+    }
+
+    .row>.col4-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 4 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col6-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 6 / 24) - var(--gutter) * 3 / 4) !important;
+    }
+
+    .row>.col8-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 8 / 24) - var(--gutter) * 2 / 3) !important;
+    }
+
+    .row>.col10-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 10 / 24) - var(--gutter) * 5 / 6) !important;
+    }
+
+    .row>.col12-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 12 / 24) - var(--gutter) / 2) !important;
+    }
+
+    .row>.col16-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 16 / 24) - var(--gutter) * 1 / 3) !important;
+    }
+
+    .row>.col18-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 18 / 24) - var(--gutter) * 1 / 4) !important;
+    }
+
+    .row>.col20-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 calc((100% * 20 / 24) - var(--gutter) * 1 / 6) !important;
+    }
+
+    .row>.col24-xxl {
+        width: auto !important;
+        min-width: auto !important;
+        flex: 0 100% !important;
+    }
+}
+
+@keyframes skeleton-animation {
+    0% {
+        background-position: -1000px 0
+    }
+
+    100% {
+        background-position: 1000px 0
+    }
+}
+
+.skeleton-loading {
+    pointer-events: none;
+    animation: skeleton-animation 8s linear infinite forwards;
+    background: linear-gradient(to right, #D7D7DB 8%, #F4F4F5 18%, #D7D7DB 33%);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--neutral-text-placeholder-color, #878792);
+}
+
+.loader {
+    position: fixed;
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.loader::after {
+    content: "";
+    border: 8px solid light-dark(#F4F4F5, #494950);
+    /* Light grey */
+    border-top: 8px solid light-dark(#A2A2AA, #61616B);
+    /* Blue */
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loading-change-view {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+
+    80% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+._ebig-main-layout_axts4_37>div:not(._ebig-header-layout_axts4_37, ._ebig-sidebar-layout_axts4_37),
+._ebig-main-layout_axts4_37>div:not(._ebig-header-layout_axts4_37, ._ebig-sidebar-layout_axts4_37)>* {
+    animation: loading-change-view 0.8s ease-in-out;
+}

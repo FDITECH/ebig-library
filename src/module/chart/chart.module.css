@@ -1,0 +1,24 @@
+.chart-block {
+    display: flex;
+    justify-content: center;
+    gap: 2.4rem;
+
+}
+
+.legend {
+    min-width: max-content;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    align-content: flex-start;
+
+}
+
+.legend>div>div:last-child {
+    max-width: 100px;
+    flex: 1;
+}
+
+.chart-block:not(.chart-block:has(.legend))>div {
+    width: 100%;
+    height: 100%;
+}

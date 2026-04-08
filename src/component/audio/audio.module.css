@@ -1,0 +1,26 @@
+.audio-player:empty {
+    position: relative;
+}
+
+.audio-player:empty::after {
+    content: "\f1c7";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "FontAwesome";
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-decoration: inherit;
+    display: flex;
+    width: 2.6rem;
+    height: 2.6rem;
+    background-color: #61616B;
+    color: #D9D9D9;
+    text-align: center;
+    font-size: 0.9em;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}

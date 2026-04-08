@@ -1,0 +1,54 @@
+.f-radio-button,
+.f-checkbox,
+.f-switch {
+    width: fit-content;
+}
+
+.f-radio-button>span,
+.f-checkbox>span,
+.f-switch>span {
+    font: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    text-align: inherit;
+    letter-spacing: inherit;
+    text-overflow: inherit;
+    text-decoration: inherit;
+    font-style: inherit;
+    flex: 1;
+}
+
+.f-color-picker input {
+    border: none;
+    outline: none;
+    padding: 0;
+    background-color: transparent;
+    font: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    letter-spacing: inherit;
+    text-overflow: inherit;
+    text-decoration: inherit;
+    font-style: inherit;
+}
+
+.f-color-picker>.f-color-opacity {
+    width: 24%;
+    border: inherit;
+    border-left: inherit;
+    border-color: inherit;
+    border-style: solid;
+    border-width: 1px;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    min-width: 5.4rem;
+    padding-left: 0.6rem;
+}

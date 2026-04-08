@@ -1,0 +1,53 @@
+.radio-btn-container {
+    --off-color: var(--neutral-text-disabled-color, light-dark(#A2A2AA, #61616B));
+    --active-color: var(--primary-main-color, #287CF0);
+    height: max(var(--size), 1.2rem);
+    width: max(var(--size), 1.2rem);
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid var(--off-color);
+    background-color: transparent !important;
+    transition: border-color ease-in-out 0.5s;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.radio-btn-container>input {
+    display: none;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radio-btn-container>.checkmark {
+    height: inherit;
+    width: inherit;
+    scale: 0.5;
+    transform-origin: center center;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility, opacity ease-in-out 0.5s;
+}
+
+.radio-btn-container>input:checked~.checkmark {
+    visibility: visible;
+    opacity: 1;
+    background-color: var(--active-color);
+}
+
+.radio-btn-container:has(> input:checked) {
+    border-color: var(--active-color);
+}
+
+.radio-btn-container:has(input:disabled) {
+    pointer-events: none;
+    border-color: var(--off-color);
+    background-color: var(--neutral-disable-background-color, light-dark(#F4F4F5, #494950));
+}
+
+.radio-btn-container>input:disabled~.checkmark {
+    display: block;
+    background-color: var(--neutral-text-disabled-color, light-dark(#A2A2AA, #61616B));
+}
