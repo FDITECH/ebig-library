@@ -1,7 +1,7 @@
 import { CSSProperties, ReactNode } from 'react';
 import { Text } from "./text/text";
+import { handleErrorImgSrc } from '../module/page/config';
 
-const defaultUrl = "https://cdn.ebig.co/icon-library/error-file.png"
 interface EmptyPageProps {
     title?: string | ReactNode,
     subtitle?: string | ReactNode,
@@ -12,7 +12,7 @@ interface EmptyPageProps {
     imgUrl?: string
 }
 
-export function EmptyPage({ imgUrl = defaultUrl, className = "", style = {}, imgStyle = {}, ...props }: EmptyPageProps) {
+export function EmptyPage({ imgUrl = handleErrorImgSrc, className = "", style = {}, imgStyle = {}, ...props }: EmptyPageProps) {
     return <div className={`col ${className ?? ''}`} style={{ alignItems: "center", ...style }}>
         <img
             alt=""
