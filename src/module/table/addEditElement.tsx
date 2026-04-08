@@ -7,7 +7,6 @@ import { ConfigData, specialCharsRegex } from "../../controller/config";
 import { ComponentType, FEDataType } from "../da";
 import { CustomerAvatar } from "./config";
 import { getValidLink } from "../page/pageById";
-import { regexGetVariableByThis } from "../card/config";
 
 interface AddEditElementFormProps {
     id?: string;
@@ -206,7 +205,6 @@ interface FormViewProps {
 const FormView = ({ cols = [], rels = [], item, tbName, onCancel, onSuccess, expandForm, handleSubmit, customFields, customTablePKOptions, ...props }: FormViewProps) => {
     const dataController = new DataController(tbName)
     const methods = useForm<any>({ shouldFocusError: false, defaultValues: { Id: randomGID() } })
-    const watchRel = useMemo(() => rels.filter(e => e.Query && e.Query.match(regexGetVariableByThis)?.length), [rels.length])
     const methodsOptions = useForm<any>({ shouldFocusError: false })
     const { t } = useTranslation()
     const htmlContent = useRef<{ [k: string]: string }>({})
