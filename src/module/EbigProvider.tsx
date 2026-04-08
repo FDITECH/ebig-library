@@ -213,11 +213,11 @@ export const initializeProject = async (domain: string, props: { pid?: string, d
     ConfigData.url = domain
     const tmp = document.createElement("div")
     tmp.innerHTML = `
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/root.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/layout.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/typography.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/toast-noti.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/root.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/layout.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/typography.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/toast-noti.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/style.css">
     `
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()
