@@ -109,11 +109,11 @@ const HeaderCell = ({ colItem, methods, style = {}, children, onMounted, onChang
                     closePopup(popupRef as any)
                     handleAddEditField()
                 }}>
-                    <Ebigicon src='outline/user interface/gear' size={"1.4rem"} />
+                    <Ebigicon src='outline/user-interface/gear' size={"1.4rem"} />
                     <Text className="button-text-3">Edit field</Text>
                 </button>}
                 <button type='button' className='row' onClick={handleSort}>
-                    <Ebigicon src='outline/user interface/enlarge' size={"1.4rem"} />
+                    <Ebigicon src='outline/user-interface/enlarge' size={"1.4rem"} />
                     <Text className="button-text-3">{sortItem ? "Remove sort" : "Sort"}</Text>
                 </button>
                 {onChangeConfigData && <>
@@ -480,7 +480,7 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
                     return <Cell key={_col.Id} colItem={_col} style={{ gap: "0.8rem" }}>
                         {totalChild ? <Ebigicon src={`fill/arrows/triangle-${isOpen ? "down" : "right"}`} size={12} onClick={() => setIsOpen(!isOpen)} /> : <div style={{ width: 16 }} />}
                         {cellContent}
-                        {!item.ParentId && enableEdit && <Ebigicon src="fill/user interface/c-add" className={styles["add-child-icon-btn"]} onClick={() => { showAddEditChildPopup() }} />}
+                        {!item.ParentId && enableEdit && <Ebigicon src="fill/user-interface/c-add" className={styles["add-child-icon-btn"]} onClick={() => { showAddEditChildPopup() }} />}
                     </Cell>
                 } else {
                     return <Cell key={_col.Id} colItem={_col}>
@@ -490,7 +490,7 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
             })}
             {!props.hideActionColumn && <Cell colItem={"last"} style={{ flex: 1, padding: "0 1.6rem", minWidth: "12rem", justifyContent: columns.length >= 10 ? "center" : "start" }}>
                 {props.customCell?.["last"]?.({ item, index }) ?? <>
-                    {enableEdit && <Ebigicon src='outline/user interface/i-edit' className='icon-button size24 light' size={14} onClick={() => showAddEditPopup(item.Id)} />}
+                    {enableEdit && <Ebigicon src='outline/user-interface/i-edit' className='icon-button size24 light' size={14} onClick={() => showAddEditPopup(item.Id)} />}
                     <Ebigicon src='outline/text/menu-dots' style={{ rotate: "90deg" }} size={14} className='icon-button size24 light' onClick={showActions} />
                 </>}
             </Cell>}
@@ -529,7 +529,7 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
             {(enableEdit || (!!totalChild && !!children.length && totalChild > children.length)) &&
                 <div className={`row ${styles["add-child-table-row"]}`} style={{ paddingLeft: (!hideCheckbox && showIndex) ? "10rem" : (showIndex ? "8rem" : (hideCheckbox ? "2rem" : "6rem")) }}>
                     {enableEdit && <Button
-                        prefix={<Ebigicon src="outline/user interface/e-add" size={12} />}
+                        prefix={<Ebigicon src="outline/user-interface/e-add" size={12} />}
                         label={`${t("add")} ${t("new").toLowerCase()}`}
                         className="button-text-5"
                         onClick={() => { showAddEditChildPopup() }}

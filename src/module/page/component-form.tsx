@@ -43,7 +43,7 @@ export function FInputPassword(props: FTextFieldProps) {
         autoComplete="off"
         type={isShowPass ? "text" : "password"}
         suffix={<>
-            <Ebigicon src={`outline/user interface/${isShowPass ? "view" : "hide"}`} size={"inherit"} onClick={() => setIsShowPass(!isShowPass)} />
+            <Ebigicon src={`outline/user-interface/${isShowPass ? "view" : "hide"}`} size={"inherit"} onClick={() => setIsShowPass(!isShowPass)} />
             {props.suffix}
         </>}
         register={props.name?.length ? (props.methods!.register(props.name, { required: props.required }) as any) : undefined}

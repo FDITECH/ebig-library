@@ -70,16 +70,16 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
                 autoFocus
                 placeholder={t("search")}
                 className={`body-3 size32 ${styles['search-input']}`}
-                prefix={<Ebigicon src="outline/user interface/zoom" size={14} />}
+                prefix={<Ebigicon src="outline/user-interface/zoom" size={14} />}
                 onChange={(ev) => { setSearchValue(ev.target.value.trim()) }}
                 onComplete={(ev: any) => ev.target.blur()}
             />
             <Button
-                prefix={<Ebigicon src='outline/user interface/setup-tools' color={filter ? "var(--primary-main-color)" : undefined} size={14} />}
+                prefix={<Ebigicon src='outline/user-interface/setup-tools' color={filter ? "var(--primary-main-color)" : undefined} size={14} />}
                 className='button-text-3 size32'
                 label={`${filter ?? t("filter")}`}
                 style={{ width: "10rem", padding: "0.4rem", backgroundColor: filter ? "var(--primary-background)" : undefined, color: filter ? "var(--primary-main-color)" : undefined }}
-                suffix={filter ? <Ebigicon src={"outline/user interface/e-remove"} size={14} className="icon-button light" onClick={(ev: any) => {
+                suffix={filter ? <Ebigicon src={"outline/user-interface/e-remove"} size={14} className="icon-button light" onClick={(ev: any) => {
                     ev.preventDefault()
                     ev.stopPropagation()
                     setFilter(undefined)

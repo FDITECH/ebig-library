@@ -108,7 +108,7 @@ export const UploadFiles = forwardRef<UploadFilesRef, UploadFilesProps>(({ class
                 {files.slice(0, prevewMaxLength).map((f, i) => {
                     return <NavLink key={`${f.id}-${i}`} to={f.url ?? ""} target="_blank" className={`row ${styles["file-preview"]}`} style={props.multiple ? undefined : { maxWidth: "100%" }} onClick={(ev) => ev.stopPropagation()}>
                         <span>{f.name}</span>
-                        {!props.disabled && <Ebigicon src="outline/user interface/e-remove" size={12} className="icon-button light"
+                        {!props.disabled && <Ebigicon src="outline/user-interface/e-remove" size={12} className="icon-button light"
                             onClick={(ev) => {
                                 ev.stopPropagation();
                                 ev.preventDefault();
@@ -219,7 +219,7 @@ const UploadFilesDetailPopup = forwardRef((props: { files: FilePreview[], onChan
     return <div className={`col ${styles["upload-popup"]}`}>
         <div className="row" style={{ padding: "1.6rem 2.4rem", borderBottom: "var(--neutral-main-border)" }}>
             <Text className="heading-6" style={{ flex: 1 }}>{t("uploadFile")}</Text>
-            <Ebigicon src="outline/user interface/e-remove" size={14} className="icon-button size24" onClick={() => { closePopup(ref) }} />
+            <Ebigicon src="outline/user-interface/e-remove" size={14} className="icon-button size24" onClick={() => { closePopup(ref) }} />
         </div>
         <div className="col" style={{ flex: 1, gap: "2rem", overflow: "hidden auto" }}>
             <div className={`col ${styles["upload-container"]}`}>
@@ -296,7 +296,7 @@ const UploadFilesDetailPopup = forwardRef((props: { files: FilePreview[], onChan
                         <NavLink to={f.url} target="_blank" style={{ flex: 1 }}>
                             <Text className="label-4" style={{ width: "100%" }} maxLine={1}>{f.name}</Text>
                         </NavLink>
-                        <Ebigicon src="outline/user interface/delete-forever" size={14} onClick={() => { setFiles(prev => prev.filter(pf => pf.id !== f.id)) }} />
+                        <Ebigicon src="outline/user-interface/delete-forever" size={14} onClick={() => { setFiles(prev => prev.filter(pf => pf.id !== f.id)) }} />
                     </div>
                 })}
             </div>}

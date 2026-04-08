@@ -433,7 +433,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             return enableEdit && <Button
                                 key={"add"}
                                 label={`${t("add")} ${t("new").toLowerCase()}`}
-                                prefix={<Ebigicon src={"outline/user interface/e-add"} size={12} />}
+                                prefix={<Ebigicon src={"outline/user-interface/e-add"} size={12} />}
                                 className="label-3 button-neutral border"
                                 onClick={() => showAddEditPopup()}
                             />
@@ -629,7 +629,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                     case "total":
                         return <div key={tl + "-" + i} className={`row ${styles["selected-item-total"]}`}>
                             <Text className="button-text-5">{t("itemsSelected", { count: selected.length })}</Text>
-                            <Ebigicon src="outline/user interface/e-remove" size={12} onClick={() => setSelected([])} />
+                            <Ebigicon src="outline/user-interface/e-remove" size={12} onClick={() => setSelected([])} />
                         </div>
                     case "export":
                         return <ExportXlsx
@@ -637,7 +637,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             className="button-text-5 size24"
                             label={t("export")}
                             style={{ color: "var(--neutral-text-body-reverse-color)" }}
-                            prefix={<Ebigicon src="outline/user interface/data-download" color="var(--neutral-text-body-reverse-color)" size={13} />}
+                            prefix={<Ebigicon src="outline/user-interface/data-download" color="var(--neutral-text-body-reverse-color)" size={13} />}
                             config={{
                                 title: configMethods.watch("columns").filter((e: any) => !fields.find(c => c.Name === e.Name && c.DataType === FEDataType.HTML)).map((e: any) => e.Title)
                             }}
@@ -697,7 +697,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             className="button-text-5 size24"
                             label={t("delete")}
                             style={{ color: "var(--neutral-text-body-reverse-color)" }}
-                            prefix={<Ebigicon src="outline/user interface/trash-can" color="var(--neutral-text-body-reverse-color)" size={13} />}
+                            prefix={<Ebigicon src="outline/user-interface/trash-can" color="var(--neutral-text-body-reverse-color)" size={13} />}
                             onClick={() => {
                                 showDialog({
                                     alignment: DialogAlignment.center,
@@ -722,7 +722,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                 className="button-text-5 size24"
                 label={t("close")}
                 style={{ color: "var(--error-lighter-color)" }}
-                prefix={<Ebigicon src="outline/user interface/e-remove" color="var(--error-lighter-color)" size={13} />}
+                prefix={<Ebigicon src="outline/user-interface/e-remove" color="var(--error-lighter-color)" size={13} />}
                 onClick={() => setSelected([])}
             />
         </div>}

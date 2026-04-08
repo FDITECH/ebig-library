@@ -128,7 +128,7 @@ export const ImportFile = forwardRef(({ style = {}, ...props }: ImportFileProps,
                 return <div key={`${f.name}-${f.size}-${f.lastModified}`} className='row' style={{ gap: "0.8rem", padding: "0.6rem 0.8rem", borderRadius: "0.4rem", border: "var(--neutral-main-border,1px solid light-dark(#EAEAEC, #313135))", flex: "0 calc((100% * 6 / 24) - 0.8rem * 3 / 4)", width: "auto", minWidth: "11.4rem", ...(props.fileTagStyle ?? {}) }}>
                     <Ebigicon src={`outline/${f.type?.includes('image') ? "multimedia/image" : "files/file-export"}`} size={"1.4rem"} />
                     <Text className='subtitle-4' style={{ flex: 1, width: "100%" }} maxLine={1}>{f.name}</Text>
-                    <Ebigicon src='fill/user interface/e-remove' size={"1.4rem"} onClick={() => {
+                    <Ebigicon src='fill/user-interface/e-remove' size={"1.4rem"} onClick={() => {
                         const newValue = preview?.filter(e => e.name !== f.name && e.size !== f.size && e.lastModified !== f.lastModified)
                         setPreview(newValue)
                         props.onChange?.(newValue)

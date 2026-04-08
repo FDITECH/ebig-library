@@ -327,7 +327,7 @@ export const SelectDropdown = forwardRef<SelectDropdownRef, SelectDropdownProps>
                         const opt = options.find(e => e.id === id)
                         return <div key={id} className={`row ${styles['selected-item-value']}`}>
                             <span>{opt?.name}</span>
-                            <Ebigicon src='outline/user interface/e-remove' size={12} onClick={opt?.disabled ? undefined : ev => {
+                            <Ebigicon src='outline/user-interface/e-remove' size={12} onClick={opt?.disabled ? undefined : ev => {
                                 ev.stopPropagation()
                                 const nv = multiValue.filter(v => v !== id)
                                 setMultiValue(nv)
@@ -342,7 +342,7 @@ export const SelectDropdown = forwardRef<SelectDropdownRef, SelectDropdownProps>
             </div>
             {mp.suffix || (
                 mp.showClearValueButton && multiValue.length
-                    ? <Ebigicon src='outline/user interface/c-remove' size={14} onClick={ev => { ev.stopPropagation(); setMultiValue([]); mp.onChange?.([]) }} />
+                    ? <Ebigicon src='outline/user-interface/c-remove' size={14} onClick={ev => { ev.stopPropagation(); setMultiValue([]); mp.onChange?.([]) }} />
                     : <div ref={r => { if (r?.parentElement && r.parentElement.getBoundingClientRect().width < 88) r.style.display = 'none' }} className='row'>
                         <Ebigicon src={`fill/arrows/${isOpen ? 'up' : 'down'}-arrow`} size={12} />
                     </div>

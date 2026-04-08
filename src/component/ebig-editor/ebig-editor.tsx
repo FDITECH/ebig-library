@@ -350,7 +350,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
     const returnHyperlink = (k?: string) => {
         return <Ebigicon
             key={k}
-            src='outline/user interface/hyperlink'
+            src='outline/user-interface/hyperlink'
             className='icon-button size32'
             size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}

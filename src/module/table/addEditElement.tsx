@@ -127,7 +127,7 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
                 onClick={() => { setExpand(!isExpand) }}
             />
             <Ebigicon
-                src="outline/user interface/e-remove"
+                src="outline/user-interface/e-remove"
                 size={14} className="icon-button size24"
                 onClick={() => {
                     if (diveRef.current) {
@@ -226,7 +226,7 @@ const FormView = ({ cols = [], rels = [], item, tbName, onCancel, onSuccess, exp
                             case FEDataType.HTML:
                                 if (ConfigData.regexGuid.test(item[prop])) {
                                     try {
-                                        BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${item[prop]}`, { headers: { 'Cache-Control': 'no-cache' } }).then((result) => {
+                                        BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${item[prop]}`).then((result) => {
                                             if (typeof result === 'string') {
                                                 htmlContent.current[prop] = item[prop]
                                                 methods.setValue(prop, result)

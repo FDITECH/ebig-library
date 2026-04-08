@@ -120,7 +120,7 @@ export const InputPasswordForm = (params: InputPasswordFormProps) => {
     return <TextFieldForm
         {...params}
         type={isShowPass ? "text" : "password"}
-        suffix={<Ebigicon src={`outline/user interface/${isShowPass ? "view" : "hide"}`} size={"1.4rem"} onClick={() => { setIsShowPass(!isShowPass) }} />}
+        suffix={<Ebigicon src={`outline/user-interface/${isShowPass ? "view" : "hide"}`} size={"1.4rem"} onClick={() => { setIsShowPass(!isShowPass) }} />}
     />
 }
 
@@ -275,7 +275,7 @@ export function SelectDropdownForm({ showClearValueButton, previewMaxLength, cus
     const { t } = useTranslation()
 
     const suffix = !params.multiple && !params.required && ![undefined, null, ''].includes(params.methods.watch(params.name)) && !params.disabled && !params.suffix
-        ? <Ebigicon src="outline/user interface/c-remove" size={14} onClick={() => params.methods.setValue(params.name, undefined)} />
+        ? <Ebigicon src="outline/user-interface/c-remove" size={14} onClick={() => params.methods.setValue(params.name, undefined)} />
         : params.suffix;
 
     const customParams: any = { showClearValueButton, previewMaxLength, customPreviewValue }

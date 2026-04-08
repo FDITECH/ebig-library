@@ -1706,360 +1706,360 @@ export type EbigIconName = "color/accessibility/accessibility-lift" |
     "outline/education/telescope" |
     "outline/education/translation" |
     "outline/education/typography" |
-    "outline/user interface/a-chart" |
-    "outline/user interface/a-chat" |
-    "outline/user interface/a-tag-add" |
-    "outline/user interface/a-tag-remove" |
-    "outline/user interface/a-tag" |
-    "outline/user interface/access-key" |
-    "outline/user interface/add-fav" |
-    "outline/user interface/add-favorite" |
-    "outline/user interface/add-like" |
-    "outline/user interface/add-notification" |
-    "outline/user interface/add-to-cart-2" |
-    "outline/user interface/add-to-cart" |
-    "outline/user interface/add" |
-    "outline/user interface/alarm-add" |
-    "outline/user interface/alarm-disable" |
-    "outline/user interface/alarm" |
-    "outline/user interface/analytics" |
-    "outline/user interface/app-store" |
-    "outline/user interface/apps" |
-    "outline/user interface/archive-drawer" |
-    "outline/user interface/archive" |
-    "outline/user interface/at-sign" |
-    "outline/user interface/attach" |
-    "outline/user interface/attachment" |
-    "outline/user interface/b-chart" |
-    "outline/user interface/b-comment" |
-    "outline/user interface/b-eye" |
-    "outline/user interface/backward" |
-    "outline/user interface/ban" |
-    "outline/user interface/basket" |
-    "outline/user interface/battery-charging" |
-    "outline/user interface/battery-low" |
-    "outline/user interface/battery-power" |
-    "outline/user interface/battery-status" |
-    "outline/user interface/bell" |
-    "outline/user interface/bin" |
-    "outline/user interface/blog" |
-    "outline/user interface/bluetooth" |
-    "outline/user interface/board-2" |
-    "outline/user interface/bolt" |
-    "outline/user interface/book" |
-    "outline/user interface/bookmark-add-2" |
-    "outline/user interface/bookmark-add" |
-    "outline/user interface/bookmark-delete-2" |
-    "outline/user interface/bookmark-delete" |
-    "outline/user interface/bookmark" |
-    "outline/user interface/bookmarks" |
-    "outline/user interface/box-archive" |
-    "outline/user interface/bullet-list" |
-    "outline/user interface/buzz" |
-    "outline/user interface/c-add" |
-    "outline/user interface/c-check" |
-    "outline/user interface/c-delete" |
-    "outline/user interface/c-edit" |
-    "outline/user interface/c-info" |
-    "outline/user interface/c-pulse" |
-    "outline/user interface/c-question" |
-    "outline/user interface/c-remove" |
-    "outline/user interface/c-warning" |
-    "outline/user interface/calendar-2" |
-    "outline/user interface/calendar-date-2" |
-    "outline/user interface/calendar-date" |
-    "outline/user interface/calendar-day-view" |
-    "outline/user interface/calendar-event-2" |
-    "outline/user interface/calendar-event-create" |
-    "outline/user interface/calendar-event" |
-    "outline/user interface/calendar" |
-    "outline/user interface/chain" |
-    "outline/user interface/chart" |
-    "outline/user interface/chat" |
-    "outline/user interface/check-all" |
-    "outline/user interface/check-double" |
-    "outline/user interface/check-in" |
-    "outline/user interface/check-list" |
-    "outline/user interface/check-out" |
-    "outline/user interface/check-single" |
-    "outline/user interface/check" |
-    "outline/user interface/checkbox-btn-checked" |
-    "outline/user interface/checkbox-btn" |
-    "outline/user interface/chemistry" |
-    "outline/user interface/clear-data" |
-    "outline/user interface/clock" |
-    "outline/user interface/cloud-forecast" |
-    "outline/user interface/cloud" |
-    "outline/user interface/cogwheel" |
-    "outline/user interface/comment-add" |
-    "outline/user interface/comment" |
-    "outline/user interface/comments" |
-    "outline/user interface/compare-items" |
-    "outline/user interface/components" |
-    "outline/user interface/configuration-tools" |
-    "outline/user interface/control-panel" |
-    "outline/user interface/d-add" |
-    "outline/user interface/d-chart" |
-    "outline/user interface/d-check" |
-    "outline/user interface/d-delete" |
-    "outline/user interface/d-edit" |
-    "outline/user interface/d-remove" |
-    "outline/user interface/dashboard" |
-    "outline/user interface/data-download" |
-    "outline/user interface/data-settings" |
-    "outline/user interface/data-upload" |
-    "outline/user interface/database" |
-    "outline/user interface/delete-forever" |
-    "outline/user interface/delete" |
-    "outline/user interface/design-system" |
-    "outline/user interface/disk" |
-    "outline/user interface/dock-bottom" |
-    "outline/user interface/dock-left" |
-    "outline/user interface/dock-right" |
-    "outline/user interface/dock-top" |
-    "outline/user interface/download" |
-    "outline/user interface/drop" |
-    "outline/user interface/e-add" |
-    "outline/user interface/e-delete" |
-    "outline/user interface/e-remove" |
-    "outline/user interface/edit-note" |
-    "outline/user interface/edit" |
-    "outline/user interface/email-open" |
-    "outline/user interface/email" |
-    "outline/user interface/empty" |
-    "outline/user interface/enlarge" |
-    "outline/user interface/event-confirm" |
-    "outline/user interface/event-create" |
-    "outline/user interface/exclamation-mark" |
-    "outline/user interface/eye" |
-    "outline/user interface/f-add" |
-    "outline/user interface/f-chat" |
-    "outline/user interface/f-check" |
-    "outline/user interface/f-comment" |
-    "outline/user interface/f-dashboard" |
-    "outline/user interface/f-delete" |
-    "outline/user interface/f-remove" |
-    "outline/user interface/fav-list" |
-    "outline/user interface/fav-remove" |
-    "outline/user interface/favorite" |
-    "outline/user interface/feedback" |
-    "outline/user interface/file-add" |
-    "outline/user interface/file-article" |
-    "outline/user interface/file-delete" |
-    "outline/user interface/file-text" |
-    "outline/user interface/filter-check" |
-    "outline/user interface/filter-remove" |
-    "outline/user interface/filter-tool" |
-    "outline/user interface/filter" |
-    "outline/user interface/find-replace" |
-    "outline/user interface/flame" |
-    "outline/user interface/floors" |
-    "outline/user interface/floppy-disk" |
-    "outline/user interface/forward" |
-    "outline/user interface/full-screen" |
-    "outline/user interface/fullsize" |
-    "outline/user interface/funnel" |
-    "outline/user interface/g-chart" |
-    "outline/user interface/g-check" |
-    "outline/user interface/gallery-layout" |
-    "outline/user interface/gallery-view" |
-    "outline/user interface/gantt" |
-    "outline/user interface/gear" |
-    "outline/user interface/geometry" |
-    "outline/user interface/grid-interface" |
-    "outline/user interface/grid-layout" |
-    "outline/user interface/grid-view" |
-    "outline/user interface/heart" |
-    "outline/user interface/hide" |
-    "outline/user interface/home-2" |
-    "outline/user interface/home-3" |
-    "outline/user interface/home" |
-    "outline/user interface/hot-key" |
-    "outline/user interface/hotspot" |
-    "outline/user interface/hourglass" |
-    "outline/user interface/house" |
-    "outline/user interface/hyperlink-broken" |
-    "outline/user interface/hyperlink" |
-    "outline/user interface/i-add" |
-    "outline/user interface/i-check" |
-    "outline/user interface/i-delete" |
-    "outline/user interface/i-edit" |
-    "outline/user interface/i-remove" |
-    "outline/user interface/incognito" |
-    "outline/user interface/increase" |
-    "outline/user interface/infinite" |
-    "outline/user interface/info" |
-    "outline/user interface/key" |
-    "outline/user interface/label" |
-    "outline/user interface/layout-grid" |
-    "outline/user interface/layout" |
-    "outline/user interface/leaf" |
-    "outline/user interface/leave" |
-    "outline/user interface/letter" |
-    "outline/user interface/lifering" |
-    "outline/user interface/light-control" |
-    "outline/user interface/like" |
-    "outline/user interface/link" |
-    "outline/user interface/lock" |
-    "outline/user interface/log-out" |
-    "outline/user interface/magnifier-zoom-in" |
-    "outline/user interface/magnifier-zoom-out" |
-    "outline/user interface/magnifier" |
-    "outline/user interface/mail" |
-    "outline/user interface/megaphone" |
-    "outline/user interface/menu-2" |
-    "outline/user interface/menu-3" |
-    "outline/user interface/menu-4" |
-    "outline/user interface/menu-6" |
-    "outline/user interface/menu-7" |
-    "outline/user interface/menu-8" |
-    "outline/user interface/menu-dots" |
-    "outline/user interface/menu" |
-    "outline/user interface/metrics" |
-    "outline/user interface/mirror-tablet-phone" |
-    "outline/user interface/n-check" |
-    "outline/user interface/n-edit" |
-    "outline/user interface/network-communication" |
-    "outline/user interface/network-connection" |
-    "outline/user interface/networking" |
-    "outline/user interface/new-notification" |
-    "outline/user interface/news" |
-    "outline/user interface/no-results" |
-    "outline/user interface/note" |
-    "outline/user interface/notification-2" |
-    "outline/user interface/notification" |
-    "outline/user interface/o-check" |
-    "outline/user interface/o-warning" |
-    "outline/user interface/offline" |
-    "outline/user interface/opening-times" |
-    "outline/user interface/options" |
-    "outline/user interface/p-chart" |
-    "outline/user interface/padlock-unlocked" |
-    "outline/user interface/padlock" |
-    "outline/user interface/paragraph" |
-    "outline/user interface/password" |
-    "outline/user interface/pen-2" |
-    "outline/user interface/pen" |
-    "outline/user interface/pencil" |
-    "outline/user interface/phone-call-end" |
-    "outline/user interface/phone-call" |
-    "outline/user interface/phone" |
-    "outline/user interface/plant-leaf" |
-    "outline/user interface/playlist" |
-    "outline/user interface/preferences" |
-    "outline/user interface/present" |
-    "outline/user interface/privacy-settings" |
-    "outline/user interface/privacy" |
-    "outline/user interface/progress-2" |
-    "outline/user interface/progress-indicator" |
-    "outline/user interface/question-mark" |
-    "outline/user interface/questionnaire" |
-    "outline/user interface/r-chat" |
-    "outline/user interface/radio-btn-checked" |
-    "outline/user interface/radio-btn" |
-    "outline/user interface/remove-fav" |
-    "outline/user interface/remove-favorite" |
-    "outline/user interface/remove-like" |
-    "outline/user interface/remove" |
-    "outline/user interface/roadmap" |
-    "outline/user interface/s-add" |
-    "outline/user interface/s-ban" |
-    "outline/user interface/s-check" |
-    "outline/user interface/s-delete" |
-    "outline/user interface/s-edit" |
-    "outline/user interface/s-info" |
-    "outline/user interface/s-pulse" |
-    "outline/user interface/s-question" |
-    "outline/user interface/s-remove" |
-    "outline/user interface/s-warning" |
-    "outline/user interface/save-for-later" |
-    "outline/user interface/save-to-list" |
-    "outline/user interface/saved-items" |
-    "outline/user interface/screen-enlarge" |
-    "outline/user interface/screen-expand" |
-    "outline/user interface/screen-maximize" |
-    "outline/user interface/screen-sharing-2" |
-    "outline/user interface/screen-sharing-off-2" |
-    "outline/user interface/search-content" |
-    "outline/user interface/search-zoom-in" |
-    "outline/user interface/search-zoom-out" |
-    "outline/user interface/search" |
-    "outline/user interface/security" |
-    "outline/user interface/segmentation" |
-    "outline/user interface/select" |
-    "outline/user interface/send-message" |
-    "outline/user interface/send" |
-    "outline/user interface/settings-gear" |
-    "outline/user interface/settings-wheel" |
-    "outline/user interface/settings" |
-    "outline/user interface/setup-options" |
-    "outline/user interface/setup-preferences" |
-    "outline/user interface/setup-tools" |
-    "outline/user interface/share" |
-    "outline/user interface/sharing" |
-    "outline/user interface/shield-check" |
-    "outline/user interface/shop" |
-    "outline/user interface/shopping-bag" |
-    "outline/user interface/shopping-cart-2" |
-    "outline/user interface/shopping-cart" |
-    "outline/user interface/shopping-label" |
-    "outline/user interface/shopping-tag" |
-    "outline/user interface/sidebar" |
-    "outline/user interface/slide-left" |
-    "outline/user interface/slide-right" |
-    "outline/user interface/social-sharing" |
-    "outline/user interface/sort-tool" |
-    "outline/user interface/spaceship" |
-    "outline/user interface/speedometer" |
-    "outline/user interface/stack" |
-    "outline/user interface/star-rate" |
-    "outline/user interface/star" |
-    "outline/user interface/stopwatch" |
-    "outline/user interface/support" |
-    "outline/user interface/survey" |
-    "outline/user interface/switches" |
-    "outline/user interface/system-configuration" |
-    "outline/user interface/system-preferences" |
-    "outline/user interface/t-add" |
-    "outline/user interface/t-delete" |
-    "outline/user interface/t-remove" |
-    "outline/user interface/table-layout" |
-    "outline/user interface/table-move" |
-    "outline/user interface/table-slide" |
-    "outline/user interface/tag" |
-    "outline/user interface/tags-stack" |
-    "outline/user interface/target" |
-    "outline/user interface/telephone" |
-    "outline/user interface/time-alarm" |
-    "outline/user interface/time-clock" |
-    "outline/user interface/time-machine" |
-    "outline/user interface/timeline" |
-    "outline/user interface/toggle" |
-    "outline/user interface/translation" |
-    "outline/user interface/trash-can" |
-    "outline/user interface/trash" |
-    "outline/user interface/unlink" |
-    "outline/user interface/unlocked" |
-    "outline/user interface/upload" |
-    "outline/user interface/url" |
-    "outline/user interface/verified" |
-    "outline/user interface/video-gallery" |
-    "outline/user interface/view" |
-    "outline/user interface/virtual-assistant-2" |
-    "outline/user interface/warning-sign" |
-    "outline/user interface/web-hyperlink" |
-    "outline/user interface/web-link" |
-    "outline/user interface/web-url" |
-    "outline/user interface/webpage" |
-    "outline/user interface/widget" |
-    "outline/user interface/window-add" |
-    "outline/user interface/window-delete" |
-    "outline/user interface/wireframe" |
-    "outline/user interface/wrench-tool" |
-    "outline/user interface/wrench" |
-    "outline/user interface/zoom-in" |
-    "outline/user interface/zoom-out" |
-    "outline/user interface/zoom" |
+    "outline/user-interface/a-chart" |
+    "outline/user-interface/a-chat" |
+    "outline/user-interface/a-tag-add" |
+    "outline/user-interface/a-tag-remove" |
+    "outline/user-interface/a-tag" |
+    "outline/user-interface/access-key" |
+    "outline/user-interface/add-fav" |
+    "outline/user-interface/add-favorite" |
+    "outline/user-interface/add-like" |
+    "outline/user-interface/add-notification" |
+    "outline/user-interface/add-to-cart-2" |
+    "outline/user-interface/add-to-cart" |
+    "outline/user-interface/add" |
+    "outline/user-interface/alarm-add" |
+    "outline/user-interface/alarm-disable" |
+    "outline/user-interface/alarm" |
+    "outline/user-interface/analytics" |
+    "outline/user-interface/app-store" |
+    "outline/user-interface/apps" |
+    "outline/user-interface/archive-drawer" |
+    "outline/user-interface/archive" |
+    "outline/user-interface/at-sign" |
+    "outline/user-interface/attach" |
+    "outline/user-interface/attachment" |
+    "outline/user-interface/b-chart" |
+    "outline/user-interface/b-comment" |
+    "outline/user-interface/b-eye" |
+    "outline/user-interface/backward" |
+    "outline/user-interface/ban" |
+    "outline/user-interface/basket" |
+    "outline/user-interface/battery-charging" |
+    "outline/user-interface/battery-low" |
+    "outline/user-interface/battery-power" |
+    "outline/user-interface/battery-status" |
+    "outline/user-interface/bell" |
+    "outline/user-interface/bin" |
+    "outline/user-interface/blog" |
+    "outline/user-interface/bluetooth" |
+    "outline/user-interface/board-2" |
+    "outline/user-interface/bolt" |
+    "outline/user-interface/book" |
+    "outline/user-interface/bookmark-add-2" |
+    "outline/user-interface/bookmark-add" |
+    "outline/user-interface/bookmark-delete-2" |
+    "outline/user-interface/bookmark-delete" |
+    "outline/user-interface/bookmark" |
+    "outline/user-interface/bookmarks" |
+    "outline/user-interface/box-archive" |
+    "outline/user-interface/bullet-list" |
+    "outline/user-interface/buzz" |
+    "outline/user-interface/c-add" |
+    "outline/user-interface/c-check" |
+    "outline/user-interface/c-delete" |
+    "outline/user-interface/c-edit" |
+    "outline/user-interface/c-info" |
+    "outline/user-interface/c-pulse" |
+    "outline/user-interface/c-question" |
+    "outline/user-interface/c-remove" |
+    "outline/user-interface/c-warning" |
+    "outline/user-interface/calendar-2" |
+    "outline/user-interface/calendar-date-2" |
+    "outline/user-interface/calendar-date" |
+    "outline/user-interface/calendar-day-view" |
+    "outline/user-interface/calendar-event-2" |
+    "outline/user-interface/calendar-event-create" |
+    "outline/user-interface/calendar-event" |
+    "outline/user-interface/calendar" |
+    "outline/user-interface/chain" |
+    "outline/user-interface/chart" |
+    "outline/user-interface/chat" |
+    "outline/user-interface/check-all" |
+    "outline/user-interface/check-double" |
+    "outline/user-interface/check-in" |
+    "outline/user-interface/check-list" |
+    "outline/user-interface/check-out" |
+    "outline/user-interface/check-single" |
+    "outline/user-interface/check" |
+    "outline/user-interface/checkbox-btn-checked" |
+    "outline/user-interface/checkbox-btn" |
+    "outline/user-interface/chemistry" |
+    "outline/user-interface/clear-data" |
+    "outline/user-interface/clock" |
+    "outline/user-interface/cloud-forecast" |
+    "outline/user-interface/cloud" |
+    "outline/user-interface/cogwheel" |
+    "outline/user-interface/comment-add" |
+    "outline/user-interface/comment" |
+    "outline/user-interface/comments" |
+    "outline/user-interface/compare-items" |
+    "outline/user-interface/components" |
+    "outline/user-interface/configuration-tools" |
+    "outline/user-interface/control-panel" |
+    "outline/user-interface/d-add" |
+    "outline/user-interface/d-chart" |
+    "outline/user-interface/d-check" |
+    "outline/user-interface/d-delete" |
+    "outline/user-interface/d-edit" |
+    "outline/user-interface/d-remove" |
+    "outline/user-interface/dashboard" |
+    "outline/user-interface/data-download" |
+    "outline/user-interface/data-settings" |
+    "outline/user-interface/data-upload" |
+    "outline/user-interface/database" |
+    "outline/user-interface/delete-forever" |
+    "outline/user-interface/delete" |
+    "outline/user-interface/design-system" |
+    "outline/user-interface/disk" |
+    "outline/user-interface/dock-bottom" |
+    "outline/user-interface/dock-left" |
+    "outline/user-interface/dock-right" |
+    "outline/user-interface/dock-top" |
+    "outline/user-interface/download" |
+    "outline/user-interface/drop" |
+    "outline/user-interface/e-add" |
+    "outline/user-interface/e-delete" |
+    "outline/user-interface/e-remove" |
+    "outline/user-interface/edit-note" |
+    "outline/user-interface/edit" |
+    "outline/user-interface/email-open" |
+    "outline/user-interface/email" |
+    "outline/user-interface/empty" |
+    "outline/user-interface/enlarge" |
+    "outline/user-interface/event-confirm" |
+    "outline/user-interface/event-create" |
+    "outline/user-interface/exclamation-mark" |
+    "outline/user-interface/eye" |
+    "outline/user-interface/f-add" |
+    "outline/user-interface/f-chat" |
+    "outline/user-interface/f-check" |
+    "outline/user-interface/f-comment" |
+    "outline/user-interface/f-dashboard" |
+    "outline/user-interface/f-delete" |
+    "outline/user-interface/f-remove" |
+    "outline/user-interface/fav-list" |
+    "outline/user-interface/fav-remove" |
+    "outline/user-interface/favorite" |
+    "outline/user-interface/feedback" |
+    "outline/user-interface/file-add" |
+    "outline/user-interface/file-article" |
+    "outline/user-interface/file-delete" |
+    "outline/user-interface/file-text" |
+    "outline/user-interface/filter-check" |
+    "outline/user-interface/filter-remove" |
+    "outline/user-interface/filter-tool" |
+    "outline/user-interface/filter" |
+    "outline/user-interface/find-replace" |
+    "outline/user-interface/flame" |
+    "outline/user-interface/floors" |
+    "outline/user-interface/floppy-disk" |
+    "outline/user-interface/forward" |
+    "outline/user-interface/full-screen" |
+    "outline/user-interface/fullsize" |
+    "outline/user-interface/funnel" |
+    "outline/user-interface/g-chart" |
+    "outline/user-interface/g-check" |
+    "outline/user-interface/gallery-layout" |
+    "outline/user-interface/gallery-view" |
+    "outline/user-interface/gantt" |
+    "outline/user-interface/gear" |
+    "outline/user-interface/geometry" |
+    "outline/user-interface/grid-interface" |
+    "outline/user-interface/grid-layout" |
+    "outline/user-interface/grid-view" |
+    "outline/user-interface/heart" |
+    "outline/user-interface/hide" |
+    "outline/user-interface/home-2" |
+    "outline/user-interface/home-3" |
+    "outline/user-interface/home" |
+    "outline/user-interface/hot-key" |
+    "outline/user-interface/hotspot" |
+    "outline/user-interface/hourglass" |
+    "outline/user-interface/house" |
+    "outline/user-interface/hyperlink-broken" |
+    "outline/user-interface/hyperlink" |
+    "outline/user-interface/i-add" |
+    "outline/user-interface/i-check" |
+    "outline/user-interface/i-delete" |
+    "outline/user-interface/i-edit" |
+    "outline/user-interface/i-remove" |
+    "outline/user-interface/incognito" |
+    "outline/user-interface/increase" |
+    "outline/user-interface/infinite" |
+    "outline/user-interface/info" |
+    "outline/user-interface/key" |
+    "outline/user-interface/label" |
+    "outline/user-interface/layout-grid" |
+    "outline/user-interface/layout" |
+    "outline/user-interface/leaf" |
+    "outline/user-interface/leave" |
+    "outline/user-interface/letter" |
+    "outline/user-interface/lifering" |
+    "outline/user-interface/light-control" |
+    "outline/user-interface/like" |
+    "outline/user-interface/link" |
+    "outline/user-interface/lock" |
+    "outline/user-interface/log-out" |
+    "outline/user-interface/magnifier-zoom-in" |
+    "outline/user-interface/magnifier-zoom-out" |
+    "outline/user-interface/magnifier" |
+    "outline/user-interface/mail" |
+    "outline/user-interface/megaphone" |
+    "outline/user-interface/menu-2" |
+    "outline/user-interface/menu-3" |
+    "outline/user-interface/menu-4" |
+    "outline/user-interface/menu-6" |
+    "outline/user-interface/menu-7" |
+    "outline/user-interface/menu-8" |
+    "outline/user-interface/menu-dots" |
+    "outline/user-interface/menu" |
+    "outline/user-interface/metrics" |
+    "outline/user-interface/mirror-tablet-phone" |
+    "outline/user-interface/n-check" |
+    "outline/user-interface/n-edit" |
+    "outline/user-interface/network-communication" |
+    "outline/user-interface/network-connection" |
+    "outline/user-interface/networking" |
+    "outline/user-interface/new-notification" |
+    "outline/user-interface/news" |
+    "outline/user-interface/no-results" |
+    "outline/user-interface/note" |
+    "outline/user-interface/notification-2" |
+    "outline/user-interface/notification" |
+    "outline/user-interface/o-check" |
+    "outline/user-interface/o-warning" |
+    "outline/user-interface/offline" |
+    "outline/user-interface/opening-times" |
+    "outline/user-interface/options" |
+    "outline/user-interface/p-chart" |
+    "outline/user-interface/padlock-unlocked" |
+    "outline/user-interface/padlock" |
+    "outline/user-interface/paragraph" |
+    "outline/user-interface/password" |
+    "outline/user-interface/pen-2" |
+    "outline/user-interface/pen" |
+    "outline/user-interface/pencil" |
+    "outline/user-interface/phone-call-end" |
+    "outline/user-interface/phone-call" |
+    "outline/user-interface/phone" |
+    "outline/user-interface/plant-leaf" |
+    "outline/user-interface/playlist" |
+    "outline/user-interface/preferences" |
+    "outline/user-interface/present" |
+    "outline/user-interface/privacy-settings" |
+    "outline/user-interface/privacy" |
+    "outline/user-interface/progress-2" |
+    "outline/user-interface/progress-indicator" |
+    "outline/user-interface/question-mark" |
+    "outline/user-interface/questionnaire" |
+    "outline/user-interface/r-chat" |
+    "outline/user-interface/radio-btn-checked" |
+    "outline/user-interface/radio-btn" |
+    "outline/user-interface/remove-fav" |
+    "outline/user-interface/remove-favorite" |
+    "outline/user-interface/remove-like" |
+    "outline/user-interface/remove" |
+    "outline/user-interface/roadmap" |
+    "outline/user-interface/s-add" |
+    "outline/user-interface/s-ban" |
+    "outline/user-interface/s-check" |
+    "outline/user-interface/s-delete" |
+    "outline/user-interface/s-edit" |
+    "outline/user-interface/s-info" |
+    "outline/user-interface/s-pulse" |
+    "outline/user-interface/s-question" |
+    "outline/user-interface/s-remove" |
+    "outline/user-interface/s-warning" |
+    "outline/user-interface/save-for-later" |
+    "outline/user-interface/save-to-list" |
+    "outline/user-interface/saved-items" |
+    "outline/user-interface/screen-enlarge" |
+    "outline/user-interface/screen-expand" |
+    "outline/user-interface/screen-maximize" |
+    "outline/user-interface/screen-sharing-2" |
+    "outline/user-interface/screen-sharing-off-2" |
+    "outline/user-interface/search-content" |
+    "outline/user-interface/search-zoom-in" |
+    "outline/user-interface/search-zoom-out" |
+    "outline/user-interface/search" |
+    "outline/user-interface/security" |
+    "outline/user-interface/segmentation" |
+    "outline/user-interface/select" |
+    "outline/user-interface/send-message" |
+    "outline/user-interface/send" |
+    "outline/user-interface/settings-gear" |
+    "outline/user-interface/settings-wheel" |
+    "outline/user-interface/settings" |
+    "outline/user-interface/setup-options" |
+    "outline/user-interface/setup-preferences" |
+    "outline/user-interface/setup-tools" |
+    "outline/user-interface/share" |
+    "outline/user-interface/sharing" |
+    "outline/user-interface/shield-check" |
+    "outline/user-interface/shop" |
+    "outline/user-interface/shopping-bag" |
+    "outline/user-interface/shopping-cart-2" |
+    "outline/user-interface/shopping-cart" |
+    "outline/user-interface/shopping-label" |
+    "outline/user-interface/shopping-tag" |
+    "outline/user-interface/sidebar" |
+    "outline/user-interface/slide-left" |
+    "outline/user-interface/slide-right" |
+    "outline/user-interface/social-sharing" |
+    "outline/user-interface/sort-tool" |
+    "outline/user-interface/spaceship" |
+    "outline/user-interface/speedometer" |
+    "outline/user-interface/stack" |
+    "outline/user-interface/star-rate" |
+    "outline/user-interface/star" |
+    "outline/user-interface/stopwatch" |
+    "outline/user-interface/support" |
+    "outline/user-interface/survey" |
+    "outline/user-interface/switches" |
+    "outline/user-interface/system-configuration" |
+    "outline/user-interface/system-preferences" |
+    "outline/user-interface/t-add" |
+    "outline/user-interface/t-delete" |
+    "outline/user-interface/t-remove" |
+    "outline/user-interface/table-layout" |
+    "outline/user-interface/table-move" |
+    "outline/user-interface/table-slide" |
+    "outline/user-interface/tag" |
+    "outline/user-interface/tags-stack" |
+    "outline/user-interface/target" |
+    "outline/user-interface/telephone" |
+    "outline/user-interface/time-alarm" |
+    "outline/user-interface/time-clock" |
+    "outline/user-interface/time-machine" |
+    "outline/user-interface/timeline" |
+    "outline/user-interface/toggle" |
+    "outline/user-interface/translation" |
+    "outline/user-interface/trash-can" |
+    "outline/user-interface/trash" |
+    "outline/user-interface/unlink" |
+    "outline/user-interface/unlocked" |
+    "outline/user-interface/upload" |
+    "outline/user-interface/url" |
+    "outline/user-interface/verified" |
+    "outline/user-interface/video-gallery" |
+    "outline/user-interface/view" |
+    "outline/user-interface/virtual-assistant-2" |
+    "outline/user-interface/warning-sign" |
+    "outline/user-interface/web-hyperlink" |
+    "outline/user-interface/web-link" |
+    "outline/user-interface/web-url" |
+    "outline/user-interface/webpage" |
+    "outline/user-interface/widget" |
+    "outline/user-interface/window-add" |
+    "outline/user-interface/window-delete" |
+    "outline/user-interface/wireframe" |
+    "outline/user-interface/wrench-tool" |
+    "outline/user-interface/wrench" |
+    "outline/user-interface/zoom-in" |
+    "outline/user-interface/zoom-out" |
+    "outline/user-interface/zoom" |
     "outline/users/accessibility" |
     "outline/users/account" |
     "outline/users/address-book" |
@@ -2910,357 +2910,357 @@ export type EbigIconName = "color/accessibility/accessibility-lift" |
     "fill/development/window-responsive" |
     "fill/development/wireframe" |
     "fill/development/zoom" |
-    "fill/user interface/a-chart" |
-    "fill/user interface/a-chat" |
-    "fill/user interface/a-tag-add" |
-    "fill/user interface/a-tag-remove" |
-    "fill/user interface/a-tag" |
-    "fill/user interface/access-key" |
-    "fill/user interface/add-fav" |
-    "fill/user interface/add-favorite" |
-    "fill/user interface/add-like" |
-    "fill/user interface/add-notification" |
-    "fill/user interface/add-to-cart-2" |
-    "fill/user interface/add-to-cart" |
-    "fill/user interface/add" |
-    "fill/user interface/alarm-add" |
-    "fill/user interface/alarm-disable" |
-    "fill/user interface/alarm" |
-    "fill/user interface/analytics" |
-    "fill/user interface/app-store" |
-    "fill/user interface/apps" |
-    "fill/user interface/archive-drawer" |
-    "fill/user interface/archive" |
-    "fill/user interface/at-sign" |
-    "fill/user interface/attach" |
-    "fill/user interface/attachment" |
-    "fill/user interface/b-chart" |
-    "fill/user interface/b-comment" |
-    "fill/user interface/b-eye" |
-    "fill/user interface/backward" |
-    "fill/user interface/ban" |
-    "fill/user interface/basket" |
-    "fill/user interface/battery-charging" |
-    "fill/user interface/battery-low" |
-    "fill/user interface/battery-power" |
-    "fill/user interface/battery-status" |
-    "fill/user interface/bell" |
-    "fill/user interface/bin" |
-    "fill/user interface/blog" |
-    "fill/user interface/bluetooth" |
-    "fill/user interface/board-2" |
-    "fill/user interface/bolt" |
-    "fill/user interface/book" |
-    "fill/user interface/bookmark-add-2" |
-    "fill/user interface/bookmark-add" |
-    "fill/user interface/bookmark-delete-2" |
-    "fill/user interface/bookmark-delete" |
-    "fill/user interface/bookmark" |
-    "fill/user interface/bookmarks" |
-    "fill/user interface/bullet-list" |
-    "fill/user interface/buzz" |
-    "fill/user interface/c-add" |
-    "fill/user interface/c-check" |
-    "fill/user interface/c-delete" |
-    "fill/user interface/c-edit" |
-    "fill/user interface/c-info" |
-    "fill/user interface/c-pulse" |
-    "fill/user interface/c-question" |
-    "fill/user interface/c-remove" |
-    "fill/user interface/c-warning" |
-    "fill/user interface/calendar-2" |
-    "fill/user interface/calendar-date-2" |
-    "fill/user interface/calendar-date" |
-    "fill/user interface/calendar-day-view" |
-    "fill/user interface/calendar-event-2" |
-    "fill/user interface/calendar-event-create" |
-    "fill/user interface/calendar-event" |
-    "fill/user interface/calendar" |
-    "fill/user interface/chain" |
-    "fill/user interface/chart" |
-    "fill/user interface/chat" |
-    "fill/user interface/check-all" |
-    "fill/user interface/check-double" |
-    "fill/user interface/check-in" |
-    "fill/user interface/check-list" |
-    "fill/user interface/check-out" |
-    "fill/user interface/check-single" |
-    "fill/user interface/check" |
-    "fill/user interface/checkbox-btn-checked" |
-    "fill/user interface/checkbox-btn" |
-    "fill/user interface/chemistry" |
-    "fill/user interface/clear-data" |
-    "fill/user interface/clock" |
-    "fill/user interface/cloud-forecast" |
-    "fill/user interface/cloud" |
-    "fill/user interface/cogwheel" |
-    "fill/user interface/comment-add" |
-    "fill/user interface/comment" |
-    "fill/user interface/comments" |
-    "fill/user interface/compare-items" |
-    "fill/user interface/components" |
-    "fill/user interface/configuration-tools" |
-    "fill/user interface/control-panel" |
-    "fill/user interface/d-add" |
-    "fill/user interface/d-chart" |
-    "fill/user interface/d-check" |
-    "fill/user interface/d-delete" |
-    "fill/user interface/d-edit" |
-    "fill/user interface/d-remove" |
-    "fill/user interface/dashboard" |
-    "fill/user interface/data-download" |
-    "fill/user interface/data-settings" |
-    "fill/user interface/data-upload" |
-    "fill/user interface/database" |
-    "fill/user interface/delete-forever" |
-    "fill/user interface/delete" |
-    "fill/user interface/design-system" |
-    "fill/user interface/disk" |
-    "fill/user interface/dock-bottom" |
-    "fill/user interface/dock-left" |
-    "fill/user interface/dock-right" |
-    "fill/user interface/dock-top" |
-    "fill/user interface/download" |
-    "fill/user interface/drop" |
-    "fill/user interface/e-add" |
-    "fill/user interface/e-delete" |
-    "fill/user interface/e-remove" |
-    "fill/user interface/edit-note" |
-    "fill/user interface/edit" |
-    "fill/user interface/email-open" |
-    "fill/user interface/email" |
-    "fill/user interface/empty" |
-    "fill/user interface/enlarge" |
-    "fill/user interface/event-confirm" |
-    "fill/user interface/event-create" |
-    "fill/user interface/exclamation-mark" |
-    "fill/user interface/eye" |
-    "fill/user interface/f-add" |
-    "fill/user interface/f-chat" |
-    "fill/user interface/f-check" |
-    "fill/user interface/f-comment" |
-    "fill/user interface/f-dashboard" |
-    "fill/user interface/f-delete" |
-    "fill/user interface/f-remove" |
-    "fill/user interface/fav-list" |
-    "fill/user interface/fav-remove" |
-    "fill/user interface/favorite" |
-    "fill/user interface/feedback" |
-    "fill/user interface/file-add" |
-    "fill/user interface/file-article" |
-    "fill/user interface/file-delete" |
-    "fill/user interface/file-text" |
-    "fill/user interface/filter-check" |
-    "fill/user interface/filter-remove" |
-    "fill/user interface/filter-tool" |
-    "fill/user interface/filter" |
-    "fill/user interface/find-replace" |
-    "fill/user interface/flame" |
-    "fill/user interface/floors" |
-    "fill/user interface/floppy-disk" |
-    "fill/user interface/forward" |
-    "fill/user interface/full-screen" |
-    "fill/user interface/fullsize" |
-    "fill/user interface/funnel" |
-    "fill/user interface/g-chart" |
-    "fill/user interface/g-check" |
-    "fill/user interface/gallery-layout" |
-    "fill/user interface/gallery-view" |
-    "fill/user interface/gantt" |
-    "fill/user interface/gear" |
-    "fill/user interface/geometry" |
-    "fill/user interface/grid-interface" |
-    "fill/user interface/grid-layout" |
-    "fill/user interface/grid-view" |
-    "fill/user interface/heart" |
-    "fill/user interface/hide" |
-    "fill/user interface/home-2" |
-    "fill/user interface/home-3" |
-    "fill/user interface/home" |
-    "fill/user interface/hot-key" |
-    "fill/user interface/hotspot" |
-    "fill/user interface/hourglass" |
-    "fill/user interface/house" |
-    "fill/user interface/hyperlink-broken" |
-    "fill/user interface/hyperlink" |
-    "fill/user interface/i-add" |
-    "fill/user interface/i-check" |
-    "fill/user interface/i-delete" |
-    "fill/user interface/i-edit" |
-    "fill/user interface/i-remove" |
-    "fill/user interface/incognito" |
-    "fill/user interface/increase" |
-    "fill/user interface/infinite" |
-    "fill/user interface/info" |
-    "fill/user interface/key" |
-    "fill/user interface/label" |
-    "fill/user interface/layout-grid" |
-    "fill/user interface/leaf" |
-    "fill/user interface/leave" |
-    "fill/user interface/letter" |
-    "fill/user interface/lifering" |
-    "fill/user interface/light-control" |
-    "fill/user interface/like" |
-    "fill/user interface/link" |
-    "fill/user interface/lock" |
-    "fill/user interface/log-out" |
-    "fill/user interface/magnifier-zoom-in" |
-    "fill/user interface/magnifier-zoom-out" |
-    "fill/user interface/magnifier" |
-    "fill/user interface/mail" |
-    "fill/user interface/megaphone" |
-    "fill/user interface/menu-2" |
-    "fill/user interface/menu-3" |
-    "fill/user interface/menu-4" |
-    "fill/user interface/menu-6" |
-    "fill/user interface/menu-7" |
-    "fill/user interface/menu-8" |
-    "fill/user interface/menu-dots" |
-    "fill/user interface/menu" |
-    "fill/user interface/metrics" |
-    "fill/user interface/mirror-tablet-phone" |
-    "fill/user interface/n-check" |
-    "fill/user interface/n-edit" |
-    "fill/user interface/network-communication" |
-    "fill/user interface/network-connection" |
-    "fill/user interface/networking" |
-    "fill/user interface/new-notification" |
-    "fill/user interface/news" |
-    "fill/user interface/no-results" |
-    "fill/user interface/note" |
-    "fill/user interface/notification-2" |
-    "fill/user interface/notification" |
-    "fill/user interface/o-check" |
-    "fill/user interface/o-warning" |
-    "fill/user interface/offline" |
-    "fill/user interface/opening-times" |
-    "fill/user interface/options" |
-    "fill/user interface/p-chart" |
-    "fill/user interface/padlock-unlocked" |
-    "fill/user interface/padlock" |
-    "fill/user interface/paragraph" |
-    "fill/user interface/password" |
-    "fill/user interface/pen-2" |
-    "fill/user interface/pen" |
-    "fill/user interface/pencil" |
-    "fill/user interface/phone-call-end" |
-    "fill/user interface/phone-call" |
-    "fill/user interface/phone" |
-    "fill/user interface/plant-leaf" |
-    "fill/user interface/playlist" |
-    "fill/user interface/preferences" |
-    "fill/user interface/present" |
-    "fill/user interface/privacy-settings" |
-    "fill/user interface/privacy" |
-    "fill/user interface/progress-2" |
-    "fill/user interface/progress-indicator" |
-    "fill/user interface/question-mark" |
-    "fill/user interface/questionnaire" |
-    "fill/user interface/r-chat" |
-    "fill/user interface/radio-btn-checked" |
-    "fill/user interface/radio-btn" |
-    "fill/user interface/remove-fav" |
-    "fill/user interface/remove-favorite" |
-    "fill/user interface/remove-like" |
-    "fill/user interface/remove" |
-    "fill/user interface/roadmap" |
-    "fill/user interface/s-add" |
-    "fill/user interface/s-ban" |
-    "fill/user interface/s-check" |
-    "fill/user interface/s-delete" |
-    "fill/user interface/s-edit" |
-    "fill/user interface/s-info" |
-    "fill/user interface/s-pulse" |
-    "fill/user interface/s-question" |
-    "fill/user interface/s-remove" |
-    "fill/user interface/s-warning" |
-    "fill/user interface/save-for-later" |
-    "fill/user interface/save-to-list" |
-    "fill/user interface/saved-items" |
-    "fill/user interface/screen-enlarge" |
-    "fill/user interface/screen-expand" |
-    "fill/user interface/screen-maximize" |
-    "fill/user interface/screen-sharing-2" |
-    "fill/user interface/screen-sharing-off-2" |
-    "fill/user interface/search-content" |
-    "fill/user interface/search-zoom-in" |
-    "fill/user interface/search-zoom-out" |
-    "fill/user interface/search" |
-    "fill/user interface/security" |
-    "fill/user interface/segmentation" |
-    "fill/user interface/select" |
-    "fill/user interface/send-message" |
-    "fill/user interface/send" |
-    "fill/user interface/settings-gear" |
-    "fill/user interface/settings-wheel" |
-    "fill/user interface/settings" |
-    "fill/user interface/setup-options" |
-    "fill/user interface/setup-preferences" |
-    "fill/user interface/setup-tools" |
-    "fill/user interface/share" |
-    "fill/user interface/sharing" |
-    "fill/user interface/shop" |
-    "fill/user interface/shopping-bag" |
-    "fill/user interface/shopping-cart-2" |
-    "fill/user interface/shopping-cart" |
-    "fill/user interface/shopping-label" |
-    "fill/user interface/shopping-tag" |
-    "fill/user interface/sidebar" |
-    "fill/user interface/slide-left" |
-    "fill/user interface/slide-right" |
-    "fill/user interface/social-sharing" |
-    "fill/user interface/sort-tool" |
-    "fill/user interface/spaceship" |
-    "fill/user interface/speedometer" |
-    "fill/user interface/stack" |
-    "fill/user interface/star-rate" |
-    "fill/user interface/star" |
-    "fill/user interface/stopwatch" |
-    "fill/user interface/support" |
-    "fill/user interface/survey" |
-    "fill/user interface/switches" |
-    "fill/user interface/system-configuration" |
-    "fill/user interface/system-preferences" |
-    "fill/user interface/t-add" |
-    "fill/user interface/t-delete" |
-    "fill/user interface/t-remove" |
-    "fill/user interface/table-layout" |
-    "fill/user interface/table-move" |
-    "fill/user interface/table-slide" |
-    "fill/user interface/tag" |
-    "fill/user interface/tags-stack" |
-    "fill/user interface/target" |
-    "fill/user interface/telephone" |
-    "fill/user interface/time-alarm" |
-    "fill/user interface/time-clock" |
-    "fill/user interface/time-machine" |
-    "fill/user interface/timeline" |
-    "fill/user interface/toggle" |
-    "fill/user interface/translation" |
-    "fill/user interface/trash-can" |
-    "fill/user interface/trash" |
-    "fill/user interface/unlink" |
-    "fill/user interface/unlocked" |
-    "fill/user interface/upload" |
-    "fill/user interface/url" |
-    "fill/user interface/verified" |
-    "fill/user interface/video-gallery" |
-    "fill/user interface/view" |
-    "fill/user interface/virtual-assistant-2" |
-    "fill/user interface/warning-sign" |
-    "fill/user interface/web-hyperlink" |
-    "fill/user interface/web-link" |
-    "fill/user interface/web-url" |
-    "fill/user interface/webpage" |
-    "fill/user interface/widget" |
-    "fill/user interface/window-add" |
-    "fill/user interface/window-delete" |
-    "fill/user interface/wireframe" |
-    "fill/user interface/wrench-tool" |
-    "fill/user interface/wrench" |
-    "fill/user interface/zoom-in" |
-    "fill/user interface/zoom-out" |
-    "fill/user interface/zoom" |
+    "fill/user-interface/a-chart" |
+    "fill/user-interface/a-chat" |
+    "fill/user-interface/a-tag-add" |
+    "fill/user-interface/a-tag-remove" |
+    "fill/user-interface/a-tag" |
+    "fill/user-interface/access-key" |
+    "fill/user-interface/add-fav" |
+    "fill/user-interface/add-favorite" |
+    "fill/user-interface/add-like" |
+    "fill/user-interface/add-notification" |
+    "fill/user-interface/add-to-cart-2" |
+    "fill/user-interface/add-to-cart" |
+    "fill/user-interface/add" |
+    "fill/user-interface/alarm-add" |
+    "fill/user-interface/alarm-disable" |
+    "fill/user-interface/alarm" |
+    "fill/user-interface/analytics" |
+    "fill/user-interface/app-store" |
+    "fill/user-interface/apps" |
+    "fill/user-interface/archive-drawer" |
+    "fill/user-interface/archive" |
+    "fill/user-interface/at-sign" |
+    "fill/user-interface/attach" |
+    "fill/user-interface/attachment" |
+    "fill/user-interface/b-chart" |
+    "fill/user-interface/b-comment" |
+    "fill/user-interface/b-eye" |
+    "fill/user-interface/backward" |
+    "fill/user-interface/ban" |
+    "fill/user-interface/basket" |
+    "fill/user-interface/battery-charging" |
+    "fill/user-interface/battery-low" |
+    "fill/user-interface/battery-power" |
+    "fill/user-interface/battery-status" |
+    "fill/user-interface/bell" |
+    "fill/user-interface/bin" |
+    "fill/user-interface/blog" |
+    "fill/user-interface/bluetooth" |
+    "fill/user-interface/board-2" |
+    "fill/user-interface/bolt" |
+    "fill/user-interface/book" |
+    "fill/user-interface/bookmark-add-2" |
+    "fill/user-interface/bookmark-add" |
+    "fill/user-interface/bookmark-delete-2" |
+    "fill/user-interface/bookmark-delete" |
+    "fill/user-interface/bookmark" |
+    "fill/user-interface/bookmarks" |
+    "fill/user-interface/bullet-list" |
+    "fill/user-interface/buzz" |
+    "fill/user-interface/c-add" |
+    "fill/user-interface/c-check" |
+    "fill/user-interface/c-delete" |
+    "fill/user-interface/c-edit" |
+    "fill/user-interface/c-info" |
+    "fill/user-interface/c-pulse" |
+    "fill/user-interface/c-question" |
+    "fill/user-interface/c-remove" |
+    "fill/user-interface/c-warning" |
+    "fill/user-interface/calendar-2" |
+    "fill/user-interface/calendar-date-2" |
+    "fill/user-interface/calendar-date" |
+    "fill/user-interface/calendar-day-view" |
+    "fill/user-interface/calendar-event-2" |
+    "fill/user-interface/calendar-event-create" |
+    "fill/user-interface/calendar-event" |
+    "fill/user-interface/calendar" |
+    "fill/user-interface/chain" |
+    "fill/user-interface/chart" |
+    "fill/user-interface/chat" |
+    "fill/user-interface/check-all" |
+    "fill/user-interface/check-double" |
+    "fill/user-interface/check-in" |
+    "fill/user-interface/check-list" |
+    "fill/user-interface/check-out" |
+    "fill/user-interface/check-single" |
+    "fill/user-interface/check" |
+    "fill/user-interface/checkbox-btn-checked" |
+    "fill/user-interface/checkbox-btn" |
+    "fill/user-interface/chemistry" |
+    "fill/user-interface/clear-data" |
+    "fill/user-interface/clock" |
+    "fill/user-interface/cloud-forecast" |
+    "fill/user-interface/cloud" |
+    "fill/user-interface/cogwheel" |
+    "fill/user-interface/comment-add" |
+    "fill/user-interface/comment" |
+    "fill/user-interface/comments" |
+    "fill/user-interface/compare-items" |
+    "fill/user-interface/components" |
+    "fill/user-interface/configuration-tools" |
+    "fill/user-interface/control-panel" |
+    "fill/user-interface/d-add" |
+    "fill/user-interface/d-chart" |
+    "fill/user-interface/d-check" |
+    "fill/user-interface/d-delete" |
+    "fill/user-interface/d-edit" |
+    "fill/user-interface/d-remove" |
+    "fill/user-interface/dashboard" |
+    "fill/user-interface/data-download" |
+    "fill/user-interface/data-settings" |
+    "fill/user-interface/data-upload" |
+    "fill/user-interface/database" |
+    "fill/user-interface/delete-forever" |
+    "fill/user-interface/delete" |
+    "fill/user-interface/design-system" |
+    "fill/user-interface/disk" |
+    "fill/user-interface/dock-bottom" |
+    "fill/user-interface/dock-left" |
+    "fill/user-interface/dock-right" |
+    "fill/user-interface/dock-top" |
+    "fill/user-interface/download" |
+    "fill/user-interface/drop" |
+    "fill/user-interface/e-add" |
+    "fill/user-interface/e-delete" |
+    "fill/user-interface/e-remove" |
+    "fill/user-interface/edit-note" |
+    "fill/user-interface/edit" |
+    "fill/user-interface/email-open" |
+    "fill/user-interface/email" |
+    "fill/user-interface/empty" |
+    "fill/user-interface/enlarge" |
+    "fill/user-interface/event-confirm" |
+    "fill/user-interface/event-create" |
+    "fill/user-interface/exclamation-mark" |
+    "fill/user-interface/eye" |
+    "fill/user-interface/f-add" |
+    "fill/user-interface/f-chat" |
+    "fill/user-interface/f-check" |
+    "fill/user-interface/f-comment" |
+    "fill/user-interface/f-dashboard" |
+    "fill/user-interface/f-delete" |
+    "fill/user-interface/f-remove" |
+    "fill/user-interface/fav-list" |
+    "fill/user-interface/fav-remove" |
+    "fill/user-interface/favorite" |
+    "fill/user-interface/feedback" |
+    "fill/user-interface/file-add" |
+    "fill/user-interface/file-article" |
+    "fill/user-interface/file-delete" |
+    "fill/user-interface/file-text" |
+    "fill/user-interface/filter-check" |
+    "fill/user-interface/filter-remove" |
+    "fill/user-interface/filter-tool" |
+    "fill/user-interface/filter" |
+    "fill/user-interface/find-replace" |
+    "fill/user-interface/flame" |
+    "fill/user-interface/floors" |
+    "fill/user-interface/floppy-disk" |
+    "fill/user-interface/forward" |
+    "fill/user-interface/full-screen" |
+    "fill/user-interface/fullsize" |
+    "fill/user-interface/funnel" |
+    "fill/user-interface/g-chart" |
+    "fill/user-interface/g-check" |
+    "fill/user-interface/gallery-layout" |
+    "fill/user-interface/gallery-view" |
+    "fill/user-interface/gantt" |
+    "fill/user-interface/gear" |
+    "fill/user-interface/geometry" |
+    "fill/user-interface/grid-interface" |
+    "fill/user-interface/grid-layout" |
+    "fill/user-interface/grid-view" |
+    "fill/user-interface/heart" |
+    "fill/user-interface/hide" |
+    "fill/user-interface/home-2" |
+    "fill/user-interface/home-3" |
+    "fill/user-interface/home" |
+    "fill/user-interface/hot-key" |
+    "fill/user-interface/hotspot" |
+    "fill/user-interface/hourglass" |
+    "fill/user-interface/house" |
+    "fill/user-interface/hyperlink-broken" |
+    "fill/user-interface/hyperlink" |
+    "fill/user-interface/i-add" |
+    "fill/user-interface/i-check" |
+    "fill/user-interface/i-delete" |
+    "fill/user-interface/i-edit" |
+    "fill/user-interface/i-remove" |
+    "fill/user-interface/incognito" |
+    "fill/user-interface/increase" |
+    "fill/user-interface/infinite" |
+    "fill/user-interface/info" |
+    "fill/user-interface/key" |
+    "fill/user-interface/label" |
+    "fill/user-interface/layout-grid" |
+    "fill/user-interface/leaf" |
+    "fill/user-interface/leave" |
+    "fill/user-interface/letter" |
+    "fill/user-interface/lifering" |
+    "fill/user-interface/light-control" |
+    "fill/user-interface/like" |
+    "fill/user-interface/link" |
+    "fill/user-interface/lock" |
+    "fill/user-interface/log-out" |
+    "fill/user-interface/magnifier-zoom-in" |
+    "fill/user-interface/magnifier-zoom-out" |
+    "fill/user-interface/magnifier" |
+    "fill/user-interface/mail" |
+    "fill/user-interface/megaphone" |
+    "fill/user-interface/menu-2" |
+    "fill/user-interface/menu-3" |
+    "fill/user-interface/menu-4" |
+    "fill/user-interface/menu-6" |
+    "fill/user-interface/menu-7" |
+    "fill/user-interface/menu-8" |
+    "fill/user-interface/menu-dots" |
+    "fill/user-interface/menu" |
+    "fill/user-interface/metrics" |
+    "fill/user-interface/mirror-tablet-phone" |
+    "fill/user-interface/n-check" |
+    "fill/user-interface/n-edit" |
+    "fill/user-interface/network-communication" |
+    "fill/user-interface/network-connection" |
+    "fill/user-interface/networking" |
+    "fill/user-interface/new-notification" |
+    "fill/user-interface/news" |
+    "fill/user-interface/no-results" |
+    "fill/user-interface/note" |
+    "fill/user-interface/notification-2" |
+    "fill/user-interface/notification" |
+    "fill/user-interface/o-check" |
+    "fill/user-interface/o-warning" |
+    "fill/user-interface/offline" |
+    "fill/user-interface/opening-times" |
+    "fill/user-interface/options" |
+    "fill/user-interface/p-chart" |
+    "fill/user-interface/padlock-unlocked" |
+    "fill/user-interface/padlock" |
+    "fill/user-interface/paragraph" |
+    "fill/user-interface/password" |
+    "fill/user-interface/pen-2" |
+    "fill/user-interface/pen" |
+    "fill/user-interface/pencil" |
+    "fill/user-interface/phone-call-end" |
+    "fill/user-interface/phone-call" |
+    "fill/user-interface/phone" |
+    "fill/user-interface/plant-leaf" |
+    "fill/user-interface/playlist" |
+    "fill/user-interface/preferences" |
+    "fill/user-interface/present" |
+    "fill/user-interface/privacy-settings" |
+    "fill/user-interface/privacy" |
+    "fill/user-interface/progress-2" |
+    "fill/user-interface/progress-indicator" |
+    "fill/user-interface/question-mark" |
+    "fill/user-interface/questionnaire" |
+    "fill/user-interface/r-chat" |
+    "fill/user-interface/radio-btn-checked" |
+    "fill/user-interface/radio-btn" |
+    "fill/user-interface/remove-fav" |
+    "fill/user-interface/remove-favorite" |
+    "fill/user-interface/remove-like" |
+    "fill/user-interface/remove" |
+    "fill/user-interface/roadmap" |
+    "fill/user-interface/s-add" |
+    "fill/user-interface/s-ban" |
+    "fill/user-interface/s-check" |
+    "fill/user-interface/s-delete" |
+    "fill/user-interface/s-edit" |
+    "fill/user-interface/s-info" |
+    "fill/user-interface/s-pulse" |
+    "fill/user-interface/s-question" |
+    "fill/user-interface/s-remove" |
+    "fill/user-interface/s-warning" |
+    "fill/user-interface/save-for-later" |
+    "fill/user-interface/save-to-list" |
+    "fill/user-interface/saved-items" |
+    "fill/user-interface/screen-enlarge" |
+    "fill/user-interface/screen-expand" |
+    "fill/user-interface/screen-maximize" |
+    "fill/user-interface/screen-sharing-2" |
+    "fill/user-interface/screen-sharing-off-2" |
+    "fill/user-interface/search-content" |
+    "fill/user-interface/search-zoom-in" |
+    "fill/user-interface/search-zoom-out" |
+    "fill/user-interface/search" |
+    "fill/user-interface/security" |
+    "fill/user-interface/segmentation" |
+    "fill/user-interface/select" |
+    "fill/user-interface/send-message" |
+    "fill/user-interface/send" |
+    "fill/user-interface/settings-gear" |
+    "fill/user-interface/settings-wheel" |
+    "fill/user-interface/settings" |
+    "fill/user-interface/setup-options" |
+    "fill/user-interface/setup-preferences" |
+    "fill/user-interface/setup-tools" |
+    "fill/user-interface/share" |
+    "fill/user-interface/sharing" |
+    "fill/user-interface/shop" |
+    "fill/user-interface/shopping-bag" |
+    "fill/user-interface/shopping-cart-2" |
+    "fill/user-interface/shopping-cart" |
+    "fill/user-interface/shopping-label" |
+    "fill/user-interface/shopping-tag" |
+    "fill/user-interface/sidebar" |
+    "fill/user-interface/slide-left" |
+    "fill/user-interface/slide-right" |
+    "fill/user-interface/social-sharing" |
+    "fill/user-interface/sort-tool" |
+    "fill/user-interface/spaceship" |
+    "fill/user-interface/speedometer" |
+    "fill/user-interface/stack" |
+    "fill/user-interface/star-rate" |
+    "fill/user-interface/star" |
+    "fill/user-interface/stopwatch" |
+    "fill/user-interface/support" |
+    "fill/user-interface/survey" |
+    "fill/user-interface/switches" |
+    "fill/user-interface/system-configuration" |
+    "fill/user-interface/system-preferences" |
+    "fill/user-interface/t-add" |
+    "fill/user-interface/t-delete" |
+    "fill/user-interface/t-remove" |
+    "fill/user-interface/table-layout" |
+    "fill/user-interface/table-move" |
+    "fill/user-interface/table-slide" |
+    "fill/user-interface/tag" |
+    "fill/user-interface/tags-stack" |
+    "fill/user-interface/target" |
+    "fill/user-interface/telephone" |
+    "fill/user-interface/time-alarm" |
+    "fill/user-interface/time-clock" |
+    "fill/user-interface/time-machine" |
+    "fill/user-interface/timeline" |
+    "fill/user-interface/toggle" |
+    "fill/user-interface/translation" |
+    "fill/user-interface/trash-can" |
+    "fill/user-interface/trash" |
+    "fill/user-interface/unlink" |
+    "fill/user-interface/unlocked" |
+    "fill/user-interface/upload" |
+    "fill/user-interface/url" |
+    "fill/user-interface/verified" |
+    "fill/user-interface/video-gallery" |
+    "fill/user-interface/view" |
+    "fill/user-interface/virtual-assistant-2" |
+    "fill/user-interface/warning-sign" |
+    "fill/user-interface/web-hyperlink" |
+    "fill/user-interface/web-link" |
+    "fill/user-interface/web-url" |
+    "fill/user-interface/webpage" |
+    "fill/user-interface/widget" |
+    "fill/user-interface/window-add" |
+    "fill/user-interface/window-delete" |
+    "fill/user-interface/wireframe" |
+    "fill/user-interface/wrench-tool" |
+    "fill/user-interface/wrench" |
+    "fill/user-interface/zoom-in" |
+    "fill/user-interface/zoom-out" |
+    "fill/user-interface/zoom" |
     "fill/files/archive-check" |
     "fill/files/archive-content" |
     "fill/files/archive-doc-check" |
@@ -3591,132 +3591,132 @@ export type EbigIconName = "color/accessibility/accessibility-lift" |
     "fill/users/woman-profile" |
     "fill/users/woman" |
     "fill/users/work-badge" |
-    "color/social media/devto" |
-    "color/social media/discord" |
-    "color/social media/google" |
-    "color/social media/logo-500px" |
-    "color/social media/logo-angellist" |
-    "color/social media/logo-behance" |
-    "color/social media/logo-blogger" |
-    "color/social media/logo-buffer" |
-    "color/social media/logo-buysellads" |
-    "color/social media/logo-codepen" |
-    "color/social media/logo-creative-market" |
-    "color/social media/logo-crunchbase" |
-    "color/social media/logo-deviantart" |
-    "color/social media/logo-dribbble" |
-    "color/social media/logo-dropbox" |
-    "color/social media/logo-envato" |
-    "color/social media/logo-evernote" |
-    "color/social media/logo-facebook" |
-    "color/social media/logo-fb-simple" |
-    "color/social media/logo-feedly" |
-    "color/social media/logo-flickr" |
-    "color/social media/logo-github" |
-    "color/social media/logo-google-plus" |
-    "color/social media/logo-instagram" |
-    "color/social media/logo-lastfm" |
-    "color/social media/logo-linkedin" |
-    "color/social media/logo-medium" |
-    "color/social media/logo-meetup" |
-    "color/social media/logo-messenger" |
-    "color/social media/logo-mixer" |
-    "color/social media/logo-myspace" |
-    "color/social media/logo-paypal" |
-    "color/social media/logo-pinterest" |
-    "color/social media/logo-product-hunt" |
-    "color/social media/logo-qq" |
-    "color/social media/logo-reddit" |
-    "color/social media/logo-rss" |
-    "color/social media/logo-shopify" |
-    "color/social media/logo-skype" |
-    "color/social media/logo-slack" |
-    "color/social media/logo-snapchat" |
-    "color/social media/logo-soundcloud" |
-    "color/social media/logo-spotify" |
-    "color/social media/logo-squarespace" |
-    "color/social media/logo-trello" |
-    "color/social media/logo-tumblr" |
-    "color/social media/logo-twitter" |
-    "color/social media/logo-unsplash" |
-    "color/social media/logo-vimeo" |
-    "color/social media/logo-vine" |
-    "color/social media/logo-vk" |
-    "color/social media/logo-wechat" |
-    "color/social media/logo-weibo" |
-    "color/social media/logo-whatsapp" |
-    "color/social media/logo-wikipedia" |
-    "color/social media/logo-wordpress" |
-    "color/social media/logo-yelp" |
-    "color/social media/logo-youtube" |
-    "color/social media/microsoft-onenote" |
-    "color/social media/spectrum" |
-    "color/social media/telegram" |
-    "color/social media/tiktok" |
-    "color/social media/twitch" |
-    "fill/social media/discord" |
-    "fill/social media/devto" |
-    "fill/social media/google" |
-    "fill/social media/logo-500px" |
-    "fill/social media/logo-angellist" |
-    "fill/social media/logo-behance" |
-    "fill/social media/logo-blogger" |
-    "fill/social media/logo-buffer" |
-    "fill/social media/logo-buysellads" |
-    "fill/social media/logo-codepen" |
-    "fill/social media/logo-creative-market" |
-    "fill/social media/logo-crunchbase" |
-    "fill/social media/logo-deviantart" |
-    "fill/social media/logo-dribbble" |
-    "fill/social media/logo-dropbox" |
-    "fill/social media/logo-envato" |
-    "fill/social media/logo-evernote" |
-    "fill/social media/logo-facebook" |
-    "fill/social media/logo-fb-simple" |
-    "fill/social media/logo-feedly" |
-    "fill/social media/logo-flickr" |
-    "fill/social media/logo-github" |
-    "fill/social media/logo-google-plus" |
-    "fill/social media/logo-instagram" |
-    "fill/social media/logo-lastfm" |
-    "fill/social media/logo-linkedin" |
-    "fill/social media/logo-medium" |
-    "fill/social media/logo-meetup" |
-    "fill/social media/logo-messenger" |
-    "fill/social media/logo-mixer" |
-    "fill/social media/logo-myspace" |
-    "fill/social media/logo-paypal" |
-    "fill/social media/logo-pinterest" |
-    "fill/social media/logo-product-hunt" |
-    "fill/social media/logo-qq" |
-    "fill/social media/logo-reddit" |
-    "fill/social media/logo-rss" |
-    "fill/social media/logo-shopify" |
-    "fill/social media/logo-skype" |
-    "fill/social media/logo-slack" |
-    "fill/social media/logo-snapchat" |
-    "fill/social media/logo-soundcloud" |
-    "fill/social media/logo-spotify" |
-    "fill/social media/logo-squarespace" |
-    "fill/social media/logo-trello" |
-    "fill/social media/logo-tumblr" |
-    "fill/social media/logo-twitter" |
-    "fill/social media/logo-unsplash" |
-    "fill/social media/logo-vimeo" |
-    "fill/social media/logo-vine" |
-    "fill/social media/logo-vk" |
-    "fill/social media/logo-wechat" |
-    "fill/social media/logo-weibo" |
-    "fill/social media/logo-whatsapp" |
-    "fill/social media/logo-wikipedia" |
-    "fill/social media/logo-wordpress" |
-    "fill/social media/logo-yelp" |
-    "fill/social media/logo-youtube" |
-    "fill/social media/microsoft-onenote" |
-    "fill/social media/spectrum" |
-    "fill/social media/telegram" |
-    "fill/social media/tiktok" |
-    "fill/social media/twitch" |
+    "color/social-media/devto" |
+    "color/social-media/discord" |
+    "color/social-media/google" |
+    "color/social-media/logo-500px" |
+    "color/social-media/logo-angellist" |
+    "color/social-media/logo-behance" |
+    "color/social-media/logo-blogger" |
+    "color/social-media/logo-buffer" |
+    "color/social-media/logo-buysellads" |
+    "color/social-media/logo-codepen" |
+    "color/social-media/logo-creative-market" |
+    "color/social-media/logo-crunchbase" |
+    "color/social-media/logo-deviantart" |
+    "color/social-media/logo-dribbble" |
+    "color/social-media/logo-dropbox" |
+    "color/social-media/logo-envato" |
+    "color/social-media/logo-evernote" |
+    "color/social-media/logo-facebook" |
+    "color/social-media/logo-fb-simple" |
+    "color/social-media/logo-feedly" |
+    "color/social-media/logo-flickr" |
+    "color/social-media/logo-github" |
+    "color/social-media/logo-google-plus" |
+    "color/social-media/logo-instagram" |
+    "color/social-media/logo-lastfm" |
+    "color/social-media/logo-linkedin" |
+    "color/social-media/logo-medium" |
+    "color/social-media/logo-meetup" |
+    "color/social-media/logo-messenger" |
+    "color/social-media/logo-mixer" |
+    "color/social-media/logo-myspace" |
+    "color/social-media/logo-paypal" |
+    "color/social-media/logo-pinterest" |
+    "color/social-media/logo-product-hunt" |
+    "color/social-media/logo-qq" |
+    "color/social-media/logo-reddit" |
+    "color/social-media/logo-rss" |
+    "color/social-media/logo-shopify" |
+    "color/social-media/logo-skype" |
+    "color/social-media/logo-slack" |
+    "color/social-media/logo-snapchat" |
+    "color/social-media/logo-soundcloud" |
+    "color/social-media/logo-spotify" |
+    "color/social-media/logo-squarespace" |
+    "color/social-media/logo-trello" |
+    "color/social-media/logo-tumblr" |
+    "color/social-media/logo-twitter" |
+    "color/social-media/logo-unsplash" |
+    "color/social-media/logo-vimeo" |
+    "color/social-media/logo-vine" |
+    "color/social-media/logo-vk" |
+    "color/social-media/logo-wechat" |
+    "color/social-media/logo-weibo" |
+    "color/social-media/logo-whatsapp" |
+    "color/social-media/logo-wikipedia" |
+    "color/social-media/logo-wordpress" |
+    "color/social-media/logo-yelp" |
+    "color/social-media/logo-youtube" |
+    "color/social-media/microsoft-onenote" |
+    "color/social-media/spectrum" |
+    "color/social-media/telegram" |
+    "color/social-media/tiktok" |
+    "color/social-media/twitch" |
+    "fill/social-media/discord" |
+    "fill/social-media/devto" |
+    "fill/social-media/google" |
+    "fill/social-media/logo-500px" |
+    "fill/social-media/logo-angellist" |
+    "fill/social-media/logo-behance" |
+    "fill/social-media/logo-blogger" |
+    "fill/social-media/logo-buffer" |
+    "fill/social-media/logo-buysellads" |
+    "fill/social-media/logo-codepen" |
+    "fill/social-media/logo-creative-market" |
+    "fill/social-media/logo-crunchbase" |
+    "fill/social-media/logo-deviantart" |
+    "fill/social-media/logo-dribbble" |
+    "fill/social-media/logo-dropbox" |
+    "fill/social-media/logo-envato" |
+    "fill/social-media/logo-evernote" |
+    "fill/social-media/logo-facebook" |
+    "fill/social-media/logo-fb-simple" |
+    "fill/social-media/logo-feedly" |
+    "fill/social-media/logo-flickr" |
+    "fill/social-media/logo-github" |
+    "fill/social-media/logo-google-plus" |
+    "fill/social-media/logo-instagram" |
+    "fill/social-media/logo-lastfm" |
+    "fill/social-media/logo-linkedin" |
+    "fill/social-media/logo-medium" |
+    "fill/social-media/logo-meetup" |
+    "fill/social-media/logo-messenger" |
+    "fill/social-media/logo-mixer" |
+    "fill/social-media/logo-myspace" |
+    "fill/social-media/logo-paypal" |
+    "fill/social-media/logo-pinterest" |
+    "fill/social-media/logo-product-hunt" |
+    "fill/social-media/logo-qq" |
+    "fill/social-media/logo-reddit" |
+    "fill/social-media/logo-rss" |
+    "fill/social-media/logo-shopify" |
+    "fill/social-media/logo-skype" |
+    "fill/social-media/logo-slack" |
+    "fill/social-media/logo-snapchat" |
+    "fill/social-media/logo-soundcloud" |
+    "fill/social-media/logo-spotify" |
+    "fill/social-media/logo-squarespace" |
+    "fill/social-media/logo-trello" |
+    "fill/social-media/logo-tumblr" |
+    "fill/social-media/logo-twitter" |
+    "fill/social-media/logo-unsplash" |
+    "fill/social-media/logo-vimeo" |
+    "fill/social-media/logo-vine" |
+    "fill/social-media/logo-vk" |
+    "fill/social-media/logo-wechat" |
+    "fill/social-media/logo-weibo" |
+    "fill/social-media/logo-whatsapp" |
+    "fill/social-media/logo-wikipedia" |
+    "fill/social-media/logo-wordpress" |
+    "fill/social-media/logo-yelp" |
+    "fill/social-media/logo-youtube" |
+    "fill/social-media/microsoft-onenote" |
+    "fill/social-media/spectrum" |
+    "fill/social-media/telegram" |
+    "fill/social-media/tiktok" |
+    "fill/social-media/twitch" |
     "color/flags/aaland-islands" |
     "color/flags/afghanistan" |
     "color/flags/albania" |
@@ -5625,94 +5625,94 @@ export type EbigIconName = "color/accessibility/accessibility-lift" |
     "outline/travel/windsurfing" |
     "outline/travel/world" |
     "outline/travel/world-2" |
-    "outline/touch gestures/2x-drag-down" |
-    "outline/touch gestures/2x-drag-up" |
-    "outline/touch gestures/2x-swipe-down" |
-    "outline/touch gestures/2x-swipe-left" |
-    "outline/touch gestures/2x-swipe-right" |
-    "outline/touch gestures/2x-swipe-up" |
-    "outline/touch gestures/2x-tap" |
-    "outline/touch gestures/3x-swipe-left" |
-    "outline/touch gestures/3x-swipe-right" |
-    "outline/touch gestures/3x-swipe-up" |
-    "outline/touch gestures/3x-tap" |
-    "outline/touch gestures/4x-swipe-left" |
-    "outline/touch gestures/4x-swipe-right" |
-    "outline/touch gestures/4x-swipe-up" |
-    "outline/touch gestures/active-38" |
-    "outline/touch gestures/active-40" |
-    "outline/touch gestures/camera-button" |
-    "outline/touch gestures/double-tap" |
-    "outline/touch gestures/drag-21" |
-    "outline/touch gestures/drag-31" |
-    "outline/touch gestures/drag-down" |
-    "outline/touch gestures/drag-left" |
-    "outline/touch gestures/drag-right" |
-    "outline/touch gestures/drag-up" |
-    "outline/touch gestures/flick-down" |
-    "outline/touch gestures/flick-left" |
-    "outline/touch gestures/flick-right" |
-    "outline/touch gestures/flick-up" |
-    "outline/touch gestures/grab" |
-    "outline/touch gestures/hold" |
-    "outline/touch gestures/pin-2" |
-    "outline/touch gestures/pinch" |
-    "outline/touch gestures/rotate-22" |
-    "outline/touch gestures/rotate-23" |
-    "outline/touch gestures/scan" |
-    "outline/touch gestures/scroll-horizontal" |
-    "outline/touch gestures/scroll-vertical" |
-    "outline/touch gestures/stretch" |
-    "outline/touch gestures/swipe-bottom" |
-    "outline/touch gestures/swipe-left" |
-    "outline/touch gestures/swipe-right" |
-    "outline/touch gestures/swipe-up" |
-    "outline/touch gestures/tap-01" |
-    "outline/touch gestures/tap-02" |
-    "fill/touch gestures/2x-drag-down" |
-    "fill/touch gestures/2x-drag-up" |
-    "fill/touch gestures/2x-swipe-down" |
-    "fill/touch gestures/2x-swipe-left" |
-    "fill/touch gestures/2x-swipe-right" |
-    "fill/touch gestures/2x-swipe-up" |
-    "fill/touch gestures/2x-tap" |
-    "fill/touch gestures/3x-swipe-left" |
-    "fill/touch gestures/3x-swipe-right" |
-    "fill/touch gestures/3x-swipe-up" |
-    "fill/touch gestures/3x-tap" |
-    "fill/touch gestures/4x-swipe-left" |
-    "fill/touch gestures/4x-swipe-right" |
-    "fill/touch gestures/4x-swipe-up" |
-    "fill/touch gestures/active-40" |
-    "fill/touch gestures/active-38" |
-    "fill/touch gestures/camera-button" |
-    "fill/touch gestures/double-tap" |
-    "fill/touch gestures/drag-31" |
-    "fill/touch gestures/drag-21" |
-    "fill/touch gestures/drag-down" |
-    "fill/touch gestures/drag-left" |
-    "fill/touch gestures/drag-right" |
-    "fill/touch gestures/drag-up" |
-    "fill/touch gestures/flick-down" |
-    "fill/touch gestures/flick-left" |
-    "fill/touch gestures/flick-right" |
-    "fill/touch gestures/flick-up" |
-    "fill/touch gestures/grab" |
-    "fill/touch gestures/hold" |
-    "fill/touch gestures/pin-2" |
-    "fill/touch gestures/pinch" |
-    "fill/touch gestures/rotate-22" |
-    "fill/touch gestures/rotate-23" |
-    "fill/touch gestures/scan" |
-    "fill/touch gestures/scroll-horizontal" |
-    "fill/touch gestures/scroll-vertical" |
-    "fill/touch gestures/stretch" |
-    "fill/touch gestures/swipe-bottom" |
-    "fill/touch gestures/swipe-left" |
-    "fill/touch gestures/swipe-right" |
-    "fill/touch gestures/swipe-up" |
-    "fill/touch gestures/tap-01" |
-    "fill/touch gestures/tap-02" |
+    "outline/touch-gestures/2x-drag-down" |
+    "outline/touch-gestures/2x-drag-up" |
+    "outline/touch-gestures/2x-swipe-down" |
+    "outline/touch-gestures/2x-swipe-left" |
+    "outline/touch-gestures/2x-swipe-right" |
+    "outline/touch-gestures/2x-swipe-up" |
+    "outline/touch-gestures/2x-tap" |
+    "outline/touch-gestures/3x-swipe-left" |
+    "outline/touch-gestures/3x-swipe-right" |
+    "outline/touch-gestures/3x-swipe-up" |
+    "outline/touch-gestures/3x-tap" |
+    "outline/touch-gestures/4x-swipe-left" |
+    "outline/touch-gestures/4x-swipe-right" |
+    "outline/touch-gestures/4x-swipe-up" |
+    "outline/touch-gestures/active-38" |
+    "outline/touch-gestures/active-40" |
+    "outline/touch-gestures/camera-button" |
+    "outline/touch-gestures/double-tap" |
+    "outline/touch-gestures/drag-21" |
+    "outline/touch-gestures/drag-31" |
+    "outline/touch-gestures/drag-down" |
+    "outline/touch-gestures/drag-left" |
+    "outline/touch-gestures/drag-right" |
+    "outline/touch-gestures/drag-up" |
+    "outline/touch-gestures/flick-down" |
+    "outline/touch-gestures/flick-left" |
+    "outline/touch-gestures/flick-right" |
+    "outline/touch-gestures/flick-up" |
+    "outline/touch-gestures/grab" |
+    "outline/touch-gestures/hold" |
+    "outline/touch-gestures/pin-2" |
+    "outline/touch-gestures/pinch" |
+    "outline/touch-gestures/rotate-22" |
+    "outline/touch-gestures/rotate-23" |
+    "outline/touch-gestures/scan" |
+    "outline/touch-gestures/scroll-horizontal" |
+    "outline/touch-gestures/scroll-vertical" |
+    "outline/touch-gestures/stretch" |
+    "outline/touch-gestures/swipe-bottom" |
+    "outline/touch-gestures/swipe-left" |
+    "outline/touch-gestures/swipe-right" |
+    "outline/touch-gestures/swipe-up" |
+    "outline/touch-gestures/tap-01" |
+    "outline/touch-gestures/tap-02" |
+    "fill/touch-gestures/2x-drag-down" |
+    "fill/touch-gestures/2x-drag-up" |
+    "fill/touch-gestures/2x-swipe-down" |
+    "fill/touch-gestures/2x-swipe-left" |
+    "fill/touch-gestures/2x-swipe-right" |
+    "fill/touch-gestures/2x-swipe-up" |
+    "fill/touch-gestures/2x-tap" |
+    "fill/touch-gestures/3x-swipe-left" |
+    "fill/touch-gestures/3x-swipe-right" |
+    "fill/touch-gestures/3x-swipe-up" |
+    "fill/touch-gestures/3x-tap" |
+    "fill/touch-gestures/4x-swipe-left" |
+    "fill/touch-gestures/4x-swipe-right" |
+    "fill/touch-gestures/4x-swipe-up" |
+    "fill/touch-gestures/active-40" |
+    "fill/touch-gestures/active-38" |
+    "fill/touch-gestures/camera-button" |
+    "fill/touch-gestures/double-tap" |
+    "fill/touch-gestures/drag-31" |
+    "fill/touch-gestures/drag-21" |
+    "fill/touch-gestures/drag-down" |
+    "fill/touch-gestures/drag-left" |
+    "fill/touch-gestures/drag-right" |
+    "fill/touch-gestures/drag-up" |
+    "fill/touch-gestures/flick-down" |
+    "fill/touch-gestures/flick-left" |
+    "fill/touch-gestures/flick-right" |
+    "fill/touch-gestures/flick-up" |
+    "fill/touch-gestures/grab" |
+    "fill/touch-gestures/hold" |
+    "fill/touch-gestures/pin-2" |
+    "fill/touch-gestures/pinch" |
+    "fill/touch-gestures/rotate-22" |
+    "fill/touch-gestures/rotate-23" |
+    "fill/touch-gestures/scan" |
+    "fill/touch-gestures/scroll-horizontal" |
+    "fill/touch-gestures/scroll-vertical" |
+    "fill/touch-gestures/stretch" |
+    "fill/touch-gestures/swipe-bottom" |
+    "fill/touch-gestures/swipe-left" |
+    "fill/touch-gestures/swipe-right" |
+    "fill/touch-gestures/swipe-up" |
+    "fill/touch-gestures/tap-01" |
+    "fill/touch-gestures/tap-02" |
     "fill/multimedia/3d-glasses" |
     "fill/multimedia/adult-content" |
     "fill/multimedia/ai-generated-img" |
