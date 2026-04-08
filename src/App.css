@@ -1,0 +1,61 @@
+html,
+body,
+#root {
+  width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+body * {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  font-family: 'Inter';
+}
+
+body * {
+  background-color: transparent;
+  outline: none;
+}
+
+button,
+input,
+a {
+  text-decoration: none;
+  outline: none;
+  padding: 0;
+  border: none;
+  text-align: left;
+}
+
+button,
+button * {
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--neutral-hover-background-color);
+}
+
+::-webkit-scrollbar {
+  width: 0.6rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 0.4rem;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 0.4rem;
+  background-color: #c1c1c1;
+  visibility: hidden;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
