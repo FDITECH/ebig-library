@@ -249,6 +249,10 @@ interface FDropdownSelectProps {
     methods: UseFormReturn<FieldValues, any, undefined>;
     value?: any;
     required?: boolean;
+    readOnly?: boolean;
+    disabled?: boolean;
+    className?: string;
+    style?: CSSProperties;
     options: Array<{ id: string | number, name: string, [p: string]: any }>;
     getOptions?: (params: { length: number, search?: string, parentId?: string | number }) => Promise<{ data: Array<{ id: string | number, name: string, [p: string]: any }>, totalCount: number }>;
     onChange?: (v?: any) => void;

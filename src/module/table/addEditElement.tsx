@@ -225,12 +225,17 @@ const FormView = ({ cols = [], rels = [], item, tbName, onCancel, onSuccess, exp
                                 break;
                             case FEDataType.HTML:
                                 if (ConfigData.regexGuid.test(item[prop])) {
-                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${item[prop]}`, { headers: { 'Cache-Control': 'no-cache' } }).then((result) => {
-                                        if (typeof result === 'string') {
-                                            htmlContent.current[prop] = item[prop]
-                                            methods.setValue(prop, result)
-                                        } else methods.setValue(prop, item[prop])
-                                    })
+                                    try {
+                                        BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${item[prop]}`, { headers: { 'Cache-Control': 'no-cache' } }).then((result) => {
+                                            if (typeof result === 'string') {
+                                                htmlContent.current[prop] = item[prop]
+                                                methods.setValue(prop, result)
+                                            } else methods.setValue(prop, item[prop])
+                                        })
+                                    } catch (error) {
+                                        console.error("Error fetching content: ", error)
+                                        methods.setValue(prop, item[prop])                                        
+                                    }
                                 } else {
                                     methods.setValue(prop, item[prop])
                                 }

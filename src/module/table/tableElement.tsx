@@ -551,6 +551,17 @@ interface CellProps {
 }
 
 const Cell = ({ colItem, style, children }: CellProps) => {
+    const divRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (divRef.current && divRef.current.parentElement && !divRef.current.parentElement.style.maxHeight) {
+            const timeout = setTimeout(() => { divRef.current!.parentElement!.style.maxHeight = divRef.current!.parentElement!.offsetHeight + "px" }, 500)
+            return () => {
+                clearTimeout(timeout)
+            }
+        }
+    }, [divRef.current])
+
     switch (colItem) {
         case "last":
             return <div className={`row ${styles["cell"]} ${styles["last-cell"]}`} style={style}>
@@ -558,10 +569,7 @@ const Cell = ({ colItem, style, children }: CellProps) => {
             </div>
         default:
             return <div style={{ width: colItem.Width, ...style }} className={`row ${styles["cell"]}`}>
-                <div ref={r => {
-                    if (r)
-                        setTimeout(() => { r.parentElement!.style.maxHeight = r.parentElement!.offsetHeight + "px" }, 500)
-                }} className={`row ${styles["content"]}`}>
+                <div ref={divRef} className={`row ${styles["content"]}`}>
                     {children}
                 </div>
             </div>

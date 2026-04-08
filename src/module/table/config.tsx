@@ -385,10 +385,15 @@ function ContentView({ content = "", maxLength = 120 }) {
 
     useEffect(() => {
         if (ConfigData.regexGuid.test(content)) {
-            BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${content}`).then((result) => {
-                if (typeof result === 'string') setConvertContent(result)
-                else setConvertContent(content)
-            })
+            try {
+                BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${content}`).then((result) => {
+                    if (typeof result === 'string') setConvertContent(result)
+                    else setConvertContent(content)
+                })
+            } catch (error) {
+                console.error("Error fetching content: ", error)
+                setConvertContent(content)
+            }
         } else setConvertContent(content)
     }, [content.length])
 
