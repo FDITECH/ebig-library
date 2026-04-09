@@ -104,7 +104,7 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
                         onClick={() => { setStaticPreview(src) }}
                         onMouseOver={() => { setPreview(src) }}
                     >
-                        <Ebigicon src={`${src.type}/${src.category}/${src.name}` as any} size={"2rem"} />
+                        <Ebigicon src={`${src.type}/${src.category.replace(" ", "-")}/${src.name}` as any} size={"2rem"} />
                         <div className='label-5' style={{ width: "100%", wordBreak: "break-all" }}>{src.name}</div>
                     </div>)}
                 </div>
