@@ -18,20 +18,14 @@ interface EbigIconProps {
     onMouseDown?: React.MouseEventHandler<HTMLDivElement>,
     onDoubleClick?: React.MouseEventHandler<HTMLDivElement>,
     simpleStyle?: boolean,
-    /** @default true */
-    cache?: boolean
 }
 
 interface EbigIconRef {
     element?: HTMLDivElement
 }
 
-function delay(t: number) {
-    return new Promise(resolve => setTimeout(resolve, t));
-}
-
 const fetchIcons: { [key: string]: number } = {}
-export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link, className, style = {}, size, color, alt, onClick, tooltip, onMouseDown, onDoubleClick, simpleStyle, cache = true }, ref) => {
+export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link, className, style = {}, size, color, alt, onClick, tooltip, onMouseDown, onDoubleClick, simpleStyle }, ref) => {
     const divRef = useRef<HTMLDivElement>(null)
     const timoutRef = useRef<NodeJS.Timeout>(null)
     const [svgData, setSvgData] = useState<string>()
@@ -40,26 +34,20 @@ export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link,
 
     const cacheImage = async (url: string) => {
         const cacheName = url.replace(cdnSrc, "");
-        const openCache = cache ? await caches.open(cacheName) : null;
-        if (openCache) {
-            // Check if the image is already cached
-            const cachedResponse = await openCache.match(url);
-            if (cachedResponse) return cachedResponse;
-            fetchIcons[cacheName] ??= 0
-            fetchIcons[cacheName]++
-            if (fetchIcons[cacheName] > 1) {
-                await delay(1000)
-                const recheckCachedResponse: any = await cacheImage(url);
-                delete fetchIcons[cacheName]
-                return recheckCachedResponse
-            }
+        const cache = await caches.open(cacheName);
+
+        // Check if the image is already cached
+        const cachedResponse = await cache.match(url);
+        if (cachedResponse) {
+            return cachedResponse;
         }
+
         // Fetch and cache the image
         const response = await fetch(url);
-
-        if (openCache && response.ok) {
-            await openCache.put(url, response.clone());
+        if (response.ok) {
+            await cache.put(url, response.clone());
         }
+
         return response;
     }
 
