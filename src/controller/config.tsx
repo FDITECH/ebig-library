@@ -38,7 +38,6 @@ const getHeaders = async () => {
             }
         }
         ConfigData.onInvalidToken()
-        window.location.replace("/login")
     } else if (Util.getCookie("accessToken")) {
         return {
             'Authorization': `Bearer ${Util.getCookie("accessToken")}`,
@@ -67,7 +66,7 @@ export class BaseDA {
                 }
             } else if (response.status === 401) {
                 ToastMessage.errors('Unauthorized access')
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };
@@ -95,7 +94,8 @@ export class BaseDA {
                     }
                 case 401:
                     ToastMessage.errors('Unauthorized access')
-                    return window.location.replace('/login')
+                    ConfigData.onInvalidToken()
+                    return;
                 default:
                     console.log("error: ??: ", response.statusText)
                     return { status: response.status, message: response.statusText };
@@ -118,7 +118,8 @@ export class BaseDA {
                 return { message: 'ok' }
             } else if (response.status === 401) {
                 ToastMessage.errors('Unauthorized access')
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
+                return;
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };

@@ -150,7 +150,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
                 if (res.FileDomain && !props.fileUrl) ConfigData.fileUrl = res.FileDomain
                 setProjectData(res)
             })
-        } else refreshTokenHeaders.pid = "ebig"
+        } else refreshTokenHeaders.pid = "wini"
     }, [props.pid])
 
     useEffect(() => {
