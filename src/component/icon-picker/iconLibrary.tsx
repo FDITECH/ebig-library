@@ -38,14 +38,14 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
         }
     }, [onClose])
 
-    const getIcons = async (page?: number) => {
+    const getIcons = async (page = 1) => {
         let query = filter ? `type=${filter}` : ""
         if (search.length) query += `${query.length ? "&" : ""}search=${search}`
         if (page) query += `${query.length ? "&" : ""}page=${page}`
         const response = await BaseDA.get(`https://api.ebig.co/api/file/icon-library?${query}`)
         if (response.code === 200) {
-            setData({ data: page && page > 1 ? [...data.data, ...response.data] : response.data, totalCount: response.totalCount })
-            if (page && page > 1) {
+            setData({ data: page > 1 ? data.data.concat(response.data) : response.data, totalCount: response.totalCount })
+            if (page > 1) {
                 const newCate = response.category.filter((c: string) => !categories.includes(c))
                 if (newCate.length) setCategories([...categories, ...newCate])
             } else setCategories(response.category ?? [])
@@ -61,7 +61,7 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
         className={`col ${styles['icon-library-container']} ${className ?? ""}`} style={style}
         onScroll={(ev) => {
             let scrollElement = ev.target as HTMLDivElement
-            if (Math.round(scrollElement.offsetHeight + scrollElement.scrollTop) >= (scrollElement.scrollHeight - 1) && data.totalCount && data.data.length < data.totalCount!) getIcons(Math.floor(data.data.length / 20) + 1)
+            if (Math.round(scrollElement.offsetHeight + Math.abs(scrollElement.scrollTop)) >= (scrollElement.scrollHeight - 1) && data.totalCount && data.data.length < data.totalCount) getIcons(Math.floor(data.data.length / 20) + 1)
         }}
     >
         <div className={`row ${styles['search-container']}`}>
@@ -96,10 +96,11 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
             />}
         </div>
         {categories.map((cate) => {
-            return <div key={cate} className='col' style={{ gap: "0.8rem", padding: "0.8rem" }}>
+            const icons = data.data.filter(e => e.category === cate)
+            return <div key={cate} className='col' style={{ gap: "0.8rem", padding: "0.8rem", display: icons.length ? "flex" : "none" }}>
                 <Text className='label-1'>{cate.slice(0, 1).toUpperCase() + cate.slice(1)}</Text>
                 <div className='row' style={{ flexWrap: "wrap", gap: "0.8rem", padding: "0.8 1.6rem", alignItems: "stretch" }}>
-                    {data.data.filter(e => e.category === cate).map((src: any, i: number) => <div key={src.name + src.id + i} className={`col col6 ${styles['icon-item']} ${staticPreview?.id === src.id ? styles['selected'] : ""}`}
+                    {icons.map((src: any, i: number) => <div key={src.name + src.id + i} className={`col col6 ${styles['icon-item']} ${staticPreview?.id === src.id ? styles['selected'] : ""}`}
                         onDoubleClick={() => { onSelect(src) }}
                         onClick={() => { setStaticPreview(src) }}
                         onMouseOver={() => { setPreview(src) }}
@@ -112,8 +113,8 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
         })}
         {!categories.length && <div style={{ flex: 1 }} />}
         {(preview || staticPreview) && <div className={`row ${styles["preview-container"]}`}>
-            <Ebigicon src={`${(staticPreview ?? preview!).type}/${(staticPreview ?? preview!).category}/${(staticPreview ?? preview!).name}` as any} size={"3.2rem"} />
-            <div className='label-3' style={{ width: "100%", wordBreak: "break-all" }}>{`${(staticPreview ?? preview!).type}/${(staticPreview ?? preview!).category}/${(staticPreview ?? preview!).name}`}</div>
+            <Ebigicon src={`${(staticPreview ?? preview!).type}/${(staticPreview ?? preview!).category.replace(" ", "-")}/${(staticPreview ?? preview!).name}` as any} size={"3.2rem"} />
+            <div className='label-3' style={{ width: "100%", wordBreak: "break-all" }}>{`${(staticPreview ?? preview!).type}/${(staticPreview ?? preview!).category.replace(" ", "-")}/${(staticPreview ?? preview!).name}`}</div>
         </div>}
     </div>
 }

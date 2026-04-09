@@ -75,8 +75,8 @@ export const IconPicker = forwardRef<IconPickerRef, IconPickerProps>((props, ref
         }} src={(value ?? "outline/user-interface/setup-tools") as any} style={props.style} size={props.size} className={props.className} color={props.color} tooltip={props.tooltip} onClick={() => onOpenIconLib()} />
         {isOpen && <IconLibrary
             onSelect={(src) => {
-                setValue(`${src.type}/${src.category}/${src.name}`)
-                props.onChange?.(`${src.type}/${src.category}/${src.name}`)
+                setValue(`${src.type}/${src.category.replace(" ", "-")}/${src.name}`)
+                props.onChange?.(`${src.type}/${src.category.replace(" ", "-")}/${src.name}`)
                 setIsOpen(false)
             }}
             style={{ position: "fixed", zIndex: 99, ...offsetRef.current }}
