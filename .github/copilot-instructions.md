@@ -22,7 +22,7 @@ This repository is a React + TypeScript UI component library (library entry: `sr
 - Rich-text editor component: `EbigEditor` / `EbigEditorForm`
 - Project-controller: `EbigController` (API routes stay as `ebig/getById`, `ebig/getListSimple` — **do not change these**)
 - CSS class prefix for icon module: `ebig-icon`; for editor module: `ebig-editor`
-- Skin CDN: `https://cdn.ebig.co/ebig-library/src/skin/` (loaded by `initializeProject`)
+- Style CDN: `https://cdn.ebig.co/library/style/` (loaded by `initializeProject`)
 
 ### Critical patterns
 

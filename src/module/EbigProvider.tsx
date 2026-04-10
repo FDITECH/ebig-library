@@ -7,9 +7,11 @@ import { ToastContainer } from 'react-toastify'
 import { DesignTokenType, ProjectItem } from "./da"
 import { Util } from "../controller/utils"
 import { useTranslation } from "react-i18next"
+import { loadCdnTranslations } from "../language/i18n"
 import { DataController } from "../controller/data"
 import { encodeClassName, LayoutElement } from "./page/config"
 import { i18n } from "i18next"
+import { OfflineBanner } from "../component/offline-banner/offline-banner"
 
 interface Props {
     /**
@@ -162,6 +164,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
         ConfigData.fileUrl = props.fileUrl
         if (loadResources) {
             if (props.pid.length === 32) {
+                // Load base translations from CDN (en, vi)
                 const _desginTokenController = new TableController("designtoken")
                 _desginTokenController.getAll().then(res => {
                     if (res.code === 200 && res.data.length) appendDesignTokens(res.data)
@@ -184,6 +187,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     }, [props.pid, props.imgUrlId, props.fileUrl])
 
     return <EbigContext.Provider value={{ projectData, theme, setTheme, i18n, userData, setUserData, globalData, setGlobalData }}>
+        <OfflineBanner />
         <BrowserRouter>
             <ToastContainer />
             <Dialog />
@@ -203,14 +207,15 @@ export const useEbigContext = () => {
 }
 
 export const initializeProject = async (domain: string, props: { pid?: string, domain?: string }) => {
+    await loadCdnTranslations(ConfigData.ebigCdn)
     ConfigData.url = domain
     const tmp = document.createElement("div")
     tmp.innerHTML = `
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/root.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/layout.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/typography.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/toast-noti.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FDITECH/ebig-library@4c3fc78/src/skin/style.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/root.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/layout.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/typography.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/toast-noti.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/style.css">
     `
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()

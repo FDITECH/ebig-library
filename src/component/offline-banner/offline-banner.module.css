@@ -1,0 +1,34 @@
+.offlineBanner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.6rem;
+    background-color: var(--error-main-color, #E14337);
+    color: #fff;
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+.offlineBanner svg {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    fill: #fff;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}

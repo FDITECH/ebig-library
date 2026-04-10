@@ -466,7 +466,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
     useImperativeHandle(ref, () => ({
         getData, data, setData, selected, setSelected,
         showAddEditPopup, parseSearchDataToSearchRaw, fields
-    }), [columns, tbName, filterData, configMethods.watch(), data, selected, fields])
+    }), [columns, tbName, filterData, watchedSearchRaw, watchedSortby, watchedColumns, data, selected, fields])
 
     // Stable callbacks for TableRow — avoids re-creating functions on every render
     const handleSetItem = useCallback((itemId: string, ev: { [key: string]: any }) => {

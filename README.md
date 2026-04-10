@@ -13,7 +13,7 @@ A modern, lightweight React + TypeScript UI component library by **eBig** — 35
 - [Setup: EbigProvider](#setup-ebigprovider)
 - [Global Context](#global-context)
 - [Layout System](#layout-system)
-- [Skin / CSS](#skin--css)
+- [Style / CSS](#style--css)
 - [Components](#components)
   - [Button & SimpleButton](#button--simplebutton)
   - [Ebigicon](#ebigicon)
@@ -69,14 +69,14 @@ A modern, lightweight React + TypeScript UI component library by **eBig** — 35
 npm install ebig-library
 ```
 
-Import the CSS skin files (required for layout and typography utilities):
+Import the CSS style files (required for layout and typography utilities):
 
 ```html
 <!-- In your index.html or root CSS -->
-<link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/root.min.css" />
-<link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/layout.min.css" />
-<link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/typography.min.css" />
-<link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/toast-noti.min.css" />
+<link rel="stylesheet" href="https://cdn.ebig.co/library/style/root.min.css" />
+<link rel="stylesheet" href="https://cdn.ebig.co/library/style/layout.min.css" />
+<link rel="stylesheet" href="https://cdn.ebig.co/library/style/typography.min.css" />
+<link rel="stylesheet" href="https://cdn.ebig.co/library/style/toast-noti.min.css" />
 ```
 
 > These are loaded automatically if you use `EbigProvider` with `loadResources={true}` (default).
@@ -171,14 +171,14 @@ Use `row` and `col` CSS classes for flex layouts. Add `remain` to let a child fi
 
 ---
 
-## Skin / CSS
+## Style / CSS
 
 | Resource | URL |
 |---|---|
-| Design tokens (CSS variables) | `https://cdn.ebig.co/ebig-library/src/skin/root.min.css` |
-| Layout utilities (`row`, `col`, grids) | `https://cdn.ebig.co/ebig-library/src/skin/layout.min.css` |
-| Typography (`heading-1`…`heading-8`, `body-1`…`body-3`) | `https://cdn.ebig.co/ebig-library/src/skin/typography.min.css` |
-| Toast styles | `https://cdn.ebig.co/ebig-library/src/skin/toast-noti.min.css` |
+| Design tokens (CSS variables) | `https://cdn.ebig.co/library/style/root.min.css` |
+| Layout utilities (`row`, `col`, grids) | `https://cdn.ebig.co/library/style/layout.min.css` |
+| Typography (`heading-1`…`heading-8`, `body-1`…`body-3`) | `https://cdn.ebig.co/library/style/typography.min.css` |
+| Toast styles | `https://cdn.ebig.co/library/style/toast-noti.min.css` |
 
 ---
 
