@@ -1,4 +1,4 @@
-import { BaseDA, ConfigData } from "./config";
+import { BaseDA, ConfigData, getHeaders } from "./config";
 
 export class TableController {
     private module: "table" | "column" | "rel" | "menu" | "page" | "layout" | "designtoken" | "workflow" | "process" | "step";
@@ -52,45 +52,14 @@ export class TableController {
     }
 
     async group(options: { searchRaw?: string, reducers: string }) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'setting/group', {
             headers: {
+                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module,
             },
             body: options
-        })
-        return res
-    }
-
-    async add(data: Array<{ [p: string]: any }>) {
-        const res = await BaseDA.post(ConfigData.url + 'setting/action?action=add', {
-            headers: {
-                pid: ConfigData.pid,
-                module: this.module
-            },
-            body: { data }
-        })
-        return res
-    }
-
-    async edit(data: Array<{ [p: string]: any }>) {
-        const res = await BaseDA.post(ConfigData.url + 'setting/action?action=edit', {
-            headers: {
-                pid: ConfigData.pid,
-                module: this.module
-            },
-            body: { data }
-        })
-        return res
-    }
-
-    async delete(ids: Array<string>) {
-        const res = await BaseDA.post(ConfigData.url + 'setting/action?action=delete', {
-            headers: {
-                pid: ConfigData.pid,
-                module: this.module
-            },
-            body: { ids }
         })
         return res
     }

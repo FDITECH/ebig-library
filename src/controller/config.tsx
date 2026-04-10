@@ -15,7 +15,7 @@ export class ConfigData {
 export const refreshTokenHeaders = { 'Content-Type': 'application/json', pid: "wini" }
 export const specialCharsRegex = /[^a-zA-Z0-9]/g;
 
-const getHeaders = async () => {
+export const getHeaders = async () => {
     let timeRefresh: any = Util.getCookie("timeRefresh")
     if (typeof timeRefresh === "string") timeRefresh = parseInt(timeRefresh)
     const now = Date.now() / 1000
@@ -53,8 +53,7 @@ const maxFileSize = 200 * 1024 * 1024
 export class BaseDA {
     static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {
-            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await getHeaders()) : { 'Content-Type': 'application/json' }
-            if (!_headers) _headers = { 'Content-Type': 'application/json' }
+            let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.post(url, options?.body, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
@@ -108,8 +107,7 @@ export class BaseDA {
 
     static get = async (url: string, options?: { headers?: { [k: string]: any } }) => {
         try {
-            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await getHeaders()) : { 'Content-Type': 'application/json' }
-            if (!_headers) _headers = { 'Content-Type': 'application/json' }
+            let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.get(url, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
