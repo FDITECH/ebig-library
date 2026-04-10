@@ -137,6 +137,9 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     const [globalData, setGlobalData] = useState<{ [k: string]: any } | undefined>(undefined)
 
     useEffect(() => {
+        loadCdnTranslations(ConfigData.ebigCdn)
+    }, [])
+    useEffect(() => {
         if (loadResources) {
             refreshTokenHeaders.pid = props.pid
             initializeProject(props.url, { pid: props.pid }).then((res) => {
@@ -207,15 +210,14 @@ export const useEbigContext = () => {
 }
 
 export const initializeProject = async (domain: string, props: { pid?: string, domain?: string }) => {
-    await loadCdnTranslations(ConfigData.ebigCdn)
     ConfigData.url = domain
     const tmp = document.createElement("div")
     tmp.innerHTML = `
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.14/root.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.14/layout.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.14/typography.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.14/toast-noti.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.14/style.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/root.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/layout.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/typography.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/toast-noti.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/style.css">
     `
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()
