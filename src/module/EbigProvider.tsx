@@ -145,7 +145,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
         if (loadResources) {
             refreshTokenHeaders.pid = props.pid
             initializeProject(props.url, { pid: props.pid }).then((res) => {
-                if (res.LogoId) (document.head.querySelector(`:scope > link[rel="icon"]`) as HTMLLinkElement)!.href = res.LogoId.startsWith("http") ? res.LogoId : `${ConfigData.ebigCdn}/ebig/${res.LogoId}`;
+                if (res.LogoId) (document.head.querySelector(`:scope > link[rel="icon"]`) as HTMLLinkElement)!.href = res.LogoId.startsWith("http") ? res.LogoId : `${ConfigData.ebigCdn}/wini/${res.LogoId}`;
                 (document.head.querySelector(`:scope > title`) as HTMLTitleElement)!.innerHTML = res.Name;
                 if (res.FileDomain && !props.fileUrl) ConfigData.fileUrl = res.FileDomain
                 setProjectData(res)
