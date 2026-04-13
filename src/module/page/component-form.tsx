@@ -2,7 +2,7 @@ import styles from "./component-form.module.css";
 import { CSSProperties, KeyboardEventHandler, ReactNode, useMemo, useState } from "react";
 import { Controller, FieldValues, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Checkbox, ColorPicker, DateTimePicker, ImportFile, NumberPicker, OptionsItem, RadioButton, Switch, TextArea, TextField, UploadFiles, Ebigicon, SelectDropdown } from "../../index"
+import { Checkbox, ColorPicker, DateTimePicker, ImportFile, NumberPicker, RadioButton, Switch, TextArea, TextField, UploadFiles, Ebigicon, SelectDropdown } from "../../index"
 
 interface FTextFieldProps {
     id?: string;
