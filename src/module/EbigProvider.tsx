@@ -167,7 +167,6 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
         ConfigData.fileUrl = props.fileUrl
         if (loadResources) {
             if (props.pid.length === 32) {
-                // Load base translations from CDN (en, vi)
                 const _desginTokenController = new TableController("designtoken")
                 _desginTokenController.getAll().then(res => {
                     if (res.code === 200 && res.data.length) appendDesignTokens(res.data)
@@ -175,7 +174,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
                 const languageController = new DataController("Language")
                 languageController.getAll().then(async (res) => {
                     if (res.code === 200 && res.data.length) {
-                        const languages = await Promise.all(res.data.map((e: any) => BaseDA.get(ConfigData.imgUrlId + e.Json)))
+                        const languages = await Promise.all(res.data.map((e: any) => BaseDA.get(ConfigData.imgUrlId + e.Json, { headers: { "Cache-Control": "no-cache" } })))
                         languages.forEach((lngData, i) => {
                             if (lngData) i18n.addResourceBundle(res.data[i].Lng, "translation", lngData, true, true)
                         })
