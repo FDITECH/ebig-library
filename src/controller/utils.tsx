@@ -50,7 +50,7 @@ export class Util {
         };
 
         const config = currencySymbols[currency];
-        const decimals = options?.decimals ?? 2;
+        const decimals = options?.decimals ?? 0;
         const formatted = num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         const space = config.space ? ' ' : '';
 
