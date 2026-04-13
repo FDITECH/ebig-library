@@ -30,7 +30,7 @@ interface TextFieldProps {
     autoFocus?: boolean,
     autoComplete?: React.HTMLInputAutoCompleteAttribute,
     register?: UseFormRegister<any>,
-    simpleStyle?: boolean
+    simpleStyle?: boolean,
 }
 
 export interface TextFieldRef {

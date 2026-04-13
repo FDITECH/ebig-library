@@ -78,7 +78,10 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
         if (id) {
             dataController.getById(id).then(res => {
                 if (res.code === 200) setItem(res.data)
-                else ToastMessage.errors(res.message)
+                else {
+                    ToastMessage.errors("Failed to get data")
+                    console.error("Failed to get data: " + res.message)
+                }
             })
         }
         getSetting()
@@ -92,6 +95,24 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
         if (!Object.keys(tmp).length) return undefined
         return tmp
     }, [item])
+
+    const [status, setStatus] = useState(0) // 0: loading, 1: formById, 2: formView
+
+    useEffect(() => {
+        setStatus(0)
+        if (column.length && (!id || initFormItem)) {
+            const timeout = setTimeout(() => {
+                if ((id && selectedFormId.formEdit) || (!id && selectedFormId.formAdd)) {
+                    setStatus(1)
+                } else {
+                    setStatus(2)
+                }
+            }, 100)
+            return () => {
+                clearTimeout(timeout)
+            }
+        }
+    }, [id, selectedFormId, column.length, initFormItem])
 
     return <div ref={diveRef} className="col right-drawer" style={{ alignItems: "center", transition: "max-width 0.6s", width: "100dvw", maxWidth: isExpand ? "100dvw" : 720 }}>
         <div className='popup-header row' style={{ gap: 8, width: "100%" }}>
@@ -138,49 +159,48 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
                 }}
             />
         </div>
-        {!!column.length && (!id || initFormItem) &&
-            (
-                ((id && selectedFormId.formEdit) || (!id && selectedFormId.formAdd)) ?
-                    <FormById
-                        key={id ? selectedFormId.formEdit : selectedFormId.formAdd}
-                        id={id ? selectedFormId.formEdit! : selectedFormId.formAdd!}
-                        ref={formRef}
-                        data={initFormItem}
-                        style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden auto', scrollbarWidth: "thin", animation: "loading-change-view 0.5s ease-in-out" }}
-                        onGetFormError={() => {
-                            const tmp = { ...selectedFormId }
-                            if (id) tmp.formEdit = null
-                            else tmp.formAdd = null
-                            setSelectedFormId(tmp)
-                            onSelectCustomForm?.(tmp)
-                        }}
-                        onSubmit={onSuccess}
-                    /> :
-                    <FormView
-                        cols={column.filter(e => !e.Query?.length)}
-                        rels={relative}
-                        item={initFormItem}
-                        parentId={(props as any).ParentId}
-                        tbName={tbName}
-                        customTablePKOptions={customTablePKOptions}
-                        expandForm={expandForm}
-                        onCancel={() => {
-                            showDialog({
-                                alignment: DialogAlignment.center,
-                                status: ComponentStatus.WARNING,
-                                submitTitle: t("submit"),
-                                title: `${t("confirm")} ${t("cancel").toLowerCase()} ` + (id ? t('edit') : t('add')).toLowerCase(),
-                                onSubmit: () => { closePopup(ref) }
-                            })
-                        }}
-                        onSuccess={() => {
-                            closePopup(ref)
-                            ToastMessage.success(`${id ? t('edit') : t('add')} ${title ?? tbName} ${t("successfully").toLowerCase()}!`)
-                            onSuccess?.()
-                        }}
-                        handleSubmit={handleSubmit}
-                        customFields={customFields}
-                    />
+        {!!status &&
+            (status === 1 ?
+                <FormById
+                    key={id ? selectedFormId.formEdit : selectedFormId.formAdd}
+                    id={id ? selectedFormId.formEdit! : selectedFormId.formAdd!}
+                    ref={formRef}
+                    data={initFormItem}
+                    style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden auto', scrollbarWidth: "thin", animation: "loading-change-view 0.5s ease-in-out" }}
+                    onGetFormError={() => {
+                        const tmp = { ...selectedFormId }
+                        if (id) tmp.formEdit = null
+                        else tmp.formAdd = null
+                        setSelectedFormId(tmp)
+                        onSelectCustomForm?.(tmp)
+                    }}
+                    onSubmit={onSuccess}
+                /> :
+                <FormView
+                    cols={column.filter(e => !e.Query?.length)}
+                    rels={relative}
+                    item={initFormItem}
+                    parentId={(props as any).ParentId}
+                    tbName={tbName}
+                    customTablePKOptions={customTablePKOptions}
+                    expandForm={expandForm}
+                    onCancel={() => {
+                        showDialog({
+                            alignment: DialogAlignment.center,
+                            status: ComponentStatus.WARNING,
+                            submitTitle: t("submit"),
+                            title: `${t("confirm")} ${t("cancel").toLowerCase()} ` + (id ? t('edit') : t('add')).toLowerCase(),
+                            onSubmit: () => { closePopup(ref) }
+                        })
+                    }}
+                    onSuccess={() => {
+                        closePopup(ref)
+                        ToastMessage.success(`${id ? t('edit') : t('add')} ${title ?? tbName} ${t("successfully").toLowerCase()}!`)
+                        onSuccess?.()
+                    }}
+                    handleSubmit={handleSubmit}
+                    customFields={customFields}
+                />
             )}
     </div>
 })
