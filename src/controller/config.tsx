@@ -221,6 +221,22 @@ export class BaseDA {
         loader.remove()
         return response
     }
+
+    static duplicateFiles = async (ids: Array<string>, headers?: { [k: string]: any }) => {
+        const loader = document.createElement("div")
+        loader.className = "loader"
+        document.body.appendChild(loader)
+
+        let _headers: { [k: string]: any } = await getHeaders()
+        const headersObj: any = { ..._headers, pid: ConfigData.pid, ...headers }
+
+        const response = await BaseDA.post(ConfigData.url + 'file/duplicateFiles', {
+            headers: headersObj,
+            body: { ids },
+        })
+        loader.remove()
+        return response
+    }
 }
 
 export class CkEditorUploadAdapter {
