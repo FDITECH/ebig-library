@@ -1,7 +1,7 @@
 import { CSSProperties, ReactNode } from "react";
-import * as XLSX from 'xlsx';
 import { Button } from "../../component/button/button";
 
+declare const XLSX: any;
 // enum ExcelCol {
 //     A = "A",
 //     B = "B",
@@ -81,7 +81,7 @@ export default function ExportXlsx(props: Props) {
     return <Button label={props.label} onClick={onExport} style={props.style} className={props.className} disabled={props.disabled} prefix={props.prefix} suffix={props.suffix} />
 }
 
-function styleRow(worksheet: XLSX.WorkSheet, rowIndex: number, style: any) {
+function styleRow(worksheet: any, rowIndex: number, style: any) {
     const range = XLSX.utils.decode_range(worksheet['!ref'] ?? "A1"); // Get the range of the sheet
     for (let col = range.s.c; col <= range.e.c; col++) {
         const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: col });
