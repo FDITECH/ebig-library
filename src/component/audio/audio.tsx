@@ -37,7 +37,8 @@ export const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ contr
     if (src || sources) {
         return <audio
             ref={audioRef as any}
-            controls controlsList={controlsList}
+            controls={!!controlsList.trim().length}
+            controlsList={controlsList}
             className={`${styles["audio-player"]} ${className}`}
             onPlay={onPlay}
             onEnded={onEnded}

@@ -39,7 +39,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ contr
     if (src || sources) {
         return <video
             ref={videoRef as any}
-            controls controlsList={controlsList}
+            controls={!!controlsList.trim().length}
+            controlsList={controlsList}
             className={`${styles["video-player"]} ${className}`}
             onPlay={onPlay}
             onEnded={onEnded}
