@@ -175,7 +175,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
                 const languageController = new DataController("Language")
                 languageController.getAll().then(async (res) => {
                     if (res.code === 200 && res.data.length) {
-                        const languages = await Promise.all(res.data.map((e: any) => BaseDA.get(getValidLink(e.JSON), { headers: { "Cache-Control": "no-cache" } })))
+                        const languages = await Promise.all(res.data.filter((e: any) => !!e.Json?.length).map((e: any) => BaseDA.get(getValidLink(e.Json), { headers: { "Cache-Control": "no-cache" } })))
                         languages.forEach((lngData, i) => {
                             if (lngData) i18n.addResourceBundle(res.data[i].Lng, "translation", lngData, true, true)
                         })
