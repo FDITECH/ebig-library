@@ -74,6 +74,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(({ id, simpleS
             type={props.type ?? 'text'}
             onKeyDown={onKeyDown ?? (onComplete ? (ev) => {
                 if (onComplete) {
+                    if (ev.nativeEvent.isComposing) return;
                     switch (ev.key.toLowerCase()) {
                         case "enter":
                             onComplete(ev)

@@ -12,6 +12,7 @@ import { DataController } from "../controller/data"
 import { encodeClassName, LayoutElement } from "./page/config"
 import { i18n } from "i18next"
 import { OfflineBanner } from "../component/offline-banner/offline-banner"
+import { getValidLink } from "./page/pageById"
 
 interface Props {
     /**
@@ -174,7 +175,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
                 const languageController = new DataController("Language")
                 languageController.getAll().then(async (res) => {
                     if (res.code === 200 && res.data.length) {
-                        const languages = await Promise.all(res.data.map((e: any) => BaseDA.get(ConfigData.imgUrlId + e.Json, { headers: { "Cache-Control": "no-cache" } })))
+                        const languages = await Promise.all(res.data.map((e: any) => BaseDA.get(getValidLink(e.JSON), { headers: { "Cache-Control": "no-cache" } })))
                         languages.forEach((lngData, i) => {
                             if (lngData) i18n.addResourceBundle(res.data[i].Lng, "translation", lngData, true, true)
                         })
