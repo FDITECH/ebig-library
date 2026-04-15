@@ -111,7 +111,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                                 break;
                             case FEDataType.HTML:
                                 if (ConfigData.regexGuid.test(dataItem[prop])) {
-                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${dataItem[prop]}`).then((result) => {
+                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${dataItem[prop]}`, { headers: { "Cache-Control": "no-cache" } }).then((result) => {
                                         if (typeof result === 'string') {
                                             htmlContent.current[prop] = dataItem[prop]
                                             methods.setValue(prop, result)
@@ -190,7 +190,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                         break;
                     case FEDataType.HTML:
                         if (ConfigData.regexGuid.test(_col.Form.DefaultValue)) {
-                            BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${_col.Form.DefaultValue}`).then((result) => {
+                            BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${_col.Form.DefaultValue}`, { headers: { "Cache-Control": "no-cache" } }).then((result) => {
                                 if (typeof result === 'string') {
                                     htmlContent.current[_col.Name] = _col.Form.DefaultValue
                                     methods.setValue(_col.Name, result)
