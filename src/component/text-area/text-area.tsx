@@ -10,6 +10,11 @@ interface TextAreaProps {
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>,
     onBlur?: React.FocusEventHandler<HTMLTextAreaElement>,
     onFocus?: React.FocusEventHandler<HTMLTextAreaElement>,
+    onClick?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseEnter?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseLeave?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseDown?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseUp?: React.MouseEventHandler<HTMLLabelElement>,
     placeholder?: string,
     disabled?: boolean,
     readOnly?: boolean,
@@ -30,7 +35,7 @@ export interface TextAreaRef {
     inputElement?: HTMLTextAreaElement;
 }
 
-export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(({ id, simpleStyle, prefix, suffix, className, helperText, helperTextColor = "#e14337", style = {}, register, ...props }, ref) => {
+export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(({ id, simpleStyle, prefix, suffix, className, helperText, helperTextColor = "#e14337", style = {}, register, onClick, onMouseEnter, onMouseLeave, onMouseDown, onMouseUp, ...props }, ref) => {
     const containerRef = useRef<HTMLLabelElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -44,6 +49,11 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(({ id, simpleStyl
         className={`${simpleStyle ? styles['simple-text-area'] : styles['text-area-container']} row ${className ?? (simpleStyle ? "" : 'body-3')} ${helperText?.length ? styles['helper-text'] : ""}`}
         helper-text={helperText}
         style={{ '--helper-text-color': helperTextColor, ...style } as CSSProperties}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
     >
         {prefix}
         {register ? <textarea {...props} {...register} /> : <textarea {...props} />}
