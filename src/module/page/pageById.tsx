@@ -674,6 +674,26 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
 
     const [handleFormCardViewData, setHandleFormCardViewData] = useState<any>(null)
 
+
+    const getDataLisener = useMemo(() => {
+        if (!customProps.data) return null;
+        const tmp: any = {}
+        if (customProps.data.includes(location)) {
+            tmp.pathname = location.pathname
+            tmp.search = location.search
+            tmp.params = JSON.stringify(params)
+            tmp.state = JSON.stringify(location.state)
+        }
+        if (customProps.data.includes("ebigContextData")) {
+            tmp.language = ebigContextData.i18n.language
+            tmp.globalData = JSON.stringify(ebigContextData.globalData)
+            tmp.userData = JSON.stringify(ebigContextData.userData)
+        }
+        if (customProps.includes("methods")) {
+            tmp.watch = JSON.stringify(defferWatch)
+        }
+        return tmp
+    }, [customProps.data, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, handleFormCardViewData, defferWatch])
     useEffect(() => {
         if (customProps.data) {
             switch (props.item.Type) {
@@ -711,7 +731,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customProps.data])
+    }, [customProps.data, getDataLisener.pathname, getDataLisener.search, getDataLisener.params, getDataLisener.state, getDataLisener.language, getDataLisener.globalData, getDataLisener.userData, getDataLisener.watch])
 
     switch (props.item.Type) {
         case ComponentType.navLink:
