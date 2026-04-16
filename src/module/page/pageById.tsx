@@ -12,7 +12,7 @@ import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
 import { BaseDA, CkEditorUploadAdapter, ConfigData, imgFileTypes } from "../../controller/config"
 import { FCheckbox, FColorPicker, FDateTimePicker, FGroupCheckbox, FGroupRadioButton, FInputPassword, FNumberPicker, FRadioButton, FSelectDropdownForm, FSwitch, FTextArea, FTextField, FUploadMultipleFileType } from "./component-form"
-import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog } from "../../index"
+import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup } from "../../index"
 
 interface Props {
     methods?: UseFormReturn
@@ -136,6 +136,7 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
     }, [])
     /** declare parameters */
     const ebigContextData = useEbigContext()
+    const popupRef = useRef<any>(null)
     const location = useLocation() as any
     const params = useParams()
     const query = new URLSearchParams(location.search)
@@ -205,14 +206,20 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
     const watchForCustomProps = useDeferredValue(stateCustomProps)
     /** Check unmounted */
     if (watchForCustomProps?.unmounted || (props.item.Setting?.unmounted && typeof watchForCustomProps?.unmounted === "boolean")) return null;
-    else return <ElementUI
-        {...props}
-        watchForCustomProps={watchForCustomProps}
-        findId={findId}
-        children={children}
-        defferWatch={defferWatch}
-        replaceThisVariables={replaceThisVariables}
-    />
+    else return <>
+        <Popup ref={popupRef} />
+        <ElementUI
+            {...props}
+            watchForCustomProps={watchForCustomProps}
+            findId={findId}
+            children={children}
+            defferWatch={defferWatch}
+            replaceThisVariables={replaceThisVariables}
+            showHTMLPopup={({ className, clickOverlayClosePopup, hideOverlay, content }: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content?: ReactNode | HTMLElement }) => {
+                showPopup({ ref: popupRef, className, clickOverlayClosePopup, hideOverlay, content })
+            }}
+        />
+    </>
 }
 
 interface ElementUIProps extends RenderLayerElementProps {
@@ -221,10 +228,11 @@ interface ElementUIProps extends RenderLayerElementProps {
     defferWatch: string,
     children: { [p: string]: any }[],
     replaceThisVariables: (content: string) => any,
+    showHTMLPopup?: (params: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content?: ReactNode | HTMLElement }) => void,
     [p: string]: any
 }
 
-const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables, defferWatch, ...props }: ElementUIProps) => {
+const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables, defferWatch, showHTMLPopup, ...props }: ElementUIProps) => {
     const ebigContextData = useEbigContext()
     const location = useLocation()
     const navigate = useNavigate()
@@ -273,7 +281,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     onSubmit: async () => {
                                         if (actItem.Caculate) {
                                             await (new AsyncFunction(
-                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
+                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
                                                 `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                             ))(
                                                 props.indexItem ?? props.methods?.getValues(),
@@ -288,6 +296,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                                 BaseDA.uploadFiles,
                                                 BaseDA.getFilesInfor,
                                                 showDialog,
+                                                showHTMLPopup,
                                                 ComponentStatus,
                                                 event,
                                                 props.methods,
@@ -302,7 +311,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             case ActionType.custom:
                                 if (actItem.Caculate) {
                                     const asyncFuncResponse = await (new AsyncFunction(
-                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                                         `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                     ))(
                                         props.indexItem ?? props.methods?.getValues(),
@@ -317,6 +326,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                         BaseDA.uploadFiles,
                                         BaseDA.getFilesInfor,
                                         showDialog,
+                                        showHTMLPopup,
                                         ComponentStatus,
                                         event,
                                         props.methods,
@@ -456,7 +466,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const dropdownOnGetOptions = async (event: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
-                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                 `${customProps.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
@@ -470,6 +480,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 BaseDA.uploadFiles,
                 BaseDA.getFilesInfor,
                 showDialog,
+                showHTMLPopup,
                 ComponentStatus,
                 event,
                 props.methods,
@@ -778,7 +789,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.card:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
@@ -792,6 +803,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             BaseDA.uploadFiles,
                             BaseDA.getFilesInfor,
                             showDialog,
+                            showHTMLPopup,
                             ComponentStatus,
                             props.methods,
                             () => params,

@@ -1,11 +1,23 @@
 import React, { CSSProperties, ReactNode, useEffect, useRef } from 'react'
 import './popup.css'
 
+/** Renders a raw HTMLElement (from document.createElement) inside React */
+function HtmlElementWrapper({ element }: { element: HTMLElement }) {
+    const ref = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.innerHTML = ''
+            ref.current.appendChild(element.cloneNode(true))
+        }
+    }, [element])
+    return <div ref={ref} style={{ display: 'contents' }} />
+}
+
 interface PopupState {
     readonly open?: boolean,
     heading?: ReactNode,
     body?: ReactNode,
-    content?: ReactNode,
+    content?: ReactNode | HTMLElement,
     footer?: ReactNode,
     clickOverlayClosePopup?: boolean,
     style?: CSSProperties,
@@ -16,7 +28,7 @@ interface PopupState {
 export const showPopup = (props: {
     ref: React.RefObject<Popup | undefined>,
     heading?: ReactNode,
-    content?: ReactNode,
+    content?: ReactNode | HTMLElement,
     body?: ReactNode,
     footer?: ReactNode,
     clickOverlayClosePopup?: boolean,
@@ -72,7 +84,7 @@ export class Popup extends React.Component<Object, PopupState> {
     }
 }
 
-export function PopupOverlay({ children, onClose, className, style, onOpen }: { children?: ReactNode, className?: string, onClose?: (ev: MouseEvent) => void, style?: CSSProperties, onOpen?: (ev: HTMLDivElement) => void }) {
+export function PopupOverlay({ children, onClose, className, style, onOpen }: { children?: ReactNode | HTMLElement, className?: string, onClose?: (ev: MouseEvent) => void, style?: CSSProperties, onOpen?: (ev: HTMLDivElement) => void }) {
     const overlayRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -148,5 +160,5 @@ export function PopupOverlay({ children, onClose, className, style, onOpen }: { 
         ref={overlayRef}
         className={`popup-overlay ${className ?? ""}`}
         style={style}
-    >{children}</div>
+    >{children instanceof HTMLElement ? <HtmlElementWrapper element={children} /> : children}</div>
 }
