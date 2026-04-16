@@ -38,7 +38,6 @@ export enum ComponentType {
     emoji = "Emoji",
     ebigEditor = "EbigEditor",
     pagination = "Pagination",
-    none = "none"
 }
 
 export enum FEDataType {
@@ -95,7 +94,9 @@ export enum TriggerType {
     submit = "submit",
     scroll = "scroll",
     loaded = "loaded",
+    dimiss = "dimiss",
     locationChange = "locationChange",
+    getOptions = "getOptions",
 }
 
 export enum ActionType {

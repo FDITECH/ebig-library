@@ -229,6 +229,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const location = useLocation()
     const navigate = useNavigate()
     const params = useParams()
+    // first processing item's setting 
     const memeCustomProps = useMemo(() => {
         let _props = { ...props.item.Setting }
         _props.style ??= {}
@@ -345,6 +346,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.init:
                             _props.onInit = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.dimiss:
+                            _props.onDimiss = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
                         case TriggerType.click:
                             _props.onClick = (ev: any) => handleEvent(triggerActions, ev)
                             break;
@@ -390,6 +394,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.locationChange:
                             _props.onLocationChange = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.getOptions:
+                            _props.onGetOptions = triggerActions[0].Caculate
+                            break;
                         default:
                             break;
                     }
@@ -417,7 +424,80 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return watchForCustomProps ? { ..._props, ...watchForCustomProps } : _props
     }, [props.item, props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData.globalData, ebigContextData.userData, ebigContextData.i18n.language])
     const customProps = useDeferredValue(memeCustomProps)
+
+    // handle listener
+    const handleListener = (funcString: string) => {
+        const tmp: any = {}
+        if (funcString.includes("entityData")) tmp.indexItem = JSON.stringify(props.indexItem ?? props.methods?.getValues())
+        if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
+            tmp.pathname = location.pathname
+            tmp.search = location.search
+            tmp.params = JSON.stringify(params)
+            tmp.state = JSON.stringify(location.state)
+        }
+        if (funcString.includes("ebigContextData")) {
+            tmp.language = ebigContextData.i18n.language
+            tmp.globalData = JSON.stringify(ebigContextData.globalData)
+            tmp.userData = JSON.stringify(ebigContextData.userData)
+        }
+        if (funcString.includes("methods")) {
+            tmp.watch = JSON.stringify(defferWatch)
+        }
+        return tmp
+    }
+
+    // handle get options of select dropdown component
+    const [handleOptions, setHandleOptions] = useState<any>(null)
+    const getOptionsLisener = useMemo(() => {
+        if (!customProps.onGetOptions) return null;
+        return handleListener(customProps.onGetOptions)
+    }, [customProps.onGetOptions, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+
+    const dropdownOnGetOptions = async (event: any) => {
+        const getDataFunc = async () => {
+            let asyncFuncResponse = await (new AsyncFunction(
+                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                `${customProps.onGetOptions}` // This string can now safely contain the 'await' keyword
+            ))(
+                props.indexItem ?? props.methods?.getValues(),
+                props.index,
+                props.tbName,
+                props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
+                Util,
+                DataController,
+                randomGID,
+                ToastMessage,
+                BaseDA.uploadFiles,
+                BaseDA.getFilesInfor,
+                showDialog,
+                ComponentStatus,
+                event,
+                props.methods,
+                () => params,
+                () => navigate,
+                location,
+                () => ebigContextData
+            )
+            return asyncFuncResponse
+        }
+        const res = await getDataFunc()
+        return res
+    }
+
+    useEffect(() => {
+        if (customProps.onGetOptions) {
+            switch (props.item.Type) {
+                case ComponentType.selectDropdown:
+                    dropdownOnGetOptions({ length: 0, search: "" }).then(setHandleOptions)
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, [customProps.onGetOptions, getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
+
     const _options = useMemo(() => {
+        if (handleOptions) return Array.isArray(handleOptions.data) ? handleOptions.data : []
         if (!props.options || !props.item.NameField?.length) return undefined
         const keys = props.item.NameField.split(".")
         const keyname = keys.shift()
@@ -431,7 +511,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             }
         }
         return undefined
-    }, [props.item.NameField, props.options, props.cols])
+    }, [props.item.NameField, props.options, props.cols, handleOptions])
+
+    // handle data value of input data components: textfield, selectdropdown, radio, checkbox, switch, textarea,...
     const dataValue = useMemo(() => {
         if (props.type === "page" || !props.item.NameField?.length || !props.indexItem) return undefined
         const keys = props.item.NameField.split(".")
@@ -539,6 +621,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         let tmpProps = { ...customProps }
         delete tmpProps.onLocationChange
         delete tmpProps.onInit
+        delete tmpProps.onDimiss
         if (regexGetVariables.test(tmpProps.id)) tmpProps.id = replaceThisVariables(tmpProps.id)
         if (regexGetVariables.test(tmpProps.className)) tmpProps.className = replaceThisVariables(tmpProps.className)
         if (props.item.NameField && tmpProps.validate?.some((v: any) => v.type === ValidateType.required)) tmpProps.required = true
@@ -614,7 +697,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case "Select1":
                     case "SelectMultiple":
                     case ComponentType.selectDropdown:
-                        tmpProps.getOptions = props.rels?.find(e => e.Column === props.item.NameField)?.getOptions
+                        if (customProps.onGetOptions) {
+                            tmpProps.getOptions = dropdownOnGetOptions
+                            delete tmpProps.onGetOptions
+                        } else tmpProps.getOptions = props.rels?.find(e => e.Column === props.item.NameField)?.getOptions
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         if ((props.item.Type === "SelectMultiple" || tmpProps.multiple) && tmpProps.value && !Array.isArray(tmpProps.value)) tmpProps.value = []
                         break;
@@ -669,31 +755,21 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     }, [!!customProps.onInit])
 
     useEffect(() => {
+        if (customProps.onDimiss) {
+            return () => { customProps.onDimiss(pageAllRefs[findId]?.current ?? htmlElementRef.current) }
+        }
+    }, [!!customProps.onDimiss])
+
+    useEffect(() => {
         if (customProps.onLocationChange) customProps.onLocationChange(pageAllRefs[findId]?.current ?? htmlElementRef.current)
     }, [!!customProps.onLocationChange, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
 
-    const [handleFormCardViewData, setHandleFormCardViewData] = useState<any>(null)
-
-
     const getDataLisener = useMemo(() => {
         if (!customProps.data) return null;
-        const tmp: any = {}
-        if (customProps.data.includes(location)) {
-            tmp.pathname = location.pathname
-            tmp.search = location.search
-            tmp.params = JSON.stringify(params)
-            tmp.state = JSON.stringify(location.state)
-        }
-        if (customProps.data.includes("ebigContextData")) {
-            tmp.language = ebigContextData.i18n.language
-            tmp.globalData = JSON.stringify(ebigContextData.globalData)
-            tmp.userData = JSON.stringify(ebigContextData.userData)
-        }
-        if (customProps.includes("methods")) {
-            tmp.watch = JSON.stringify(defferWatch)
-        }
-        return tmp
-    }, [customProps.data, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, handleFormCardViewData, defferWatch])
+        return handleListener(customProps.data)
+    }, [customProps.data, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+
+    const [handleFormCardViewData, setHandleFormCardViewData] = useState<any>(null)
     useEffect(() => {
         if (customProps.data) {
             switch (props.item.Type) {
@@ -731,7 +807,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customProps.data, getDataLisener?.pathname, getDataLisener?.search, getDataLisener?.params, getDataLisener?.state, getDataLisener?.language, getDataLisener?.globalData, getDataLisener?.userData, getDataLisener?.watch])
+    }, [customProps.data, getDataLisener?.pathname, getDataLisener?.search, getDataLisener?.params, getDataLisener?.state, getDataLisener?.language, getDataLisener?.globalData, getDataLisener?.userData, getDataLisener?.watch, getDataLisener?.indexItem])
 
     switch (props.item.Type) {
         case ComponentType.navLink:
