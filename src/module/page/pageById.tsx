@@ -215,7 +215,7 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
             children={children}
             defferWatch={defferWatch}
             replaceThisVariables={replaceThisVariables}
-            showHTMLPopup={({ className, clickOverlayClosePopup, hideOverlay, content }: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content?: ReactNode | HTMLElement }) => {
+            showHTMLPopup={({ className, clickOverlayClosePopup, hideOverlay, content }: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content: ReactNode | HTMLElement }) => {
                 showPopup({ ref: popupRef, className, clickOverlayClosePopup, hideOverlay, content })
             }}
         />
@@ -228,7 +228,7 @@ interface ElementUIProps extends RenderLayerElementProps {
     defferWatch: string,
     children: { [p: string]: any }[],
     replaceThisVariables: (content: string) => any,
-    showHTMLPopup?: (params: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content?: ReactNode | HTMLElement }) => void,
+    showHTMLPopup?: (params: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content: ReactNode | HTMLElement }) => void,
     [p: string]: any
 }
 
