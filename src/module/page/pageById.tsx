@@ -731,7 +731,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customProps.data, getDataLisener.pathname, getDataLisener.search, getDataLisener.params, getDataLisener.state, getDataLisener.language, getDataLisener.globalData, getDataLisener.userData, getDataLisener.watch])
+    }, [customProps.data, getDataLisener?.pathname, getDataLisener?.search, getDataLisener?.params, getDataLisener?.state, getDataLisener?.language, getDataLisener?.globalData, getDataLisener?.userData, getDataLisener?.watch])
 
     switch (props.item.Type) {
         case ComponentType.navLink:
