@@ -114,6 +114,12 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
         }
     }, [id, selectedFormId, column.length, initFormItem])
 
+    useEffect(() => {
+        if (id) {
+            return () => { onSuccess?.() }
+        }
+    }, [id])
+
     return <div ref={diveRef} className="col right-drawer" style={{ alignItems: "center", transition: "max-width 0.6s", width: "100dvw", maxWidth: isExpand ? "100dvw" : 720 }}>
         <div className='popup-header row' style={{ gap: 8, width: "100%" }}>
             <span className="heading-7" style={{ flex: 1 }}>{title ?? `${id ? "Edit" : "Add"} ${tbName}`}</span>
