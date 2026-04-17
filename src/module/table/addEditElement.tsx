@@ -116,32 +116,7 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
 
     return <div ref={diveRef} className="col right-drawer" style={{ alignItems: "center", transition: "max-width 0.6s", width: "100dvw", maxWidth: isExpand ? "100dvw" : 720 }}>
         <div className='popup-header row' style={{ gap: 8, width: "100%" }}>
-            <span
-                className="heading-7" style={{ flex: 1 }}
-                contentEditable={!!onChangeTitle}
-                suppressContentEditableWarning={!!onChangeTitle}
-                onKeyDown={onChangeTitle ?
-                    ((ev: any) => {
-                        switch (ev.key.toLowerCase()) {
-                            case "enter":
-                                ev.preventDefault()
-                                ev.target.blur()
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }) : undefined}
-                onBlur={onChangeTitle ?
-                    ((ev) => {
-                        const newTitle = ev.target.innerText.trim()
-                        if (newTitle.length) onChangeTitle!(newTitle)
-                        else {
-                            ev.target.innerText = `${id ? "Edit" : "Add"} ${tbName}`
-                            onChangeTitle!(null)
-                        }
-                    }) : undefined}
-            >{title ?? `${id ? "Edit" : "Add"} ${tbName}`}</span>
+            <span className="heading-7" style={{ flex: 1 }}>{title ?? `${id ? "Edit" : "Add"} ${tbName}`}</span>
             <Ebigicon
                 src={isExpand ? "outline/arrows/box-arrow-right" : "fill/multimedia/fullscreen"}
                 size={14} className="icon-button size24"
