@@ -450,8 +450,47 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             tmp.globalData = JSON.stringify(ebigContextData.globalData)
             tmp.userData = JSON.stringify(ebigContextData.userData)
         }
-        if (funcString.includes("methods")) {
-            tmp.watch = JSON.stringify(defferWatch)
+        if (funcString.includes("methods.watch")) {
+            const _tmpWatch = JSON.parse(defferWatch ?? "{}")
+            // regex string to find what variables methods watch by pattern: methods.watch(variablename)
+            const watchedVars: string[] = []
+            // Match: methods.watch("varName") or methods.watch('varName')
+            const singleWatchRegex = /methods\.watch\(\s*["']([^"']+)["']\s*\)/g
+            let match: RegExpExecArray | null
+            while ((match = singleWatchRegex.exec(funcString)) !== null) {
+                watchedVars.push(match[1])
+            }
+            // Match: const { var1, var2, ...rest } = methods.watch()
+            const destructureRegex = /(?:const|let|var)\s*\{([^}]+)\}\s*=\s*methods\.watch\(\s*\)/g
+            while ((match = destructureRegex.exec(funcString)) !== null) {
+                const vars = match[1].split(",").map(v => v.trim().replace(/^\.{3}/, "")).filter(Boolean)
+                watchedVars.push(...vars)
+            }
+            // Match: const|let|var varName = methods.watch() then find varName.prop1, varName.prop2, varName["prop3"], varName['prop4']
+            const assignRegex = /(?:const|let|var)\s+(\w+)\s*=\s*methods\.watch\(\s*\)/g
+            while ((match = assignRegex.exec(funcString)) !== null) {
+                const varName = match[1]
+                // Match varName.property (dot notation)
+                const dotAccessRegex = new RegExp(`${varName}\\.(\\w+)`, "g")
+                let propMatch: RegExpExecArray | null
+                while ((propMatch = dotAccessRegex.exec(funcString)) !== null) {
+                    if (!watchedVars.includes(propMatch[1])) watchedVars.push(propMatch[1])
+                }
+                // Match varName["property"] or varName['property'] (bracket notation)
+                const bracketAccessRegex = new RegExp(`${varName}\\[\\s*["']([^"']+)["']\\s*\\]`, "g")
+                while ((propMatch = bracketAccessRegex.exec(funcString)) !== null) {
+                    if (!watchedVars.includes(propMatch[1])) watchedVars.push(propMatch[1])
+                }
+            }
+            if (watchedVars.length) {
+                const filtered: { [k: string]: any } = {}
+                for (const key of watchedVars) {
+                    if (key in _tmpWatch) filtered[key] = _tmpWatch[key]
+                }
+                tmp.watch = JSON.stringify(filtered)
+            } else {
+                tmp.watch = JSON.stringify(_tmpWatch)
+            }
         }
         return tmp
     }
