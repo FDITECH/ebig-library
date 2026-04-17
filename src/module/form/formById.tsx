@@ -41,7 +41,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const [formItem, setFormItem] = useState<{ [p: string]: any }>()
     const layers = useMemo(() => (formItem?.Props ?? []).sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [formItem])
     const keyNames = useMemo<string[]>(() => layers.filter((e: any) => e.NameField?.length).map((e: any) => e.NameField), [layers.length])
-    const inputComponents = [ComponentType.img, ComponentType.textField, ComponentType.textArea, ComponentType.selectDropdown, ComponentType.checkbox, ComponentType.switch, ComponentType.radio, ComponentType.colorPicker, ComponentType.ckEditor, ComponentType.datePicker, ComponentType.upload, ComponentType.numberPicker]
+    const inputComponents = [ComponentType.img, ComponentType.textField, ComponentType.textArea, "Select1", "SelectMultiple", ComponentType.selectDropdown, ComponentType.checkbox, ComponentType.switch, ComponentType.radio, ComponentType.colorPicker, ComponentType.ckEditor, ComponentType.datePicker, ComponentType.upload, ComponentType.numberPicker]
     const inputLayers = useMemo<{ [p: string]: any }[]>(() => layers.filter((e: any) => e.NameField?.length && inputComponents.includes(e.Type)), [layers])
     const _colController = new TableController("column")
     const _relController = new TableController("rel")
