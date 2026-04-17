@@ -286,13 +286,20 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
         if (res.code === 200) {
             if (exportData) return res
             const { data: resData, totalCount: resTotalCount, code: _c, message: _m, ...restRelative } = res
-            if (rest.id) setData(prev => ({ data: prev.data.map(e => e.Id === rest.id ? (resData[0] ?? e) : e), totalCount: resTotalCount }))
-            else setData({ data: resData, totalCount: resTotalCount })
-            if (Object.keys(restRelative).length) {
-                // Batch all relative data updates into a single reset to avoid multiple re-renders
-                const currentValues = methodsRelative.getValues()
-                methodsRelative.reset({ ...currentValues, ...restRelative })
-            } else methodsRelative.reset()
+            if (rest.id) {
+                setData(prev => ({ data: prev.data.map(e => e.Id === rest.id ? (resData[0] ?? e) : e), totalCount: resTotalCount }))
+                Object.keys(restRelative).forEach((p: string) => {
+                    const currentValues = methodsRelative.getValues(p) ?? []
+                    methodsRelative.setValue(p, currentValues.concat(restRelative[p]))
+                })
+            } else {
+                setData({ data: resData, totalCount: resTotalCount })
+                if (Object.keys(restRelative).length) {
+                    // Batch all relative data updates into a single reset to avoid multiple re-renders
+                    const currentValues = methodsRelative.getValues()
+                    methodsRelative.reset({ ...currentValues, ...restRelative })
+                } else methodsRelative.reset()
+            }
         } else {
             setData({ data: [], totalCount: 0 })
             ToastMessage.errors("Failed to get data")
