@@ -463,7 +463,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return handleListener(customProps.onGetOptions)
     }, [customProps.onGetOptions, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
 
-    const dropdownOnGetOptions = async (event: any) => {
+    const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
                 "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
@@ -499,7 +499,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         if (customProps.onGetOptions) {
             switch (props.item.Type) {
                 case ComponentType.selectDropdown:
-                    dropdownOnGetOptions({ length: 0, search: "" }).then(setHandleOptions)
+                    dropdownOnGetOptions().then(setHandleOptions)
                     break;
                 default:
                     break;
