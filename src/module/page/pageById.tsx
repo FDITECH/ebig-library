@@ -242,9 +242,34 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         let _props = { ...props.item.Setting }
         _props.style ??= {}
         _props.className ??= ""
-        if (_props.action?.length && Array.isArray(_props.action)) {
+        delete _props.action
+        if (props.style) _props.style = { ..._props.style, ...props.style }
+        if (watchForCustomProps?.style) {
+            _props.style = { ..._props.style, ...watchForCustomProps.style }
+            delete watchForCustomProps.style
+        }
+        delete _props.style.order
+        if (props.className) _props.className = [..._props.className.split(" "), ...props.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
+        if (watchForCustomProps?.className) {
+            _props.className = [..._props.className.split(" "), ...watchForCustomProps.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
+            delete watchForCustomProps.className
+        }
+        delete _props.action
+        if (props.propsData && props.propsData[findId]) var extendProps = props.type === "card" ? (props.propsData[findId] as any)(props.indexItem, props.index, props.methods) : props.propsData[findId]
+        if (extendProps) {
+            if (extendProps.style) _props.style = { ..._props.style, ...extendProps.style }
+            delete extendProps.style
+            _props = { ..._props, ...extendProps }
+        }
+        return watchForCustomProps ? { ..._props, ...watchForCustomProps } : _props
+    }, [props.item, props.propsData, props.indexItem, watchForCustomProps])
+    const customProps = useDeferredValue(memeCustomProps)
+    const customActions = useMemo(() => {
+        const _propsActions = props.item.Setting?.action
+        if (_propsActions?.length && Array.isArray(_propsActions)) {
+            const tmpAct: any = {}
             Object.values(TriggerType).forEach(trigger => {
-                const triggerActions = _props.action.filter((e: any) => e.Type === trigger)
+                const triggerActions: any = _propsActions.filter((e: any) => e.Type === trigger)
                 const handleEvent = async (acts = [], event: any) => {
                     for (const [_, act] of acts.entries()) {
                         const actItem = act as { [p: string]: any }
@@ -354,86 +379,68 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 if (triggerActions.length) {
                     switch (trigger) {
                         case TriggerType.init:
-                            _props.onInit = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onInit = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.dimiss:
-                            _props.onDimiss = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onDimiss = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.click:
-                            _props.onClick = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onClick = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.rightClick:
-                            _props.onContextMenu = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onContextMenu = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.hover:
-                            _props.onMouseOver = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onMouseOver = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.keydown:
-                            _props.onKeyDown = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onKeyDown = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.mouseenter:
-                            _props.onMouseEnter = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onMouseEnter = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.mouseleave:
-                            _props.onMouseLeave = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onMouseLeave = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.mousedown:
-                            _props.onMouseDown = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onMouseDown = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.mouseup:
-                            _props.onMouseUp = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onMouseUp = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.focus:
-                            _props.onFocus = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onFocus = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.change:
-                            _props.onChange = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onChange = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.blur:
-                            _props.onBlur = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onBlur = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.submit:
-                            _props.onSubmit = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onSubmit = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.scroll:
-                            _props.onScroll = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onScroll = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.loaded:
-                            _props.onLoaded = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onLoaded = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.locationChange:
-                            _props.onLocationChange = (ev: any) => handleEvent(triggerActions, ev)
+                            tmpAct.onLocationChange = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.getOptions:
-                            _props.onGetOptions = triggerActions[0].Caculate
+                            tmpAct.onGetOptions = triggerActions[0].Caculate
                             break;
                         default:
                             break;
                     }
                 }
             })
+            return tmpAct
         }
-        if (props.style) _props.style = { ..._props.style, ...props.style }
-        if (watchForCustomProps?.style) {
-            _props.style = { ..._props.style, ...watchForCustomProps.style }
-            delete watchForCustomProps.style
-        }
-        delete _props.style.order
-        if (props.className) _props.className = [..._props.className.split(" "), ...props.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
-        if (watchForCustomProps?.className) {
-            _props.className = [..._props.className.split(" "), ...watchForCustomProps.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
-            delete watchForCustomProps.className
-        }
-        delete _props.action
-        if (props.propsData && props.propsData[findId]) var extendProps = props.type === "card" ? (props.propsData[findId] as any)(props.indexItem, props.index, props.methods) : props.propsData[findId]
-        if (extendProps) {
-            if (extendProps.style) _props.style = { ..._props.style, ...extendProps.style }
-            delete extendProps.style
-            _props = { ..._props, ...extendProps }
-        }
-        return watchForCustomProps ? { ..._props, ...watchForCustomProps } : _props
-    }, [props.item, props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData.globalData, ebigContextData.userData, ebigContextData.i18n.language])
-    const customProps = useDeferredValue(memeCustomProps)
+        return undefined
+    }, [props.item.Setting?.action, props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData])
 
     // handle listener
     const handleListener = (funcString: string) => {
@@ -498,15 +505,15 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     // handle get options of select dropdown component
     const [handleOptions, setHandleOptions] = useState<any>(null)
     const getOptionsLisener = useMemo(() => {
-        if (!customProps.onGetOptions) return null;
-        return handleListener(customProps.onGetOptions)
-    }, [customProps.onGetOptions, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+        if (!customActions?.onGetOptions) return null;
+        return handleListener(customActions.onGetOptions)
+    }, [customActions?.onGetOptions, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
 
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
                 "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
-                `${customProps.onGetOptions}` // This string can now safely contain the 'await' keyword
+                `${customActions.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
                 props.index,
@@ -535,7 +542,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     }
 
     useEffect(() => {
-        if (customProps.onGetOptions) {
+        if (customActions?.onGetOptions) {
             switch (props.item.Type) {
                 case ComponentType.selectDropdown:
                     dropdownOnGetOptions().then(setHandleOptions)
@@ -544,7 +551,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customProps.onGetOptions, getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
+    }, [customActions?.onGetOptions, getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
 
     const _options = useMemo(() => {
         if (handleOptions) return Array.isArray(handleOptions.data) ? handleOptions.data : []
@@ -669,9 +676,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     /***/
     const typeProps = useMemo(() => {
         let tmpProps = { ...customProps }
-        delete tmpProps.onLocationChange
-        delete tmpProps.onInit
-        delete tmpProps.onDimiss
         if (regexGetVariables.test(tmpProps.id)) tmpProps.id = replaceThisVariables(tmpProps.id)
         if (regexGetVariables.test(tmpProps.className)) tmpProps.className = replaceThisVariables(tmpProps.className)
         if (props.item.NameField && tmpProps.validate?.some((v: any) => v.type === ValidateType.required)) tmpProps.required = true
@@ -801,18 +805,18 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const htmlElementRef = useRef<any | any[]>(null)
 
     useEffect(() => {
-        if (customProps.onInit) customProps.onInit(pageAllRefs[findId]?.current ?? htmlElementRef.current)
-    }, [!!customProps.onInit])
+        if (customActions?.onInit) customActions.onInit(pageAllRefs[findId]?.current ?? htmlElementRef.current)
+    }, [!!customActions?.onInit])
 
     useEffect(() => {
-        if (customProps.onDimiss) {
-            return () => { customProps.onDimiss(pageAllRefs[findId]?.current ?? htmlElementRef.current) }
+        if (customActions?.onDimiss) {
+            return () => { customActions.onDimiss(pageAllRefs[findId]?.current ?? htmlElementRef.current) }
         }
-    }, [!!customProps.onDimiss])
+    }, [!!customActions?.onDimiss])
 
     useEffect(() => {
-        if (customProps.onLocationChange) customProps.onLocationChange(pageAllRefs[findId]?.current ?? htmlElementRef.current)
-    }, [!!customProps.onLocationChange, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
+        if (customActions?.onLocationChange) customActions.onLocationChange(pageAllRefs[findId]?.current ?? htmlElementRef.current)
+    }, [!!customActions?.onLocationChange, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
 
     const getDataLisener = useMemo(() => {
         if (!customProps.data) return null;
@@ -860,12 +864,16 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         }
     }, [customProps.data, getDataLisener?.pathname, getDataLisener?.search, getDataLisener?.params, getDataLisener?.state, getDataLisener?.language, getDataLisener?.globalData, getDataLisener?.userData, getDataLisener?.watch, getDataLisener?.indexItem])
 
+
+    // not functions of react 
+    const { onLocationChange, onInit, onDimiss, ...restOfActions } = (customActions ?? {})
+
     switch (props.item.Type) {
         case ComponentType.navLink:
         case ComponentType.container:
             if (props.childrenData && props.childrenData[findId]) var childComponent = props.type === "card" ? (props.childrenData[findId] as any)(props.indexItem, props.index, props.methods) : props.childrenData[findId]
             if (dataValue && dataValue.backgroundImage) var containerProps: any = { ...typeProps, style: { ...typeProps.style, ...dataValue } }
-            const dataValueProps = { ...(containerProps ?? typeProps) }
+            const dataValueProps = { ...(containerProps ?? typeProps), ...restOfActions }
             delete dataValueProps.emptyElement
             delete dataValueProps.onLoaded
             const getType = props.item.Type === ComponentType.navLink ? "a" : (props.type === "form" && !props.item.ParentId) ? "form" : dataValueProps.type
@@ -906,11 +914,11 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case ComponentType.text:
             if (props.item.NameField) {
                 if (Array.isArray(dataValue)) { // list file
-                    return dataValue.map((f, i) => <FileName key={f.id + "-" + i} file={f} index={i} {...typeProps} />)
+                    return dataValue.map((f, i) => <FileName key={f.id + "-" + i} file={f} index={i} {...typeProps} {...restOfActions} />)
                 } else if (typeof dataValue === "object") typeProps.html = dataValue?.["__html"] ?? ""
                 else typeProps.value = dataValue
             }
-            return <CustomText {...typeProps} />
+            return <CustomText {...typeProps} {...restOfActions} />
         case ComponentType.img:
             if (!typeProps.src?.length) typeProps.src = handleErrorImgSrc
             if (props.item.NameField && !!dataValue?.length) {
@@ -925,11 +933,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         referrerPolicy="no-referrer"
                         onError={(ev) => { ev.currentTarget.src = handleErrorImgSrc }}
                         {...typeProps}
+                        {...restOfActions}
                         src={ConfigData.regexGuid.test(f.id) ? (ConfigData.imgUrlId + f.id) : f.url}
                     />)
                 } else typeProps.src = getValidLink(dataValue)
             }
-            return <img ref={htmlElementRef} alt="" referrerPolicy="no-referrer" onError={(ev) => { ev.currentTarget.src = handleErrorImgSrc }} {...typeProps} />
+            return <img ref={htmlElementRef} alt="" referrerPolicy="no-referrer" onError={(ev) => { ev.currentTarget.src = handleErrorImgSrc }} {...typeProps} {...restOfActions} />
         case ComponentType.video:
             if (props.item.NameField && !!dataValue?.length) {
                 if (Array.isArray(dataValue)) {
@@ -940,11 +949,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             if (r && Array.isArray(htmlElementRef.current)) htmlElementRef.current.push(r)
                         }}
                         {...typeProps}
+                        {...restOfActions}
                         src={f.url}
                     />)
                 } else typeProps.src = getValidLink(dataValue)
             }
-            return <VideoPlayer ref={htmlElementRef} {...typeProps} />
+            return <VideoPlayer ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.audio:
             if (props.item.NameField && !!dataValue?.length) {
                 if (Array.isArray(dataValue)) {
@@ -955,11 +965,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             if (r && Array.isArray(htmlElementRef.current)) htmlElementRef.current.push(r)
                         }}
                         {...typeProps}
+                        {...restOfActions}
                         src={f.url}
                     />)
                 } else typeProps.src = getValidLink(dataValue)
             }
-            return <AudioPlayer ref={htmlElementRef} {...typeProps} />
+            return <AudioPlayer ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.iframe:
             if (props.item.NameField && !!dataValue?.length) {
                 if (Array.isArray(dataValue)) {
@@ -970,26 +981,26 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             ref={r => {
                                 if (r && Array.isArray(htmlElementRef.current)) htmlElementRef.current.push(r)
                             }}
-                            referrerPolicy="no-referrer" {...typeProps} src={f.url} />
+                            referrerPolicy="no-referrer" {...typeProps} {...restOfActions} src={f.url} />
                     })
                 } else typeProps.src = getValidLink(dataValue)
             }
-            return <IframePlayer ref={htmlElementRef} referrerPolicy="no-referrer" {...typeProps} />
+            return <IframePlayer ref={htmlElementRef} referrerPolicy="no-referrer" {...typeProps} {...restOfActions} />
         case ComponentType.rate:
-            if (props.item.NameField) return <Rating ref={htmlElementRef} {...typeProps} value={dataValue} />
-            else return <Rating ref={htmlElementRef} {...typeProps} />
+            if (props.item.NameField) return <Rating ref={htmlElementRef} {...typeProps} {...restOfActions} value={dataValue} />
+            else return <Rating ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.progressBar:
-            if (props.item.NameField) return <ProgressBar ref={htmlElementRef} {...typeProps} progressBarOnly percent={dataValue} />
-            else return <ProgressBar ref={htmlElementRef} {...typeProps} progressBarOnly />
+            if (props.item.NameField) return <ProgressBar ref={htmlElementRef} {...typeProps} {...restOfActions} progressBarOnly percent={dataValue} />
+            else return <ProgressBar ref={htmlElementRef} {...typeProps} {...restOfActions} progressBarOnly />
         case ComponentType.progressCircle:
-            if (props.item.NameField) return <ProgressCircle ref={htmlElementRef} {...typeProps} percent={dataValue} />
-            return <ProgressCircle ref={htmlElementRef} {...typeProps} />
+            if (props.item.NameField) return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} percent={dataValue} />
+            return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.icon:
-            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} src={dataValue} />
+            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} />
             else if (props.item.NameField) return null
-            else return <Ebigicon ref={htmlElementRef} {...typeProps} />
+            else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.chart:
-            return <ChartById {...typeProps} id={typeProps.chartId} ref={pageAllRefs[findId]} />
+            return <ChartById {...typeProps} {...restOfActions} id={typeProps.chartId} ref={pageAllRefs[findId]} />
         case "form":
         case ComponentType.form:
             if (props.itemData) typeProps.itemData = typeProps.itemData ? { ...props.itemData, ...typeProps.itemData } : props.itemData
@@ -1003,49 +1014,50 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             if (props.childrenData) typeProps.childrenData = typeProps.childrenData ? { ...props.childrenData, ...typeProps.childrenData } : props.childrenData
             if (props.propsData) typeProps.propsData = typeProps.propsData ? { ...props.propsData, ...typeProps.propsData } : props.propsData
             if (customProps.data) typeProps.data = handleFormCardViewData ?? { data: [] }
-            return <CardById {...typeProps} id={typeProps.cardId} ref={pageAllRefs[findId]} />
+            return <CardById {...typeProps} {...restOfActions} id={typeProps.cardId} ref={pageAllRefs[findId]} />
         case "view":
         case ComponentType.view:
             if (props.itemData) typeProps.itemData = typeProps.itemData ? { ...props.itemData, ...typeProps.itemData } : props.itemData
             if (props.childrenData) typeProps.childrenData = typeProps.childrenData ? { ...props.childrenData, ...typeProps.childrenData } : props.childrenData
             if (props.propsData) typeProps.propsData = typeProps.propsData ? { ...props.propsData, ...typeProps.propsData } : props.propsData
             if (customProps.data) typeProps.data = handleFormCardViewData
-            return <ViewById {...typeProps} id={typeProps.viewId} />
+            return <ViewById {...typeProps} {...restOfActions} id={typeProps.viewId} ref={pageAllRefs[findId]} />
         case ComponentType.button:
-            return <SimpleButton ref={htmlElementRef} {...typeProps} />
+            return <SimpleButton ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.textField:
             const { IsPassword, ...typeProps2 } = typeProps
             if (IsPassword)
-                return <FInputPassword {...typeProps2} name={props.item.NameField} methods={props.methods} />
+                return <FInputPassword {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
             else
-                return <FTextField {...typeProps2} name={props.item.NameField} methods={props.methods} />
+                return <FTextField {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
         case ComponentType.textArea:
-            return <FTextArea {...typeProps} name={props.item.NameField} methods={props.methods} />
+            return <FTextArea {...typeProps} {...restOfActions} name={props.item.NameField} methods={props.methods} />
         case ComponentType.radio:
-            if (_options?.length) return <FGroupRadioButton {...typeProps} methods={props.methods} name={props.item.NameField} options={_options} />
-            else return <FRadioButton {...typeProps} methods={props.methods} name={props.item.NameField} />
+            if (_options?.length) return <FGroupRadioButton {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} options={_options} />
+            else return <FRadioButton {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.checkbox:
-            if (_options?.length) return <FGroupCheckbox {...typeProps} methods={props.methods} name={props.item.NameField} options={_options} />
-            else return <FCheckbox {...typeProps} methods={props.methods} name={props.item.NameField} />
+            if (_options?.length) return <FGroupCheckbox {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} options={_options} />
+            else return <FCheckbox {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.switch:
-            return <FSwitch {...typeProps} methods={props.methods} name={props.item.NameField} />
+            return <FSwitch {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case "Select1":
         case "SelectMultiple":
         case ComponentType.selectDropdown:
             if (props.item.Setting?.multiple || props.item.Type === "SelectMultiple") typeProps.multiple = true
-            return <FSelectDropdownForm {...typeProps} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
+            return <FSelectDropdownForm {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
         case ComponentType.colorPicker:
-            return <FColorPicker {...typeProps} methods={props.methods} name={props.item.NameField} />
+            return <FColorPicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.numberPicker:
-            return <FNumberPicker {...typeProps} methods={props.methods} name={props.item.NameField} />
+            return <FNumberPicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.dateTimePicker:
         case ComponentType.datePicker:
-            return <FDateTimePicker {...typeProps} methods={props.methods} name={props.item.NameField} />
+            return <FDateTimePicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.upload:
-            return <FUploadMultipleFileType {...typeProps} methods={props.methods} name={props.item.NameField} />
+            return <FUploadMultipleFileType {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.ckEditor:
             return <CustomCkEditor5
                 {...typeProps}
+                {...restOfActions}
                 methods={props.methods}
                 extraPlugins={[
                     function (editor: any) {
@@ -1056,13 +1068,13 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 onBlur={(_: any, editor: any) => {
                     const editorData = editor.getData()
                     if (props.item.NameField) props.methods?.setValue(props.item.NameField, editorData)
-                    if (typeProps.onBlur) typeProps.onBlur(editorData)
+                    if (restOfActions.onBlur) restOfActions.onBlur(editorData)
                 }}
             />
         case ComponentType.pagination:
-            return <Pagination simpleStyle {...typeProps} />
+            return <Pagination simpleStyle {...typeProps} {...restOfActions} />
         default:
-            return <div {...typeProps} />
+            return <div {...typeProps} {...restOfActions} />
     }
 }
 
