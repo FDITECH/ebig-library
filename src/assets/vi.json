@@ -158,5 +158,8 @@
     "profile": "Hồ sơ",
     "specificConfig": "Cấu hình cụ thể",
     "entity": "Đối tượng",
-    "database": "Cơ sở dữ liệu"
+    "database": "Cơ sở dữ liệu",
+    "autoplay": "Tự phát",
+    "loop": "Lặp lại",
+    "muted": "Tắt tiếng"
 }

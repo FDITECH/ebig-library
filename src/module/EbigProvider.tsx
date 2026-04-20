@@ -213,11 +213,11 @@ export const initializeProject = async (domain: string, props: { pid?: string, d
     ConfigData.url = domain
     const tmp = document.createElement("div")
     tmp.innerHTML = `
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/root.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/layout.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/typography.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/toast-noti.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.15/style.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/root.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/layout.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/typography.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/toast-noti.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/style.css">
     `
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()
