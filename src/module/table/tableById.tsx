@@ -1,8 +1,8 @@
 import styles from "./table.module.css";
-import { BaseDA, Button, DataController, DialogAlignment, imgFileTypes, OptionsItem, Pagination, Popup, randomGID, SettingDataController, showDialog, showPopup, TableController, Text, ToastMessage, useParams, useEbigContext, Util, Ebigicon } from "../../index";
-import { CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { BaseDA, Button, DataController, DialogAlignment, imgFileTypes, OptionsItem, Pagination, Popup, randomGID, SettingDataController, showDialog, showPopup, TableController, Text, ToastMessage, useParams, useEbigContext, Util, Ebigicon, ConfigData } from "../../index";
+import { CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useCallback, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn, useWatch } from "react-hook-form";
 import { TableHeader, TableRow } from "./tableElement";
 import ExportXlsx from "./exportXlsx";
 import { ButtonImportData, SearchFilterData } from "./featureElement";
@@ -66,6 +66,47 @@ export function TableById({ id, ...props }: { id: string, className?: string, st
             style={props.style}
         />}
     </>
+}
+
+/**
+ * Progressive rendering hook — renders items in batches to avoid blocking the main thread.
+ * First render shows nothing (or a minimal set), then items appear progressively via rAF.
+ * This keeps the initial "message handler" under budget.
+ */
+function useProgressiveRender<T>(items: T[], batchSize = 10): T[] {
+    const [visibleCount, setVisibleCount] = useState(0)
+    const itemsRef = useRef(items)
+
+    // Reset count when items array identity changes (new data, search, page)
+    if (items !== itemsRef.current) {
+        itemsRef.current = items
+        if (visibleCount !== 0) setVisibleCount(0)
+    }
+
+    useEffect(() => {
+        if (visibleCount >= items.length && visibleCount > 0) return
+        if (!items.length) return
+
+        let cancelled = false
+        const renderBatch = () => {
+            if (cancelled) return
+            requestAnimationFrame(() => {
+                if (cancelled) return
+                setVisibleCount(prev => Math.min(prev + batchSize, items.length))
+            })
+        }
+
+        // Use requestIdleCallback for smoother rendering, fallback to rAF
+        if ('requestIdleCallback' in window) {
+            const idleId = (window as any).requestIdleCallback(renderBatch, { timeout: 80 })
+            return () => { cancelled = true; (window as any).cancelIdleCallback(idleId) }
+        } else {
+            const timerId = setTimeout(renderBatch, 0)
+            return () => { cancelled = true; clearTimeout(timerId) }
+        }
+    }, [visibleCount, items.length, batchSize])
+
+    return useMemo(() => items.slice(0, visibleCount), [items, visibleCount])
 }
 
 interface DataTableProps {
@@ -155,23 +196,28 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
     ...props }, ref) => {
     // static variables
     const configMethods = useForm<any>({ shouldFocusError: false, defaultValues: { columns: [], searchRaw: "*", sortby: [], TbName: tbName } })
-    const dataController = new DataController(tbName)
-    const relController = new TableController("rel")
-    const colController = new TableController("column")
+    const dataController = useMemo(() => new DataController(tbName), [tbName])
+    const relController = useMemo(() => new TableController("rel"), [])
+    const colController = useMemo(() => new TableController("column"), [])
     const popupRef = useRef<Popup>(null)
     const { t } = useTranslation()
+    // useWatch subscriptions — stable references that only update when form values actually change
+    const watchedColumns = useWatch({ control: configMethods.control, name: "columns" })
+    const watchedSearchRaw = useWatch({ control: configMethods.control, name: "searchRaw" })
+    const watchedSortby = useWatch({ control: configMethods.control, name: "sortby" })
     // dynamic variables
     const [data, setData] = useState<{ data: Array<{ [p: string]: any }>, totalCount?: number }>({ data: [], totalCount: undefined })
     const [pageDetails, setPageDetails] = useState({ page: 1, size: 20 })
     const methodsRelative = useForm<any>({ shouldFocusError: false })
-    const relativeData = useMemo<{ [p: string]: any }>(() => methodsRelative.watch(), [JSON.stringify(methodsRelative.watch())])
+    const relativeDataRaw = useWatch({ control: methodsRelative.control }) as { [p: string]: any }
+    const relativeData = useDeferredValue(relativeDataRaw)
     const methodsRelativeFields = useForm<any>({ shouldFocusError: false })
-    const relativeFields = useMemo<{ [p: string]: any[] }>(() => methodsRelativeFields.watch(), [JSON.stringify(methodsRelativeFields.watch())])
+    const relativeFieldsRaw = useWatch({ control: methodsRelativeFields.control }) as { [p: string]: any[] }
+    const relativeFields = useDeferredValue(relativeFieldsRaw)
     const [files, setFiles] = useState<{ [p: string]: any }[]>([])
     const [fields, setFields] = useState<{ [p: string]: any }[]>([])
     const [selected, setSelected] = useState<string[]>([])
     const treeData = useMemo(() => fields.some(e => e.Column === 'ParentId'), [fields])
-
     // initData
     const getFields = async () => {
         const res = await Promise.all([
@@ -191,13 +237,13 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
     }, [tbName])
     useEffect(() => { configMethods.setValue("columns", columns) }, [columns])
     useEffect(() => { configMethods.setValue("searchRaw", filterData.searchRaw ?? "*") }, [filterData.searchRaw])
-    useEffect(() => { configMethods.setValue("sortby", filterData.sortby ?? []) }, [JSON.stringify(filterData.sortby)])
+    const sortbyKey = useMemo(() => JSON.stringify(filterData.sortby), [filterData.sortby])
+    useEffect(() => { configMethods.setValue("sortby", filterData.sortby ?? []) }, [sortbyKey])
 
     useEffect(() => {
-        const { searchRaw, sortby } = configMethods.watch()
-        if (onChangeFilterData && (searchRaw !== filterData.searchRaw || JSON.stringify(sortby) !== JSON.stringify(filterData.sortby)))
-            onChangeFilterData({ searchRaw, sortby })
-    }, [JSON.stringify(configMethods.watch("sortby"))])
+        if (onChangeFilterData && (watchedSearchRaw !== filterData.searchRaw || JSON.stringify(watchedSortby) !== JSON.stringify(filterData.sortby)))
+            onChangeFilterData({ searchRaw: watchedSearchRaw, sortby: watchedSortby, searchData: parseRedisQuery(watchedSearchRaw) })
+    }, [watchedSortby])
 
     // get data
     const getData = async ({ page = 1, size = 20, exportData = false, ...rest }: { page?: number, size?: number, exportData?: boolean, id?: string }) => {
@@ -239,14 +285,21 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
         })
         if (res.code === 200) {
             if (exportData) return res
-            if (rest.id) setData(prev => ({ data: prev.data.map(e => e.Id === rest.id ? (res.data[0] ?? e) : e), totalCount: res.totalCount }))
-            delete res.data
-            delete res.totalCount
-            delete res.code
-            delete res.message
-            if (Object.keys(res).length) {
-                Object.keys(res).forEach(p => methodsRelative.setValue(p, res[p]))
-            } else methodsRelative.reset()
+            const { data: resData, totalCount: resTotalCount, code: _c, message: _m, ...restRelative } = res
+            if (rest.id) {
+                setData(prev => ({ data: prev.data.map(e => e.Id === rest.id ? (resData[0] ?? e) : e), totalCount: resTotalCount }))
+                Object.keys(restRelative).forEach((p: string) => {
+                    const currentValues = methodsRelative.getValues(p) ?? []
+                    methodsRelative.setValue(p, currentValues.concat(restRelative[p]))
+                })
+            } else {
+                setData({ data: resData, totalCount: resTotalCount })
+                if (Object.keys(restRelative).length) {
+                    // Batch all relative data updates into a single reset to avoid multiple re-renders
+                    const currentValues = methodsRelative.getValues()
+                    methodsRelative.reset({ ...currentValues, ...restRelative })
+                } else methodsRelative.reset()
+            }
         } else {
             setData({ data: [], totalCount: 0 })
             ToastMessage.errors("Failed to get data")
@@ -256,11 +309,11 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
 
     useEffect(() => {
         if (columns.length && fields.length) getData(pageDetails)
-    }, [columns, configMethods.watch("searchRaw"), configMethods.watch("sortby"), filterData.required, fields, filterData.pattern])
+    }, [columns, watchedSearchRaw, watchedSortby, fields])
 
     useEffect(() => {
         if (selected.length) setSelected([])
-    }, [configMethods.watch("searchRaw"), configMethods.watch("sortby"), data.totalCount])
+    }, [watchedSearchRaw, watchedSortby, data.totalCount])
 
     const relativeCols = useMemo(() => columns.filter(e => e.Name.split(".").length > 1), [columns.length])
 
@@ -305,7 +358,6 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
         return tmp
     }, [relativeData, data.data])
 
-    const regexGuid = /^[0-9a-fA-F]{32}$/;
     useEffect(() => {
         const mergeFields: string[] = [...columns.map(c => c.Name), ...(filterData.pattern?.returns ?? [])]
         const dataFileIds: Array<string> = []
@@ -322,8 +374,8 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
             }
         })
         if (dataFileIds.length) {
-            const listValidIds = dataFileIds.filter(id => regexGuid.test(id))
-            const listFilesInfor = dataFileIds.filter(id => !regexGuid.test(id)).map(id => {
+            const listValidIds = dataFileIds.filter(id => ConfigData.regexGuid.test(id))
+            const listFilesInfor = dataFileIds.filter(id => !ConfigData.regexGuid.test(id)).map(id => {
                 const _url = getValidLink(id)
                 const _type = id.split(".").pop()?.toLowerCase()
                 return { Id: id, Name: id, Url: _url, Type: imgFileTypes.includes(`.${_type}`) ? `image/${_type}` : _type }
@@ -421,7 +473,35 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
     useImperativeHandle(ref, () => ({
         getData, data, setData, selected, setSelected,
         showAddEditPopup, parseSearchDataToSearchRaw, fields
-    }), [columns, tbName, filterData, configMethods.watch(), data, selected, fields])
+    }), [columns, tbName, filterData, watchedSearchRaw, watchedSortby, watchedColumns, data, selected, fields])
+
+    // Stable callbacks for TableRow — avoids re-creating functions on every render
+    const handleSetItem = useCallback((itemId: string, ev: { [key: string]: any }) => {
+        setData(prev => ({ data: prev.data.map(e => e.Id === itemId ? ev : e), totalCount: prev.totalCount }))
+    }, [])
+
+    const handleDelete = useCallback(async (itemId: string) => {
+        const res = await dataController.delete([itemId])
+        if (res.code === 200) getData(pageDetails)
+        else {
+            ToastMessage.errors("Failed to delete this element")
+            console.error("Failed to delete this element: " + res.message)
+        }
+    }, [dataController, pageDetails])
+
+    const handleDuplicate = useCallback(async (itemId: string) => {
+        const res = await dataController.duplicate([itemId])
+        if (res.code === 200) {
+            getData(pageDetails)
+            ToastMessage.success(`Duplicate element successfully!`)
+        } else {
+            ToastMessage.errors("Failed to duplicate this element")
+            console.error("Failed to duplicate this element: " + res.message)
+        }
+    }, [dataController, pageDetails])
+
+    // Progressive rendering: render first batch immediately, then load remaining rows incrementally
+    const visibleData = useProgressiveRender(data.data)
 
     return <>
         <div className={`col ${className ?? ""}`} style={{ padding: !!data.totalCount && data.totalCount > 20 ? "0 2.4rem" : "0 2.4rem 1.6rem", flex: 1, ...style }}>
@@ -433,7 +513,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             return enableEdit && <Button
                                 key={"add"}
                                 label={`${t("add")} ${t("new").toLowerCase()}`}
-                                prefix={<Ebigicon src={"outline/user interface/e-add"} size={12} />}
+                                prefix={<Ebigicon src={"outline/user-interface/e-add"} size={12} />}
                                 className="label-3 button-neutral border"
                                 onClick={() => showAddEditPopup()}
                             />
@@ -563,12 +643,12 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                     fields={fields}
                     hideActionColumn={props.hideActionColumn}
                 />
-                {
-                    data.data.map((item, index) => {
+                {!!data.totalCount &&
+                    visibleData.map((item, index) => {
                         return <TableRow
                             key={`${tbName}-${item.Id}-${index}`}
                             item={item}
-                            setItem={(ev: { [key: string]: any }) => { setData(prev => ({ data: prev.data.map(e => e.Id === item.Id ? ev : e), totalCount: prev.totalCount })) }}
+                            setItem={handleSetItem}
                             index={index + pageDetails.size * (pageDetails.page - 1) + 1}
                             onEditActionColumn={onEditColumn}
                             methods={configMethods}
@@ -583,24 +663,8 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             onChangeActions={enableEdit ? onChangeActions : undefined}
                             showAddEditPopup={enableEdit ? showAddEditPopup : undefined}
                             actions={actions}
-                            onDelete={enableEdit ? (async () => {
-                                const res = await dataController.delete([item.Id])
-                                if (res.code === 200) getData(pageDetails)
-                                else {
-                                    ToastMessage.errors("Failed to delete this item")
-                                    console.error("Failed to delete this item: " + res.message)
-                                }
-                            }) : undefined}
-                            onDuplicate={enableEdit ? (async () => {
-                                const res = await dataController.duplicate([item.Id])
-                                if (res.code === 200) {
-                                    getData(pageDetails)
-                                    ToastMessage.success(`Duplicate element successfully!`)
-                                } else {
-                                    ToastMessage.errors("Failed to duplicate this item")
-                                    console.error("Failed to duplicate this item: " + res.message)
-                                }
-                            }) : undefined}
+                            onDelete={enableEdit ? handleDelete : undefined}
+                            onDuplicate={enableEdit ? handleDuplicate : undefined}
                             customFormId={customFormId}
                             onSelectCustomForm={enableEdit ? onSelectCustomForm : undefined}
                             formTitle={formTitle}
@@ -629,7 +693,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                     case "total":
                         return <div key={tl + "-" + i} className={`row ${styles["selected-item-total"]}`}>
                             <Text className="button-text-5">{t("itemsSelected", { count: selected.length })}</Text>
-                            <Ebigicon src="outline/user interface/e-remove" size={12} onClick={() => setSelected([])} />
+                            <Ebigicon src="outline/user-interface/e-remove" size={12} onClick={() => setSelected([])} />
                         </div>
                     case "export":
                         return <ExportXlsx
@@ -637,7 +701,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             className="button-text-5 size24"
                             label={t("export")}
                             style={{ color: "var(--neutral-text-body-reverse-color)" }}
-                            prefix={<Ebigicon src="outline/user interface/data-download" color="var(--neutral-text-body-reverse-color)" size={13} />}
+                            prefix={<Ebigicon src="outline/user-interface/data-download" color="var(--neutral-text-body-reverse-color)" size={13} />}
                             config={{
                                 title: configMethods.watch("columns").filter((e: any) => !fields.find(c => c.Name === e.Name && c.DataType === FEDataType.HTML)).map((e: any) => e.Title)
                             }}
@@ -697,7 +761,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                             className="button-text-5 size24"
                             label={t("delete")}
                             style={{ color: "var(--neutral-text-body-reverse-color)" }}
-                            prefix={<Ebigicon src="outline/user interface/trash-can" color="var(--neutral-text-body-reverse-color)" size={13} />}
+                            prefix={<Ebigicon src="outline/user-interface/trash-can" color="var(--neutral-text-body-reverse-color)" size={13} />}
                             onClick={() => {
                                 showDialog({
                                     alignment: DialogAlignment.center,
@@ -722,7 +786,7 @@ export const DataTable = forwardRef<DataTableRef, DataTableProps>(({
                 className="button-text-5 size24"
                 label={t("close")}
                 style={{ color: "var(--error-lighter-color)" }}
-                prefix={<Ebigicon src="outline/user interface/e-remove" color="var(--error-lighter-color)" size={13} />}
+                prefix={<Ebigicon src="outline/user-interface/e-remove" color="var(--error-lighter-color)" size={13} />}
                 onClick={() => setSelected([])}
             />
         </div>}

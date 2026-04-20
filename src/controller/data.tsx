@@ -1,4 +1,4 @@
-import { BaseDA, ConfigData } from "./config";
+import { BaseDA, ConfigData, getHeaders } from "./config";
 import { Util } from "./utils";
 
 export class DataController {
@@ -18,15 +18,18 @@ export class DataController {
     }
 
     async getProperties() {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.get(ConfigData.url + `data/getProperties?name=${this.module}`, {
-            headers: { pid: ConfigData.pid }
+            headers: { ..._headers, pid: ConfigData.pid }
         })
         return res
     }
 
     async buildIndex(properties: { [p: string]: string }) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'data/buildIndex', {
             headers: {
+                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module
             },
@@ -102,8 +105,10 @@ export class DataController {
     }
 
     async add(data: Array<{ [p: string]: any }>, type?: string) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'data/action?action=add', {
             headers: {
+                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module
             },
@@ -113,8 +118,10 @@ export class DataController {
     }
 
     async edit(data: Array<{ [p: string]: any }>, type?: string) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'data/action?action=edit', {
             headers: {
+                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module
             },
@@ -124,30 +131,34 @@ export class DataController {
     }
 
     async duplicate(ids: Array<string>) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'data/action?action=duplicate', {
             headers: {
+                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module
             },
-            body: { ids: ids }
+            body: { ids }
         })
         return res
     }
 
     async delete(ids: Array<string>) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'data/action?action=delete', {
             headers: {
+                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module
             },
-            body: { ids: ids }
+            body: { ids }
         })
         return res
     }
 
     async checkotp(idToken: string) {
         const res = await BaseDA.post(ConfigData.url + 'data/checkotp', {
-            body: { idToken: idToken }
+            body: { idToken }
         })
         return res
     }
@@ -160,8 +171,9 @@ export class SettingDataController {
     }
 
     async action(action: "add" | "edit" | "delete", options: { data?: Array<{ [p: string]: any }>, ids?: Array<string> }) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + `data/${this.setting}/action?action=${action}`, {
-            headers: { pid: ConfigData.pid },
+            headers: { ..._headers, pid: ConfigData.pid },
             body: { data: options.data, ids: options.ids }
         })
         return res
@@ -176,8 +188,9 @@ export class SettingDataController {
     }
 
     async group(options: { searchRaw?: string, reducers: string }) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + `data/${this.setting}/group`, {
-            headers: { pid: ConfigData.pid },
+            headers: { ..._headers, pid: ConfigData.pid },
             body: options
         })
         return res
@@ -191,9 +204,11 @@ export class SettingDataController {
         return res
     }
 
-    static async searchSetting(options: { page?: number, size?: number, query?: string, returns?: Array<string>, sortby?: { BY: string, DIRECTION?: "ASC" | "DESC" } } | undefined) {
+    static async searchSetting({ query = "*", ...options }: { page?: number, size?: number, query?: string, returns?: Array<string>, sortby?: { BY: string, DIRECTION?: "ASC" | "DESC" } }) {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + `data/getListSimple`, {
-            body: { searchRaw: options?.query?.length ? options?.query : "*", page: options?.page ?? 1, size: options?.size ?? 10, returns: options?.returns, sortby: options?.sortby }
+            headers: _headers,
+            body: { searchRaw: query, ...options }
         })
         return res
     }
@@ -220,8 +235,9 @@ export class AccountController {
     }
 
     async getInfor() {
+        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.get(ConfigData.url + 'data/getInfo', {
-            headers: { module: this.module, pid: ConfigData.pid },
+            headers: { ..._headers, module: this.module, pid: ConfigData.pid },
         })
         return res
     }

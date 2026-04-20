@@ -12,6 +12,11 @@ interface TextFieldProps {
     onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>,
     onBlur?: React.FocusEventHandler<HTMLInputElement>,
     onFocus?: React.FocusEventHandler<HTMLInputElement>,
+    onClick?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseEnter?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseLeave?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseDown?: React.MouseEventHandler<HTMLLabelElement>,
+    onMouseUp?: React.MouseEventHandler<HTMLLabelElement>,
     placeholder?: string,
     disabled?: boolean,
     readOnly?: boolean,
@@ -30,7 +35,7 @@ interface TextFieldProps {
     autoFocus?: boolean,
     autoComplete?: React.HTMLInputAutoCompleteAttribute,
     register?: UseFormRegister<any>,
-    simpleStyle?: boolean
+    simpleStyle?: boolean,
 }
 
 export interface TextFieldRef {
@@ -38,7 +43,7 @@ export interface TextFieldRef {
     inputElement?: HTMLInputElement;
 }
 
-export const TextField = forwardRef<TextFieldRef, TextFieldProps>(({ id, simpleStyle, prefix, suffix, className, helperText, helperTextColor = "#e14337", style = {}, onKeyDown, onComplete, register, ...props }, ref) => {
+export const TextField = forwardRef<TextFieldRef, TextFieldProps>(({ id, simpleStyle, prefix, suffix, className, helperText, helperTextColor = "#e14337", style = {}, onKeyDown, onComplete, register, onClick, onMouseEnter, onMouseLeave, onMouseDown, onMouseUp, ...props }, ref) => {
     const containerRef = useRef<HTMLLabelElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -52,6 +57,11 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(({ id, simpleS
         className={`${simpleStyle ? styles['simple-text-field'] : styles['text-field-container']} row ${className ?? (simpleStyle ? "" : 'body-3')} ${helperText?.length ? styles['helper-text'] : ""}`}
         helper-text={helperText}
         style={{ '--helper-text-color': helperTextColor, ...style } as CSSProperties}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
     >
         {prefix}
         {register ? <input
@@ -74,6 +84,7 @@ export const TextField = forwardRef<TextFieldRef, TextFieldProps>(({ id, simpleS
             type={props.type ?? 'text'}
             onKeyDown={onKeyDown ?? (onComplete ? (ev) => {
                 if (onComplete) {
+                    if (ev.nativeEvent.isComposing) return;
                     switch (ev.key.toLowerCase()) {
                         case "enter":
                             onComplete(ev)

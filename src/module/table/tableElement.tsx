@@ -109,11 +109,11 @@ const HeaderCell = ({ colItem, methods, style = {}, children, onMounted, onChang
                     closePopup(popupRef as any)
                     handleAddEditField()
                 }}>
-                    <Ebigicon src='outline/user interface/gear' size={"1.4rem"} />
+                    <Ebigicon src='outline/user-interface/gear' size={"1.4rem"} />
                     <Text className="button-text-3">Edit field</Text>
                 </button>}
                 <button type='button' className='row' onClick={handleSort}>
-                    <Ebigicon src='outline/user interface/enlarge' size={"1.4rem"} />
+                    <Ebigicon src='outline/user-interface/enlarge' size={"1.4rem"} />
                     <Text className="button-text-3">{sortItem ? "Remove sort" : "Sort"}</Text>
                 </button>
                 {onChangeConfigData && <>
@@ -248,7 +248,7 @@ const HeaderCell = ({ colItem, methods, style = {}, children, onMounted, onChang
 
 interface TableRowProps {
     item: { [p: string]: any };
-    setItem: (params: { [p: string]: any }) => void;
+    setItem: (id: string, params: { [p: string]: any }) => void;
     index: number;
     methods: UseFormReturn<FieldValues, any, undefined>;
     fields?: Array<{ [p: string]: any }>;
@@ -258,12 +258,12 @@ interface TableRowProps {
     showIndex?: boolean;
     hideCheckbox?: boolean;
     showAddEditPopup?: (id?: string) => void;
-    onDelete?: () => void;
+    onDelete?: (id: string) => void;
     actions?: Array<{ [p: string]: any }>;
     onChangeActions?: (actions: Array<{ [p: string]: any }>) => void;
     selected?: string[];
     setSelected?: Dispatch<SetStateAction<string[]>>;
-    onDuplicate?: () => void;
+    onDuplicate?: (id: string) => void;
     onClickRow?: (prarams: { item: { [p: string]: any }, index: number, event: MouseEvent }) => void;
     onContextMenu?: (prarams: { item: { [p: string]: any }, index: number, event: MouseEvent }) => void;
     onEditActionColumn?: (params: { [p: string]: any }, actionItem: { [p: string]: any }) => void;
@@ -399,7 +399,7 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
                     if (id) getData({ id })
                     else {
                         getData({}).then(() => {
-                            setItem({ ...item, _totalChild: (totalChild ?? 0) + 1 })
+                            setItem(item.Id, { ...item, _totalChild: (totalChild ?? 0) + 1 })
                         })
                     }
                 }}
@@ -441,8 +441,8 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
                     tableRowElement.style.backgroundColor = ""
                 }}
                 onEdit={enableEdit ? (() => showAddEditPopup(item.Id)) : undefined}
-                onDuplicate={onDuplicate}
-                onDelete={onDelete}
+                onDuplicate={onDuplicate ? (() => onDuplicate(item.Id)) : undefined}
+                onDelete={onDelete ? (() => onDelete(item.Id)) : undefined}
                 item={item}
                 tbName={tbName}
             />
@@ -480,7 +480,7 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
                     return <Cell key={_col.Id} colItem={_col} style={{ gap: "0.8rem" }}>
                         {totalChild ? <Ebigicon src={`fill/arrows/triangle-${isOpen ? "down" : "right"}`} size={12} onClick={() => setIsOpen(!isOpen)} /> : <div style={{ width: 16 }} />}
                         {cellContent}
-                        {!item.ParentId && enableEdit && <Ebigicon src="fill/user interface/c-add" className={styles["add-child-icon-btn"]} onClick={() => { showAddEditChildPopup() }} />}
+                        {!item.ParentId && enableEdit && <Ebigicon src="fill/user-interface/c-add" className={styles["add-child-icon-btn"]} onClick={() => { showAddEditChildPopup() }} />}
                     </Cell>
                 } else {
                     return <Cell key={_col.Id} colItem={_col}>
@@ -490,7 +490,7 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
             })}
             {!props.hideActionColumn && <Cell colItem={"last"} style={{ flex: 1, padding: "0 1.6rem", minWidth: "12rem", justifyContent: columns.length >= 10 ? "center" : "start" }}>
                 {props.customCell?.["last"]?.({ item, index }) ?? <>
-                    {enableEdit && <Ebigicon src='outline/user interface/i-edit' className='icon-button size24 light' size={14} onClick={() => showAddEditPopup(item.Id)} />}
+                    {enableEdit && <Ebigicon src='outline/user-interface/i-edit' className='icon-button size24 light' size={14} onClick={() => showAddEditPopup(item.Id)} />}
                     <Ebigicon src='outline/text/menu-dots' style={{ rotate: "90deg" }} size={14} className='icon-button size24 light' onClick={showActions} />
                 </>}
             </Cell>}
@@ -508,28 +508,34 @@ export const TableRow = ({ item, setItem, onEditActionColumn, index, methods, fi
                     showIndex={showIndex}
                     hideCheckbox={hideCheckbox}
                     showAddEditPopup={enableEdit ? showAddEditChildPopup : undefined}
-                    onDelete={enableEdit ? (() => {
-                        dataController.delete([childItem.Id]).then(res => {
+                    onDelete={enableEdit ? ((_childId: string) => {
+                        dataController.delete([_childId]).then(res => {
                             if (res.code === 200) {
                                 getData({ page: Math.max(Math.floor(children.length / 20), 1) })
-                                setItem({ ...item, _totalChild: totalChild! - 1 })
+                                setItem(item.Id, { ...item, _totalChild: totalChild! - 1 })
+                            } else {
+                                ToastMessage.errors("Failed to delete element")
+                                console.error("Failed to delete element: " + res.message)
                             }
                         })
                     }) : undefined}
-                    onDuplicate={enableEdit ? () => {
-                        dataController.duplicate([childItem.Id]).then(res => {
-                            if (res.code !== 200) return ToastMessage.errors(res.message)
-                            setItem({ ...item, _totalChild: (totalChild ?? 0) + 1 })
+                    onDuplicate={enableEdit ? ((_childId: string) => {
+                        dataController.duplicate([_childId]).then(res => {
+                            if (res.code !== 200) {
+                                ToastMessage.errors("Failed to duplicate element")
+                                return console.error("Failed to duplicate element: " + res.message)
+                            }
+                            setItem(item.Id, { ...item, _totalChild: (totalChild ?? 0) + 1 })
                             getData({ page: Math.max(Math.floor(children.length / 20), 1) })
-                            ToastMessage.success(`${t("duplicate")} ${tbName?.toLowerCase()} ${t("successfully").toLowerCase()}!`)
+                            ToastMessage.success(`Duplicate element successfully!`)
                         })
-                    } : undefined}
+                    }) : undefined}
                 />
             })}
             {(enableEdit || (!!totalChild && !!children.length && totalChild > children.length)) &&
                 <div className={`row ${styles["add-child-table-row"]}`} style={{ paddingLeft: (!hideCheckbox && showIndex) ? "10rem" : (showIndex ? "8rem" : (hideCheckbox ? "2rem" : "6rem")) }}>
                     {enableEdit && <Button
-                        prefix={<Ebigicon src="outline/user interface/e-add" size={12} />}
+                        prefix={<Ebigicon src="outline/user-interface/e-add" size={12} />}
                         label={`${t("add")} ${t("new").toLowerCase()}`}
                         className="button-text-5"
                         onClick={() => { showAddEditChildPopup() }}
@@ -558,10 +564,7 @@ const Cell = ({ colItem, style, children }: CellProps) => {
             </div>
         default:
             return <div style={{ width: colItem.Width, ...style }} className={`row ${styles["cell"]}`}>
-                <div ref={r => {
-                    if (r)
-                        setTimeout(() => { r.parentElement!.style.maxHeight = r.parentElement!.offsetHeight + "px" }, 500)
-                }} className={`row ${styles["content"]}`}>
+                <div className={`row ${styles["content"]}`}>
                     {children}
                 </div>
             </div>

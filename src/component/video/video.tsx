@@ -12,6 +12,8 @@ interface VideoPlayerProps {
     onEnded?: ReactEventHandler<HTMLVideoElement>;
     sources?: ReactNode;
     autoPlay?: boolean;
+    controls?: boolean;
+    loop?: boolean;
     muted?: boolean;
     width?: number;
     height?: number;
@@ -23,7 +25,7 @@ interface VideoPlayerRef {
     pause: () => void;
 }
 
-export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ controlsList = "", src, className = "", onPlay, muted, autoPlay, onEnded, sources, width, height, ...props }, ref) => {
+export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ controls = true, controlsList = "", src, className = "", onPlay, muted, autoPlay, onEnded, sources, width, height, loop, ...props }, ref) => {
     const videoRef = useRef<HTMLVideoElement | HTMLDivElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -39,7 +41,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ contr
     if (src || sources) {
         return <video
             ref={videoRef as any}
-            controls controlsList={controlsList}
+            controls={controls}
+            controlsList={controls ? controlsList : undefined}
             className={`${styles["video-player"]} ${className}`}
             onPlay={onPlay}
             onEnded={onEnded}
@@ -47,12 +50,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ contr
             muted={muted}
             width={width}
             height={height}
+            loop={loop}
             {...props}
         >
-            {sources ?? <>
-                <source src={src} type="video/mp4" />
-                Your browser does not support the video tag.
-            </>}
+            {sources ?? <source src={src} type="video/mp4" />}
         </video>
     } else {
         return <div ref={videoRef as any} className={`${styles["video-player"]} ${className}`} {...props} />

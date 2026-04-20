@@ -10,7 +10,7 @@ export interface OptionsItem {
     color?: string
     id: string | number
     parentId?: string | number
-    name: string | ReactNode
+    name: string | ReactNode | HTMLElement
     disabled?: boolean
     totalChild?: number
 }
@@ -115,6 +115,24 @@ function defaultLocalSearch(options: OptionsItem[]): GetOptionsFn {
         })
         return { data: filter, totalCount: filter.length }
     }
+}
+
+/** Render an HTMLElement (from document.createElement) as a React node */
+function HtmlElementWrapper({ element }: { element: HTMLElement }) {
+    const ref = useRef<HTMLSpanElement>(null)
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.innerHTML = ''
+            ref.current.appendChild(element.cloneNode(true))
+        }
+    }, [element])
+    return <span ref={ref} style={{ display: 'contents' }} />
+}
+
+/** Safely render an OptionsItem name (supports string, ReactNode, and HTMLElement) */
+function renderOptionName(name: OptionsItem['name']): ReactNode {
+    if (name instanceof HTMLElement) return <HtmlElementWrapper element={name} />
+    return name
 }
 
 /** Render prefix icon or node for an option */
@@ -326,8 +344,8 @@ export const SelectDropdown = forwardRef<SelectDropdownRef, SelectDropdownProps>
                     {multiValue.slice(0, previewMaxLength).map(id => {
                         const opt = options.find(e => e.id === id)
                         return <div key={id} className={`row ${styles['selected-item-value']}`}>
-                            <span>{opt?.name}</span>
-                            <Ebigicon src='outline/user interface/e-remove' size={12} onClick={opt?.disabled ? undefined : ev => {
+                            <span>{opt ? renderOptionName(opt.name) : undefined}</span>
+                            <Ebigicon src='outline/user-interface/e-remove' size={12} onClick={opt?.disabled ? undefined : ev => {
                                 ev.stopPropagation()
                                 const nv = multiValue.filter(v => v !== id)
                                 setMultiValue(nv)
@@ -342,7 +360,7 @@ export const SelectDropdown = forwardRef<SelectDropdownRef, SelectDropdownProps>
             </div>
             {mp.suffix || (
                 mp.showClearValueButton && multiValue.length
-                    ? <Ebigicon src='outline/user interface/c-remove' size={14} onClick={ev => { ev.stopPropagation(); setMultiValue([]); mp.onChange?.([]) }} />
+                    ? <Ebigicon src='outline/user-interface/c-remove' size={14} onClick={ev => { ev.stopPropagation(); setMultiValue([]); mp.onChange?.([]) }} />
                     : <div ref={r => { if (r?.parentElement && r.parentElement.getBoundingClientRect().width < 88) r.style.display = 'none' }} className='row'>
                         <Ebigicon src={`fill/arrows/${isOpen ? 'up' : 'down'}-arrow`} size={12} />
                     </div>
@@ -378,7 +396,7 @@ function SinglePreview({ item, optionStyle, prefix, placeholder }: { item?: Opti
         {prefix}
         <span style={{ flex: 1, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', opacity: 0.5 }}>{placeholder}</span>
     </>
-    if (typeof item.name === 'object') return <>{renderOptionPrefix(item.prefix, prefix)}{item.name}</>
+    if (typeof item.name !== 'string') return <>{renderOptionPrefix(item.prefix, prefix)}{renderOptionName(item.name)}</>
     switch (optionStyle) {
         case 'ghost':
             return <>
@@ -514,14 +532,14 @@ function SingleTile({ item, children, selected, highlighted, flatIndex, onClick,
             case 'ghost':
                 return <>
                     {opt.prefix ? (typeof opt.prefix === 'string' && opt.prefix.length ? <Ebigicon src={opt.prefix as any} color={opt.color} size={13} style={{ width: 24, height: 24, border: `1px dashed ${opt.color}`, borderRadius: '50%' }} /> : opt.prefix) : null}
-                    <span style={{ color: opt.color }}>{opt.name}</span>
+                    <span style={{ color: opt.color }}>{renderOptionName(opt.name)}</span>
                 </>
             case 'solid':
                 return <Tag title={opt.name as any} className={`size24 label-4 ${styles['option-ghost']}`}
                     style={{ borderRadius: 8, lineHeight: 'normal', backgroundColor: `hsl(from ${opt.color} h s calc(l + 30))`, color: '#000', gap: 8 }}
                     prefix={opt.prefix ? (typeof opt.prefix === 'string' && opt.prefix.length ? <Ebigicon src={opt.prefix as any} color='#000' size={12} style={{ padding: 0 }} /> : opt.prefix) : null} />
             default:
-                return <>{renderOptionPrefix(opt.prefix)}<span>{opt.name}</span></>
+                return <>{renderOptionPrefix(opt.prefix)}<span>{renderOptionName(opt.name)}</span></>
         }
     }
 
@@ -530,7 +548,7 @@ function SingleTile({ item, children, selected, highlighted, flatIndex, onClick,
             data-option-index={flatIndex >= 0 ? flatIndex : undefined}
             className={`row label-4 ${styles['select-tile']} ${item.disabled ? styles['disabled'] : ''} ${selected ? styles['selected'] : ''} ${highlighted ? styles['highlighted'] : ''}`}
             onClick={() => item.totalChild ? setIsOpen(!isOpen) : onClick(item)}>
-            {typeof item.name === 'object' ? item.name : ((item.totalChild == null) && optionStyle !== 'default' ? renderByStyle(item) : <>
+            {typeof item.name !== 'string' ? renderOptionName(item.name) : ((item.totalChild == null) && optionStyle !== 'default' ? renderByStyle(item) : <>
                 {item.totalChild != null && <Ebigicon src={`fill/arrows/triangle-${isOpen ? 'down' : 'right'}`} size={12} />}
                 {renderOptionPrefix(item.prefix)}
                 <span>{item.name}</span>
@@ -541,7 +559,7 @@ function SingleTile({ item, children, selected, highlighted, flatIndex, onClick,
                 style={{ paddingLeft: 'calc(max(0.8rem, 5px) + max(0.8rem, 5px) + 16px)' }}
                 className={`row label-4 ${styles['select-tile']} ${child.disabled ? styles['disabled'] : ''} ${selected ? styles['selected'] : ''}`}
                 onClick={() => onClick(child)}>
-                {typeof child.name === 'object' ? child.name : renderByStyle(child)}
+                {typeof child.name !== 'string' ? renderOptionName(child.name) : renderByStyle(child)}
             </button>)}
             {options.data.length < options.totalCount && <div className={`button-text-5 ${styles['see-more']}`} onClick={loadMore}>{t('seemore')}</div>}
         </>}
@@ -587,7 +605,7 @@ function MultiTile({ item, children, selected, onChange, getOptions }: {
     const { isOpen, setIsOpen, options, loadMore } = useChildOptions(children, item.id, getOptions)
     const { t } = useTranslation()
 
-    const renderLabel = (opt: OptionsItem) => typeof opt.name === 'object' ? opt.name : <>{renderOptionPrefix(opt.prefix)}<span>{opt.name}</span></>
+    const renderLabel = (opt: OptionsItem) => typeof opt.name !== 'string' ? renderOptionName(opt.name) : <>{renderOptionPrefix(opt.prefix)}<span>{opt.name}</span></>
 
     if (item.totalChild) {
         const allChecked = selected?.some(s => s.id === item.id) || (!!options.data.length && options.data.every(c => selected?.some(s => s.id === c.id)))
@@ -598,7 +616,7 @@ function MultiTile({ item, children, selected, onChange, getOptions }: {
                     <Checkbox size={16} disabled={item.disabled} value={allChecked ? true : someChecked ? null : false}
                         onChange={ev => onChange(ev, [item, ...options.data])} />
                 </div>
-                {typeof item.name === 'object' ? item.name : <>
+                {typeof item.name !== 'string' ? renderOptionName(item.name) : <>
                     {item.totalChild != null && <Ebigicon src={`fill/arrows/triangle-${isOpen ? 'down' : 'right'}`} size={12} />}
                     {item.prefix}<span>{item.name}</span>
                 </>}

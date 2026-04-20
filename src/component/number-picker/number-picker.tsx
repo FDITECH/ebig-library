@@ -42,7 +42,7 @@ export const NumberPicker = ({ type = "icon-button", volume = 1, style = {}, ...
         helper-text={props.helperText}
         style={{ '--helper-text-color': props.helperTextColor ?? '#e14337', ...style } as CSSProperties}
     >
-        <Ebigicon src={`outline/user interface/e-delete`}
+        <Ebigicon src={`outline/user-interface/e-delete`}
             className="icon-button light"
             style={{ padding: "0.6rem", color: props.iconColor }}
             onClick={() => {
@@ -91,7 +91,7 @@ export const NumberPicker = ({ type = "icon-button", volume = 1, style = {}, ...
                 }
             }}
         />
-        <Ebigicon src={`outline/user interface/e-add`}
+        <Ebigicon src={`outline/user-interface/e-add`}
             className="icon-button light"
             style={{ padding: "0.6rem", color: props.iconColor }}
             onClick={() => {

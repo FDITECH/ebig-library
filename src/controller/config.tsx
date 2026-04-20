@@ -15,7 +15,7 @@ export class ConfigData {
 export const refreshTokenHeaders = { 'Content-Type': 'application/json', pid: "wini" }
 export const specialCharsRegex = /[^a-zA-Z0-9]/g;
 
-const getHeaders = async () => {
+export const getHeaders = async () => {
     let timeRefresh: any = Util.getCookie("timeRefresh")
     if (typeof timeRefresh === "string") timeRefresh = parseInt(timeRefresh)
     const now = Date.now() / 1000
@@ -38,7 +38,6 @@ const getHeaders = async () => {
             }
         }
         ConfigData.onInvalidToken()
-        window.location.replace("/login")
     } else if (Util.getCookie("accessToken")) {
         return {
             'Authorization': `Bearer ${Util.getCookie("accessToken")}`,
@@ -54,8 +53,7 @@ const maxFileSize = 200 * 1024 * 1024
 export class BaseDA {
     static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {
-            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await getHeaders()) : { 'Content-Type': 'application/json' }
-            if (!_headers) _headers = { 'Content-Type': 'application/json' }
+            let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.post(url, options?.body, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
@@ -67,7 +65,7 @@ export class BaseDA {
                 }
             } else if (response.status === 401) {
                 ToastMessage.errors('Unauthorized access')
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };
@@ -95,7 +93,8 @@ export class BaseDA {
                     }
                 case 401:
                     ToastMessage.errors('Unauthorized access')
-                    return window.location.replace('/login')
+                    ConfigData.onInvalidToken()
+                    return;
                 default:
                     console.log("error: ??: ", response.statusText)
                     return { status: response.status, message: response.statusText };
@@ -108,8 +107,7 @@ export class BaseDA {
 
     static get = async (url: string, options?: { headers?: { [k: string]: any } }) => {
         try {
-            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await getHeaders()) : { 'Content-Type': 'application/json' }
-            if (!_headers) _headers = { 'Content-Type': 'application/json' }
+            let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.get(url, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
@@ -118,7 +116,8 @@ export class BaseDA {
                 return { message: 'ok' }
             } else if (response.status === 401) {
                 ToastMessage.errors('Unauthorized access')
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
+                return;
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };
@@ -204,6 +203,38 @@ export class BaseDA {
             headers: { pid: ConfigData.pid, 'Content-Type': 'application/json' },
             body: { data },
         })
+        return response
+    }
+
+    static deleteFiles = async (ids: Array<string>, headers?: { [k: string]: any }) => {
+        const loader = document.createElement("div")
+        loader.className = "loader"
+        document.body.appendChild(loader)
+
+        let _headers: { [k: string]: any } = await getHeaders()
+        const headersObj: any = { ..._headers, pid: ConfigData.pid, ...headers }
+
+        const response = await BaseDA.post(ConfigData.url + 'file/deleteFiles', {
+            headers: headersObj,
+            body: { ids },
+        })
+        loader.remove()
+        return response
+    }
+
+    static duplicateFiles = async (ids: Array<string>, headers?: { [k: string]: any }) => {
+        const loader = document.createElement("div")
+        loader.className = "loader"
+        document.body.appendChild(loader)
+
+        let _headers: { [k: string]: any } = await getHeaders()
+        const headersObj: any = { ..._headers, pid: ConfigData.pid, ...headers }
+
+        const response = await BaseDA.post(ConfigData.url + 'file/duplicateFiles', {
+            headers: headersObj,
+            body: { ids },
+        })
+        loader.remove()
         return response
     }
 }

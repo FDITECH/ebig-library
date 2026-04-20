@@ -7,7 +7,6 @@ import { ConfigData, specialCharsRegex } from "../../controller/config";
 import { ComponentType, FEDataType } from "../da";
 import { CustomerAvatar } from "./config";
 import { getValidLink } from "../page/pageById";
-import { regexGetVariableByThis } from "../card/config";
 
 interface AddEditElementFormProps {
     id?: string;
@@ -79,7 +78,10 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
         if (id) {
             dataController.getById(id).then(res => {
                 if (res.code === 200) setItem(res.data)
-                else ToastMessage.errors(res.message)
+                else {
+                    ToastMessage.errors("Failed to get data")
+                    console.error("Failed to get data: " + res.message)
+                }
             })
         }
         getSetting()
@@ -94,41 +96,40 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
         return tmp
     }, [item])
 
+    const [status, setStatus] = useState(0) // 0: loading, 1: formById, 2: formView
+
+    useEffect(() => {
+        setStatus(0)
+        if (column.length && (!id || initFormItem)) {
+            const timeout = setTimeout(() => {
+                if ((id && selectedFormId.formEdit) || (!id && selectedFormId.formAdd)) {
+                    setStatus(1)
+                } else {
+                    setStatus(2)
+                }
+            }, 100)
+            return () => {
+                clearTimeout(timeout)
+            }
+        }
+    }, [id, selectedFormId, column.length, initFormItem])
+
+    useEffect(() => {
+        if (id) {
+            return () => { onSuccess?.() }
+        }
+    }, [id])
+
     return <div ref={diveRef} className="col right-drawer" style={{ alignItems: "center", transition: "max-width 0.6s", width: "100dvw", maxWidth: isExpand ? "100dvw" : 720 }}>
         <div className='popup-header row' style={{ gap: 8, width: "100%" }}>
-            <span
-                className="heading-7" style={{ flex: 1 }}
-                contentEditable={!!onChangeTitle}
-                suppressContentEditableWarning={!!onChangeTitle}
-                onKeyDown={onChangeTitle ?
-                    ((ev: any) => {
-                        switch (ev.key.toLowerCase()) {
-                            case "enter":
-                                ev.preventDefault()
-                                ev.target.blur()
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }) : undefined}
-                onBlur={onChangeTitle ?
-                    ((ev) => {
-                        const newTitle = ev.target.innerText.trim()
-                        if (newTitle.length) onChangeTitle!(newTitle)
-                        else {
-                            ev.target.innerText = `${id ? "Edit" : "Add"} ${tbName}`
-                            onChangeTitle!(null)
-                        }
-                    }) : undefined}
-            >{title ?? `${id ? "Edit" : "Add"} ${tbName}`}</span>
+            <span className="heading-7" style={{ flex: 1 }}>{title ?? `${id ? "Edit" : "Add"} ${tbName}`}</span>
             <Ebigicon
                 src={isExpand ? "outline/arrows/box-arrow-right" : "fill/multimedia/fullscreen"}
                 size={14} className="icon-button size24"
                 onClick={() => { setExpand(!isExpand) }}
             />
             <Ebigicon
-                src="outline/user interface/e-remove"
+                src="outline/user-interface/e-remove"
                 size={14} className="icon-button size24"
                 onClick={() => {
                     if (diveRef.current) {
@@ -139,49 +140,48 @@ const AddEditElementForm = forwardRef(({ tbName = "", title, activeColumns = [],
                 }}
             />
         </div>
-        {!!column.length && (!id || initFormItem) &&
-            (
-                ((id && selectedFormId.formEdit) || (!id && selectedFormId.formAdd)) ?
-                    <FormById
-                        key={id ? selectedFormId.formEdit : selectedFormId.formAdd}
-                        id={id ? selectedFormId.formEdit! : selectedFormId.formAdd!}
-                        ref={formRef}
-                        data={initFormItem}
-                        style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden auto', scrollbarWidth: "thin", animation: "loading-change-view 0.5s ease-in-out" }}
-                        onGetFormError={() => {
-                            const tmp = { ...selectedFormId }
-                            if (id) tmp.formEdit = null
-                            else tmp.formAdd = null
-                            setSelectedFormId(tmp)
-                            onSelectCustomForm?.(tmp)
-                        }}
-                        onSubmit={onSuccess}
-                    /> :
-                    <FormView
-                        cols={column.filter(e => !e.Query?.length)}
-                        rels={relative}
-                        item={initFormItem}
-                        parentId={(props as any).ParentId}
-                        tbName={tbName}
-                        customTablePKOptions={customTablePKOptions}
-                        expandForm={expandForm}
-                        onCancel={() => {
-                            showDialog({
-                                alignment: DialogAlignment.center,
-                                status: ComponentStatus.WARNING,
-                                submitTitle: t("submit"),
-                                title: `${t("confirm")} ${t("cancel").toLowerCase()} ` + (id ? t('edit') : t('add')).toLowerCase(),
-                                onSubmit: () => { closePopup(ref) }
-                            })
-                        }}
-                        onSuccess={() => {
-                            closePopup(ref)
-                            ToastMessage.success(`${id ? t('edit') : t('add')} ${title ?? tbName} ${t("successfully").toLowerCase()}!`)
-                            onSuccess?.()
-                        }}
-                        handleSubmit={handleSubmit}
-                        customFields={customFields}
-                    />
+        {!!status &&
+            (status === 1 ?
+                <FormById
+                    key={id ? selectedFormId.formEdit : selectedFormId.formAdd}
+                    id={id ? selectedFormId.formEdit! : selectedFormId.formAdd!}
+                    ref={formRef}
+                    data={initFormItem}
+                    style={{ flex: 1, width: '100%', height: '100%', overflow: 'hidden auto', scrollbarWidth: "thin", animation: "loading-change-view 0.5s ease-in-out" }}
+                    onGetFormError={() => {
+                        const tmp = { ...selectedFormId }
+                        if (id) tmp.formEdit = null
+                        else tmp.formAdd = null
+                        setSelectedFormId(tmp)
+                        onSelectCustomForm?.(tmp)
+                    }}
+                    onSubmit={onSuccess}
+                /> :
+                <FormView
+                    cols={column.filter(e => !e.Query?.length)}
+                    rels={relative}
+                    item={initFormItem}
+                    parentId={(props as any).ParentId}
+                    tbName={tbName}
+                    customTablePKOptions={customTablePKOptions}
+                    expandForm={expandForm}
+                    onCancel={() => {
+                        showDialog({
+                            alignment: DialogAlignment.center,
+                            status: ComponentStatus.WARNING,
+                            submitTitle: t("submit"),
+                            title: `${t("confirm")} ${t("cancel").toLowerCase()} ` + (id ? t('edit') : t('add')).toLowerCase(),
+                            onSubmit: () => { closePopup(ref) }
+                        })
+                    }}
+                    onSuccess={() => {
+                        closePopup(ref)
+                        ToastMessage.success(`${id ? t('edit') : t('add')} ${title ?? tbName} ${t("successfully").toLowerCase()}!`)
+                        onSuccess?.()
+                    }}
+                    handleSubmit={handleSubmit}
+                    customFields={customFields}
+                />
             )}
     </div>
 })
@@ -206,7 +206,6 @@ interface FormViewProps {
 const FormView = ({ cols = [], rels = [], item, tbName, onCancel, onSuccess, expandForm, handleSubmit, customFields, customTablePKOptions, ...props }: FormViewProps) => {
     const dataController = new DataController(tbName)
     const methods = useForm<any>({ shouldFocusError: false, defaultValues: { Id: randomGID() } })
-    const watchRel = useMemo(() => rels.filter(e => e.Query && e.Query.match(regexGetVariableByThis)?.length), [rels.length])
     const methodsOptions = useForm<any>({ shouldFocusError: false })
     const { t } = useTranslation()
     const htmlContent = useRef<{ [k: string]: string }>({})
@@ -227,12 +226,17 @@ const FormView = ({ cols = [], rels = [], item, tbName, onCancel, onSuccess, exp
                                 break;
                             case FEDataType.HTML:
                                 if (ConfigData.regexGuid.test(item[prop])) {
-                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${item[prop]}`, { headers: { 'Cache-Control': 'no-cache' } }).then((result) => {
-                                        if (typeof result === 'string') {
-                                            htmlContent.current[prop] = item[prop]
-                                            methods.setValue(prop, result)
-                                        } else methods.setValue(prop, item[prop])
-                                    })
+                                    try {
+                                        BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${item[prop]}`, { headers: { 'Cache-Control': 'no-cache' } }).then((result) => {
+                                            if (typeof result === 'string') {
+                                                htmlContent.current[prop] = item[prop]
+                                                methods.setValue(prop, result)
+                                            } else methods.setValue(prop, item[prop])
+                                        })
+                                    } catch (error) {
+                                        console.error("Error fetching content: ", error)
+                                        methods.setValue(prop, item[prop])
+                                    }
                                 } else {
                                     methods.setValue(prop, item[prop])
                                 }

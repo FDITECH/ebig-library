@@ -50,13 +50,13 @@ export class Util {
         };
 
         const config = currencySymbols[currency];
-        const decimals = options?.decimals ?? 2;
+        const decimals = options?.decimals ?? 0;
         const formatted = num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         const space = config.space ? ' ' : '';
 
-        return config.position === 'before'
+        return options?.symbol ? (config.position === 'before'
             ? `${config.symbol}${space}${formatted}`
-            : `${formatted}${space}${config.symbol}`;
+            : `${formatted}${space}${config.symbol}`) : formatted;
     }
 
     /** Currency converter with exchange rates */

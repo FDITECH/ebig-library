@@ -86,7 +86,10 @@ import {
     Command
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
+// @ts-ignore
+import translations from 'ckeditor5/translations/vi';
 import './ck-editor.css';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Create a free account with a trial: https://portal.ckeditor.com/checkout?plan=free
@@ -218,7 +221,76 @@ class ExportPdfCommand extends Command {
     }
 }
 
-// 2. Your Plugin Class
+// 2. Media Properties Plugin factory — uses i18n for labels
+function createMediaPropertiesPlugin(t: (key: string) => string) {
+    return class MediaPropertiesPlugin extends Plugin {
+        static get pluginName() {
+            return 'MediaProperties' as const;
+        }
+
+        init() {
+            const editor = this.editor;
+
+            const buttons: Array<{ name: string; labelKey: string; param: string }> = [
+                { name: 'mediaAutoplay', labelKey: 'autoplay', param: 'autoplay' },
+                { name: 'mediaLoop', labelKey: 'loop', param: 'loop' },
+                { name: 'mediaMuted', labelKey: 'muted', param: 'mute' },
+            ];
+
+            for (const btn of buttons) {
+                editor.ui.componentFactory.add(btn.name, (locale) => {
+                    const view = new ButtonView(locale);
+                    view.set({
+                        label: t(btn.labelKey),
+                        withText: true,
+                        tooltip: true,
+                        isToggleable: true,
+                    });
+
+                    view.on('execute', () => {
+                        const root = editor.editing.view.document.getRoot();
+                        if (!root) return;
+
+                        editor.model.change((writer: any) => {
+                            const selection = editor.model.document.selection;
+                            const selectedElement = selection.getSelectedElement();
+                            if (!selectedElement || selectedElement.name !== 'media') return;
+
+                            const currentUrl: string = selectedElement.getAttribute('url') as string || '';
+                            const separator = currentUrl.includes('?') ? '&' : '?';
+
+                            if (currentUrl.includes(`${btn.param}=1`)) {
+                                const newUrl = currentUrl
+                                    .replace(new RegExp(`[?&]${btn.param}=1`), '')
+                                    .replace(/[?&]$/, '')
+                                    .replace(/\?&/, '?');
+                                writer.setAttribute('url', newUrl, selectedElement);
+                                view.set({ isOn: false });
+                            } else {
+                                writer.setAttribute('url', `${currentUrl}${separator}${btn.param}=1`, selectedElement);
+                                view.set({ isOn: true });
+                            }
+                        });
+                    });
+
+                    editor.model.document.selection.on('change:range', () => {
+                        const selectedElement = editor.model.document.selection.getSelectedElement();
+                        if (selectedElement && selectedElement.name === 'media') {
+                            const url: string = selectedElement.getAttribute('url') as string || '';
+                            view.set({ isOn: url.includes(`${btn.param}=1`) });
+                        } else {
+                            view.set({ isOn: false });
+                        }
+                    });
+
+                    return view;
+                });
+            }
+        }
+    };
+}
+
+// 3. Export PDF Plugin
 class ExportPdfPlugin extends Plugin {
     static get pluginName() {
         return 'ExportPdf';
@@ -253,6 +325,7 @@ class ExportPdfPlugin extends Plugin {
 export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeight: 600, borderRadius: 8 }, extraPlugins = [], ...props }: Props) {
     const editorContainerRef = useRef(null);
     const editorRef = useRef(null);
+    const { t, i18n } = useTranslation()
     // const editorWordCountRef = useRef(null);
 
     return <div
@@ -400,9 +473,9 @@ export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeigh
                             Underline,
                             WordCount,
                         ],
-                        balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
+                        balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList', '|', 'mediaAutoplay', 'mediaLoop', 'mediaMuted'],
                         extraPlugins: [
-                            ExportPdfPlugin, ...extraPlugins
+                            ExportPdfPlugin, createMediaPropertiesPlugin(t), ...extraPlugins
                         ],
                         mediaEmbed: {
                             previewsInData: true,
@@ -744,7 +817,8 @@ export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeigh
                                 'resizeImage'
                             ]
                         },
-                        language: "vi",
+                        language: i18n.language,
+                        translations: i18n.language === 'vi' ? [translations] : [],
                         licenseKey: LICENSE_KEY,
                         link: {
                             addTargetToExternalLinks: true,

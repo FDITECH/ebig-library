@@ -41,7 +41,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const [formItem, setFormItem] = useState<{ [p: string]: any }>()
     const layers = useMemo(() => (formItem?.Props ?? []).sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [formItem])
     const keyNames = useMemo<string[]>(() => layers.filter((e: any) => e.NameField?.length).map((e: any) => e.NameField), [layers.length])
-    const inputComponents = [ComponentType.img, ComponentType.textField, ComponentType.textArea, ComponentType.selectDropdown, ComponentType.checkbox, ComponentType.switch, ComponentType.radio, ComponentType.colorPicker, ComponentType.ckEditor, ComponentType.datePicker, ComponentType.upload, ComponentType.numberPicker]
+    const inputComponents = [ComponentType.img, ComponentType.textField, ComponentType.textArea, "Select1", "SelectMultiple", ComponentType.selectDropdown, ComponentType.checkbox, ComponentType.switch, ComponentType.radio, ComponentType.colorPicker, ComponentType.ckEditor, ComponentType.datePicker, ComponentType.upload, ComponentType.numberPicker]
     const inputLayers = useMemo<{ [p: string]: any }[]>(() => layers.filter((e: any) => e.NameField?.length && inputComponents.includes(e.Type)), [layers])
     const _colController = new TableController("column")
     const _relController = new TableController("rel")
@@ -111,7 +111,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                                 break;
                             case FEDataType.HTML:
                                 if (ConfigData.regexGuid.test(dataItem[prop])) {
-                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${dataItem[prop]}`).then((result) => {
+                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${dataItem[prop]}`, { headers: { "Cache-Control": "no-cache" } }).then((result) => {
                                         if (typeof result === 'string') {
                                             htmlContent.current[prop] = dataItem[prop]
                                             methods.setValue(prop, result)
@@ -190,7 +190,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                         break;
                     case FEDataType.HTML:
                         if (ConfigData.regexGuid.test(_col.Form.DefaultValue)) {
-                            BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${_col.Form.DefaultValue}`).then((result) => {
+                            BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${_col.Form.DefaultValue}`, { headers: { "Cache-Control": "no-cache" } }).then((result) => {
                                 if (typeof result === 'string') {
                                     htmlContent.current[_col.Name] = _col.Form.DefaultValue
                                     methods.setValue(_col.Name, result)
@@ -293,24 +293,24 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                                 dataItem[_col.Name] = getHashPassword.data
                             }
                             break;
-                        case FEDataType.HTML:
-                            if (dataItem[_col.Name].length || htmlContent.current[_col.Name]) {
-                                const createHtmlFile = Util.stringToFile(dataItem[_col.Name], `${dataItem.Name}'s ${_col.Name}.txt`)
-                                const res = await BaseDA.uploadFiles(htmlContent.current[_col.Name] ? [{ id: htmlContent.current[_col.Name], file: createHtmlFile }] : [createHtmlFile])
-                                if (res?.length) dataItem[_col.Name] = res[0].Id
-                            }
-                            break;
-                        case FEDataType.FILE:
-                            if (ev[_col.Name] && Array.isArray(ev[_col.Name])) {
-                                const uploadFiles = ev[_col.Name].filter((e: any) => !!e?.file)
-                                if (uploadFiles.length) {
-                                    const res = await BaseDA.uploadFiles(uploadFiles.map((e: any) => e.file))
-                                    if (res?.length) dataItem[_col.Name] = ev[_col.Name].map((e: any) => e.file ? res.shift().Id : e.exactUrl).filter(Boolean).join(",")
-                                } else {
-                                    dataItem[_col.Name] = ev[_col.Name].map((e: any) => e.exactUrl ?? e.id).join(",")
-                                }
-                            }
-                            break;
+                        // case FEDataType.HTML:
+                        //     if (dataItem[_col.Name].length || htmlContent.current[_col.Name]) {
+                        //         const createHtmlFile = Util.stringToFile(dataItem[_col.Name], `${dataItem.Name}'s ${_col.Name}.txt`)
+                        //         const res = await BaseDA.uploadFiles(htmlContent.current[_col.Name] ? [{ id: htmlContent.current[_col.Name], file: createHtmlFile }] : [createHtmlFile])
+                        //         if (res?.length) dataItem[_col.Name] = res[0].Id
+                        //     }
+                        //     break;
+                        // case FEDataType.FILE:
+                        //     if (ev[_col.Name] && Array.isArray(ev[_col.Name])) {
+                        //         const uploadFiles = ev[_col.Name].filter((e: any) => !!e?.file)
+                        //         if (uploadFiles.length) {
+                        //             const res = await BaseDA.uploadFiles(uploadFiles.map((e: any) => e.file))
+                        //             if (res?.length) dataItem[_col.Name] = ev[_col.Name].map((e: any) => e.file ? res.shift().Id : e.exactUrl).filter(Boolean).join(",")
+                        //         } else {
+                        //             dataItem[_col.Name] = ev[_col.Name].map((e: any) => e.exactUrl ?? e.id).join(",")
+                        //         }
+                        //     }
+                        //     break;
                         default:
                             break;
                     }
@@ -335,8 +335,8 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                 setRels(cacheTable.rels)
             } else {
                 Promise.all([
-                    _relController.getListSimple({ page: 1, size: 100, query: `@TableFK:{${formItem.TbName}}` }),
-                    _colController.getListSimple({ page: 1, size: 100, query: `@TableName:{${formItem.TbName}}` })
+                    _relController.getListSimple({ query: `@TableFK:{${formItem.TbName}}` }),
+                    _colController.getListSimple({ query: `@TableName:{${formItem.TbName}}` })
                 ]).then(res => {
                     if (res.every((e: any) => e.code === 200)) {
                         const relTmp = res[0].data.map((e: any) => ({ ...e, Form: JSON.parse(e.Form) }))
@@ -354,7 +354,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
         const relKeys = keyNames.filter((e: string) => e.split(".").length > 1)
         if (!relKeys.length) return null;
         const _rels = await _relController.getListSimple({
-            page: 1, size: 100,
             query: `@TableFK:{${formItem!.TbName}} @Column:{${relKeys.map((e: any) => e.split(".")[0]).filter((k: string, i: number, arr: Array<string>) => arr.indexOf(k) === i).join(" | ")}}`,
             returns: ["Id", "Column", "TablePK"]
         })

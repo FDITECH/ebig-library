@@ -113,10 +113,10 @@ export const SearchFilterData = ({ columns = [], fields = [], searchData = [], o
             }}
         />}
         {(type === "both" || type === "filter") && filterColumns.length > 1 && <Button
-            prefix={<Ebigicon src='outline/user interface/setup-tools' size={14} color={activeFilter?.length ? "var(--primary-main-color)" : undefined} />}
+            prefix={<Ebigicon src='outline/user-interface/setup-tools' size={14} color={activeFilter?.length ? "var(--primary-main-color)" : undefined} />}
             label={`${t("filter")}${activeFilter?.length ? `: ${activeFilter.length}` : ""}`}
             style={activeFilter?.length ? { backgroundColor: "var(--primary-background)", color: "var(--primary-main-color)" } : undefined}
-            suffix={activeFilter?.length ? <Ebigicon src={"outline/user interface/e-remove"} size={14} className="icon-button light" onClick={(ev: any) => {
+            suffix={activeFilter?.length ? <Ebigicon src={"outline/user-interface/e-remove"} size={14} className="icon-button light" onClick={(ev: any) => {
                 ev.preventDefault()
                 ev.stopPropagation()
                 const btn = ev.target.closest("button")
@@ -247,7 +247,7 @@ const FilterDropdown = ({ filterData, style = {}, onClose, columns = [], relativ
     return <div className="col dropdown-popup" style={{ maxHeight: "40rem", width: "64rem", padding: 0, ...style }}>
         <Popup ref={popupRef} />
         <div className="row popup-header" style={{ gap: "0.8rem" }}>
-            <Ebigicon src='outline/user interface/setup-tools' />
+            <Ebigicon src='outline/user-interface/setup-tools' />
             <Text className="heading-7" style={{ flex: 1 }}>{t("filter")}</Text>
             <Button
                 label={t("clearall")}
@@ -282,7 +282,7 @@ const FilterDropdown = ({ filterData, style = {}, onClose, columns = [], relativ
             {enableEdit && <Button
                 label={t("add")}
                 className="button-text-5 button-infor size24 dashed"
-                prefix={<Ebigicon src={"outline/user interface/e-add"} size={"1.2rem"} />}
+                prefix={<Ebigicon src={"outline/user-interface/e-add"} size={"1.2rem"} />}
                 onClick={showOptions}
             />}
         </div>
@@ -319,7 +319,7 @@ const FilterTile = ({ filterItem, onScroll, onRemove, columns = [], fields = [],
             <div className="row" style={{ flex: 1, overflow: "visible" }}>
                 {tmp && <InputValueTile fieldItem={tmp} filterItem={filterItem} colData={colData} onChange={onChange} />}
             </div>
-            {enableEdit && <Ebigicon src="outline/user interface/trash-can" className="icon-button light" tooltip={{ message: t("remove") }} onClick={onRemove} />}
+            {enableEdit && <Ebigicon src="outline/user-interface/trash-can" className="icon-button light" tooltip={{ message: t("remove") }} onClick={onRemove} />}
         </div>
     </>
 }
@@ -461,7 +461,7 @@ const InputValueTile = ({ fieldItem, filterItem, colData, onChange }: InputValue
                 pickerType={fieldItem.DataType === FEDataType.DATE ? "daterange" : "datetimerange"}
                 placeholder={`${t("select")} ${(colData?.Title ?? fieldItem.Form.Label ?? data.name).toLowerCase()}`}
                 style={{ width: "100%", padding: "0 1.2rem", height: "3.2rem", border: "var(--neutral-main-border)" }}
-                prefix={<Ebigicon src="outline/user interface/calendar-date-2" style={{ marginRight: "0.4rem" }} size={"1.2rem"} />}
+                prefix={<Ebigicon src="outline/user-interface/calendar-date-2" style={{ marginRight: "0.4rem" }} size={"1.2rem"} />}
                 value={tmpValues[0] ? new Date(Number(tmpValues[0])) : undefined}
                 endValue={tmpValues[1] ? new Date(Number(tmpValues[1])) : undefined}
                 onChange={({ start, end }: any) => {
@@ -522,7 +522,7 @@ const InputValueTile = ({ fieldItem, filterItem, colData, onChange }: InputValue
                         {!!labels.length ? <>
                             {labels.slice(0, 2).map(((el: any) => <Tag key={el.Id} title={el.Name}
                                 className="size24 button-text-6 tag-grey"
-                                suffix={<Ebigicon src="outline/user interface/e-remove" size={12} onClick={(ev) => {
+                                suffix={<Ebigicon src="outline/user-interface/e-remove" size={12} onClick={(ev) => {
                                     ev.stopPropagation()
                                     const tmpValue = data.value?.split(",").filter((id: string) => id !== el.Id).join(",")
                                     onChangeData(tmpValue.length ? tmpValue : undefined)
@@ -725,7 +725,7 @@ const FilterValueOptionsDropdown = ({ onClose, onSelect, style = {}, selected, i
                 placeholder={t("search")}
                 className="body-3 size24"
                 style={{ flex: 1, backgroundColor: "var(--neutral-main-background-color, #EFEFF0)" }}
-                prefix={<Ebigicon src="outline/user interface/search" size={12} />}
+                prefix={<Ebigicon src="outline/user-interface/search" size={12} />}
                 onChange={(ev) => { setSearch(ev.target.value.trim()) }}
                 onComplete={(ev) => {
                     switch (ev.key.toLowerCase()) {
@@ -820,7 +820,7 @@ export const ButtonImportData = ({ onImport }: { onImport?: (result: { [key: str
     return <>
         <Popup ref={popupRef as any} />
         <Button
-            prefix={<Ebigicon src='outline/user interface/data-upload' />}
+            prefix={<Ebigicon src='outline/user-interface/data-upload' />}
             label={t("import")}
             onClick={(ev: any) => {
                 const rect = ev.target.closest("button").getBoundingClientRect()
@@ -912,7 +912,7 @@ export const ActionOptionsDropdown = forwardRef(({ onClose, actions = [], onChan
             closePopup(ref)
             onEdit()
         }}>
-            <Ebigicon src={"outline/user interface/edit"} size={14} />
+            <Ebigicon src={"outline/user-interface/edit"} size={14} />
             <Text className='label-3'>{t("edit")}</Text>
         </button>}
         {onDuplicate && <button type='button' className='row' onClick={onDuplicate}>
@@ -950,7 +950,7 @@ export const ActionOptionsDropdown = forwardRef(({ onClose, actions = [], onChan
                 onSubmit: onDelete
             })
         }}>
-            <Ebigicon src={"outline/user interface/trash-can"} size={14} />
+            <Ebigicon src={"outline/user-interface/trash-can"} size={14} />
             <Text className='label-3'>{t("delete")}</Text>
         </button>}
     </div>
@@ -981,7 +981,7 @@ const FKTable = ({ fkItem, item, tbName, actions, onChangeActions, onEditActionC
                 size={14} className="icon-button size24"
                 onClick={() => { setExpand(!isExpand) }}
             />
-            <Ebigicon src={"fill/user interface/e-remove"} className="icon-button size24" onClick={onClose} />
+            <Ebigicon src={"fill/user-interface/e-remove"} className="icon-button size24" onClick={onClose} />
         </div>
         <div className="col" style={{ flex: 1 }}>
             <DataTable

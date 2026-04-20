@@ -2,7 +2,7 @@ import styles from "./component-form.module.css";
 import { CSSProperties, KeyboardEventHandler, ReactNode, useMemo, useState } from "react";
 import { Controller, FieldValues, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Checkbox, ColorPicker, DateTimePicker, ImportFile, NumberPicker, OptionsItem, RadioButton, Switch, TextArea, TextField, UploadFiles, Ebigicon, SelectDropdown } from "../../index"
+import { Checkbox, ColorPicker, DateTimePicker, ImportFile, NumberPicker, RadioButton, Switch, TextArea, TextField, UploadFiles, Ebigicon, SelectDropdown } from "../../index"
 
 interface FTextFieldProps {
     id?: string;
@@ -43,7 +43,7 @@ export function FInputPassword(props: FTextFieldProps) {
         autoComplete="off"
         type={isShowPass ? "text" : "password"}
         suffix={<>
-            <Ebigicon src={`outline/user interface/${isShowPass ? "view" : "hide"}`} size={"inherit"} onClick={() => setIsShowPass(!isShowPass)} />
+            <Ebigicon src={`outline/user-interface/${isShowPass ? "view" : "hide"}`} size={"inherit"} onClick={() => setIsShowPass(!isShowPass)} />
             {props.suffix}
         </>}
         register={props.name?.length ? (props.methods!.register(props.name, { required: props.required }) as any) : undefined}
@@ -249,6 +249,10 @@ interface FDropdownSelectProps {
     methods: UseFormReturn<FieldValues, any, undefined>;
     value?: any;
     required?: boolean;
+    readOnly?: boolean;
+    disabled?: boolean;
+    className?: string;
+    style?: CSSProperties;
     options: Array<{ id: string | number, name: string, [p: string]: any }>;
     getOptions?: (params: { length: number, search?: string, parentId?: string | number }) => Promise<{ data: Array<{ id: string | number, name: string, [p: string]: any }>, totalCount: number }>;
     onChange?: (v?: any) => void;

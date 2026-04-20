@@ -9,7 +9,7 @@ This repository is a React + TypeScript UI component library (library entry: `sr
 | `src/module/EbigProvider.tsx` | Root provider (`EbigProvider`). Sets up routing, toasts, i18n, design tokens. Wraps `BrowserRouter` internally — consumers must NOT add another one. |
 | `src/controller/config.tsx` | `ConfigData` singleton, token-refresh flow, cookie helpers, `BaseDA` (all HTTP calls). |
 | `src/controller/data.tsx` | `DataController`, `SettingDataController`, `AccountController` — all require `ConfigData.pid` and `ConfigData.url` to be set first. |
-| `src/controller/setting.tsx` | `TableController` (settings CRUD), `EbigController` (project-level queries — keep `wini/` API paths unchanged), `IntegrationController`. |
+| `src/controller/setting.tsx` | `TableController` (settings CRUD), `EbigController` (project-level queries — keep `ebig/` API paths unchanged), `IntegrationController`. |
 | `src/language/i18n.tsx` | Default en/vi i18n bundles; dynamic bundles loaded by `EbigProvider` at runtime. |
 | `vite.config.ts` | Library build: entry `src/index.tsx`, formats `["es","cjs"]`, CSS emitted as `style.css`, externals include `react`, `react-dom`, `react-router-dom`, `ckeditor5`. |
 | `src/index.tsx` | Single source of truth for public API surface — add/remove exports here. |
@@ -20,9 +20,9 @@ This repository is a React + TypeScript UI component library (library entry: `sr
 - Root provider: `EbigProvider` (default export) / `useEbigContext()` hook
 - Icon component: `Ebigicon` — fetches SVGs from `https://cdn.ebig.co/icon-library/<path>.svg`, cached via Cache API
 - Rich-text editor component: `EbigEditor` / `EbigEditorForm`
-- Project-controller: `EbigController` (API routes stay as `wini/getById`, `wini/getListSimple` — **do not change these**)
+- Project-controller: `EbigController` (API routes stay as `ebig/getById`, `ebig/getListSimple` — **do not change these**)
 - CSS class prefix for icon module: `ebig-icon`; for editor module: `ebig-editor`
-- Skin CDN: `https://cdn.ebig.co/ebig-library/src/skin/` (loaded by `initializeProject`)
+- Style CDN: `https://cdn.ebig.co/library/style/` (loaded by `initializeProject`)
 
 ### Critical patterns
 

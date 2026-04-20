@@ -132,7 +132,7 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                         helper-text={props.helperText}
                         style={{ '--helper-text-color': props.helperTextColor ?? '#e14337', ...style } as CSSProperties}
                         onClick={showCalendar}>
-                        {props.prefix ?? <Ebigicon className={styles["prefix-icon"]} src="outline/user interface/calendar-date-2" size={11} color="var(--neutral-text-placeholder-color, #878792)" style={value ? undefined : { borderColor: "var(--neutral-text-placeholder-color, #878792)" }} />}
+                        {props.prefix ?? <Ebigicon className={styles["prefix-icon"]} src="outline/user-interface/calendar-date-2" size={11} color="var(--neutral-text-placeholder-color, #878792)" style={value ? undefined : { borderColor: "var(--neutral-text-placeholder-color, #878792)" }} />}
                         <input
                             className={styles["value"]}
                             ref={inputRef}
@@ -176,7 +176,7 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                     helper-text={props.helperText}
                     style={{ '--helper-text-color': props.helperTextColor ?? '#e14337', cursor: props.disabled ? undefined : 'pointer', ...style } as CSSProperties}
                     onClick={(props.disabled || props.readOnly) ? undefined : showCalendar}>
-                    {props.prefix ?? <Ebigicon className={styles["prefix-icon"]} src="outline/user interface/calendar-date-2" size={11} color="var(--neutral-text-placeholder-color, #878792)" style={value ? undefined : { borderColor: "var(--neutral-text-placeholder-color, #878792)" }} />}
+                    {props.prefix ?? <Ebigicon className={styles["prefix-icon"]} src="outline/user-interface/calendar-date-2" size={11} color="var(--neutral-text-placeholder-color, #878792)" style={value ? undefined : { borderColor: "var(--neutral-text-placeholder-color, #878792)" }} />}
                     {txtValue}
                     {props.suffix}
                 </div>
@@ -361,7 +361,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                     }}
                 /> : <Button
                     label="Start date"
-                    prefix={<Ebigicon src="outline/user interface/e-add" size={14} />}
+                    prefix={<Ebigicon src="outline/user-interface/e-add" size={14} />}
                     className='col12 label-3 size32 border'
                     style={{ "--gutter": "1.2rem" } as any}
                     onClick={() => {
@@ -427,7 +427,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                         }}
                     /> : <Button
                         label="Start time"
-                        prefix={<Ebigicon src="outline/user interface/e-add" size={14} />}
+                        prefix={<Ebigicon src="outline/user-interface/e-add" size={14} />}
                         className='col12 label-3 size32 border'
                         style={{ "--gutter": "1.2rem" } as any}
                         onClick={() => {
@@ -622,7 +622,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                 {onApply && <div className='row' style={{ gap: "0.8rem", padding: "1.2rem 1.6rem", borderTop: "var(--neutral-main-border,1px solid light-dark(#EAEAEC, #313135))" }}>
                     {pickerType === "auto" && <div className='row' style={{ gap: 4 }}>
                         <Ebigicon
-                            src='outline/user interface/time-alarm'
+                            src='outline/user-interface/time-alarm'
                             size={14}
                             style={{ padding: 5, borderRadius: "50%", backgroundColor: selectTime ? "var(--neutral-disable-background-color,light-dark(#F4F4F5, #494950))" : undefined }}
                             onClick={() => { setSelectTime(!selectTime) }}

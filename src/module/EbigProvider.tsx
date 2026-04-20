@@ -7,9 +7,12 @@ import { ToastContainer } from 'react-toastify'
 import { DesignTokenType, ProjectItem } from "./da"
 import { Util } from "../controller/utils"
 import { useTranslation } from "react-i18next"
+import { loadCdnTranslations } from "../language/i18n"
 import { DataController } from "../controller/data"
 import { encodeClassName, LayoutElement } from "./page/config"
 import { i18n } from "i18next"
+import { OfflineBanner } from "../component/offline-banner/offline-banner"
+import { getValidLink } from "./page/pageById"
 
 interface Props {
     /**
@@ -58,13 +61,6 @@ const appendDesignTokens = (list: Array<{ [p: string]: any }>) => {
         #root>.${LayoutElement.main} { 
             width: 100dvw;
             height: 100dvh;
-            overflow: hidden auto;
-        }
-
-        #root>.${LayoutElement.main}.row { 
-            flex-wrap: wrap;
-            align-items: start;
-            align-content: start;
         }
 
         p {
@@ -142,15 +138,18 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     const [globalData, setGlobalData] = useState<{ [k: string]: any } | undefined>(undefined)
 
     useEffect(() => {
+        loadCdnTranslations(ConfigData.ebigCdn)
+    }, [])
+    useEffect(() => {
         if (loadResources) {
             refreshTokenHeaders.pid = props.pid
             initializeProject(props.url, { pid: props.pid }).then((res) => {
-                if (res.LogoId) (document.head.querySelector(`:scope > link[rel="icon"]`) as HTMLLinkElement)!.href = res.LogoId.startsWith("http") ? res.LogoId : `${ConfigData.ebigCdn}/ebig/${res.LogoId}`;
+                if (res.LogoId) (document.head.querySelector(`:scope > link[rel="icon"]`) as HTMLLinkElement)!.href = res.LogoId.startsWith("http") ? res.LogoId : `${ConfigData.ebigCdn}/wini/${res.LogoId}`;
                 (document.head.querySelector(`:scope > title`) as HTMLTitleElement)!.innerHTML = res.Name;
                 if (res.FileDomain && !props.fileUrl) ConfigData.fileUrl = res.FileDomain
                 setProjectData(res)
             })
-        } else refreshTokenHeaders.pid = "ebig"
+        } else refreshTokenHeaders.pid = "wini"
     }, [props.pid])
 
     useEffect(() => {
@@ -176,7 +175,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
                 const languageController = new DataController("Language")
                 languageController.getAll().then(async (res) => {
                     if (res.code === 200 && res.data.length) {
-                        const languages = await Promise.all(res.data.map((e: any) => BaseDA.get(ConfigData.imgUrlId + e.Json)))
+                        const languages = await Promise.all(res.data.filter((e: any) => !!e.Json?.length).map((e: any) => BaseDA.get(getValidLink(e.Json), { headers: { "Cache-Control": "no-cache" } })))
                         languages.forEach((lngData, i) => {
                             if (lngData) i18n.addResourceBundle(res.data[i].Lng, "translation", lngData, true, true)
                         })
@@ -191,6 +190,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     }, [props.pid, props.imgUrlId, props.fileUrl])
 
     return <EbigContext.Provider value={{ projectData, theme, setTheme, i18n, userData, setUserData, globalData, setGlobalData }}>
+        <OfflineBanner />
         <BrowserRouter>
             <ToastContainer />
             <Dialog />
@@ -213,11 +213,11 @@ export const initializeProject = async (domain: string, props: { pid?: string, d
     ConfigData.url = domain
     const tmp = document.createElement("div")
     tmp.innerHTML = `
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/root.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/layout.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/typography.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/toast-noti.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/ebig-library/src/skin/style.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/root.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/layout.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/typography.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/toast-noti.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/style.css">
     `
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()
