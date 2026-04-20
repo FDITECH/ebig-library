@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo } from 'react';
+import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
 import { useRef } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
@@ -353,9 +353,14 @@ class ExportPdfPlugin extends Plugin {
     }
 }
 
+interface CustomRef {
+    element: HTMLDivElement | null;
+    editor: ClassicEditor | null;
+}
 
-export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeight: 600, borderRadius: 8 }, extraPlugins = [], ...props }: Props) {
-    const editorContainerRef = useRef(null);
+export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: "100%", height: 400, maxHeight: 600, borderRadius: 8 }, extraPlugins = [], ...props }, ref) => {
+    const editorContainerRef = useRef<HTMLDivElement | null>(null);
+    const editorRef = useRef<ClassicEditor | null>(null);
     const { t, i18n } = useTranslation()
 
     const editorConfig: any = useMemo(() => ({
@@ -850,9 +855,14 @@ export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeigh
         table: {
             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
         },
-        ...(props.customConfig ?? {}),
+        ...props.customConfig,
         placeholder: props.placeholder,
     }), [extraPlugins.length, i18n.language, props.placeholder])
+
+    useImperativeHandle(ref, () => ({
+        element: editorContainerRef.current,
+        editor: editorRef.current,
+    }), [editorContainerRef.current, editorRef.current])
 
     return <div
         id={props.id}
@@ -863,6 +873,9 @@ export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeigh
     >
         <div className="editor-container__editor">
             <CKEditor
+                ref={(r: any) => {
+                    if (r) editorRef.current = r.editor
+                }}
                 onReady={props.onReady}
                 onAfterDestroy={props.onAfterDestroy}
                 onFocus={props.onFocus}
@@ -876,4 +889,4 @@ export function CustomCkEditor5({ style = { width: "100%", height: 400, maxHeigh
             />
         </div>
     </div>
-}
+})
