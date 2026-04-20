@@ -40,6 +40,7 @@ import {
   ToastMessage,
   UploadFiles,
   VideoPlayer,
+  useTranslation,
 } from './index'
 
 /* ── Styles ────────────────────────────────────────────────── */
@@ -79,6 +80,7 @@ export default function App() {
   const [otpVal, setOtpVal] = useState('')
   const [dropdownVal, setDropdownVal] = useState(undefined)
   const popupRef = useRef(undefined)
+  const { t, i18n } = useTranslation()
 
   return (
     <div className='col' style={{ width: '100dvw', height: '100dvh', maxWidth: '120rem', margin: '0 auto', padding: '3.2rem 2.4rem', overflow: "auto", scrollbarWidth: "thin" }}>
@@ -106,7 +108,7 @@ export default function App() {
           <Button label="Error" className="button-error" />
           <Button label="Success" className="button-success" />
           <Button label="Disabled" className="button-grey" disabled />
-          <Button label="With Prefix" prefix={<Ebigicon src="fill/user interface/e-add" size={16} />} className="button-primary" />
+          <Button label="With Prefix" prefix={<Ebigicon src="fill/user-interface/e-add" size={16} />} className="button-primary" />
         </div>
       </section>
 
@@ -146,16 +148,6 @@ export default function App() {
           <Checkbox value={checkboxVal} onChange={(v) => setCheckboxVal(v)} />
           <span>checked: {String(checkboxVal)}</span>
           <Checkbox value={true} disabled />
-        </div>
-      </section>
-
-      {/* ── Switch ────────────────────────────────────── */}
-      <section style={sectionStyle}>
-        <div style={headingStyle}>Switch</div>
-        <div style={rowStyle}>
-          <Switch value={switchVal} onChange={(v) => setSwitchVal(v)} />
-          <span>on: {String(switchVal)}</span>
-          <Switch value={true} disabled />
         </div>
       </section>
 
@@ -310,10 +302,10 @@ export default function App() {
       <section style={sectionStyle}>
         <div style={headingStyle}>Ebigicon</div>
         <div style={rowStyle}>
-          <Ebigicon src="fill/user interface/e-add" size={24} />
-          <Ebigicon src="fill/user interface/settings" size={24} />
+          <Ebigicon src="fill/user-interface/e-add" size={24} />
+          <Ebigicon src="fill/user-interface/settings" size={24} />
           <Ebigicon src="fill/arrows/down-arrow" size={24} />
-          <Ebigicon src="fill/user interface/e-delete" size={24} />
+          <Ebigicon src="fill/user-interface/e-delete" size={24} />
         </div>
       </section>
 
@@ -470,7 +462,7 @@ export default function App() {
         <div style={headingStyle}>IconPicker</div>
         <div style={rowStyle}>
           <IconPicker
-            src="fill/user interface/settings"
+            src="fill/user-interface/settings"
             size={32}
             onChange={(src) => console.log('Icon selected:', src)}
           />
@@ -497,6 +489,16 @@ export default function App() {
           onChange={(files) => console.log('Uploaded files:', files)}
           style={{ width: '100%' }}
         />
+      </section>
+
+      {/* ── Switch ────────────────────────────────────── */}
+      <section style={sectionStyle}>
+        <div style={headingStyle}>Switch</div>
+        <div style={rowStyle}>
+          <Switch value={i18n.language === "vi"} onChange={(v) => i18n.changeLanguage(i18n.language === "vi" ? "en" : "vi")} />
+          <span>on: {String(switchVal)}</span>
+          <Switch value={true} disabled />
+        </div>
       </section>
 
       {/* ── CustomCkEditor5 ───────────────────────────── */}
