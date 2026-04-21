@@ -209,8 +209,7 @@ export const useEbigContext = () => {
     return context;
 }
 
-export const initializeProject = async (domain: string, props: { pid?: string, domain?: string }) => {
-    ConfigData.url = domain
+const appendStyleSheet = () => {
     const tmp = document.createElement("div")
     tmp.innerHTML = `
         <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/root.min.css">
@@ -219,8 +218,14 @@ export const initializeProject = async (domain: string, props: { pid?: string, d
         <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/toast-noti.min.css">
         <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/style.css">
     `
+    document.head.querySelectorAll(`:scope > link[rel="stylesheet"][href^="https://cdn.ebig.co/library/style/v0.0.42/"]`).forEach(e => e.remove())
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()
+}
+
+export const initializeProject = async (domain: string, props: { pid?: string, domain?: string }) => {
+    ConfigData.url = domain
+    appendStyleSheet()
     const ebigController = new EbigController("Project")
     if (!props.pid && !props.domain) {
         console.error("Failed to load project: missing project id or domain")
