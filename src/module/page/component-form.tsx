@@ -1,5 +1,5 @@
 import styles from "./component-form.module.css";
-import { CSSProperties, KeyboardEventHandler, ReactNode, useMemo, useState } from "react";
+import { CSSProperties, forwardRef, KeyboardEventHandler, ReactNode, useMemo, useState } from "react";
 import { Controller, FieldValues, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Checkbox, ColorPicker, DateTimePicker, ImportFile, NumberPicker, RadioButton, Switch, TextArea, TextField, UploadFiles, Ebigicon, SelectDropdown } from "../../index"
@@ -20,25 +20,27 @@ interface FTextFieldProps {
 }
 
 
-export function FTextField(props: FTextFieldProps) {
+export const FTextField = forwardRef<any, FTextFieldProps>((props, ref) => {
     const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
 
     return <TextField
+        ref={ref}
         {...props}
         register={props.name?.length ? (props.methods!.register(props.name, { required: props.required, onChange: props.onChange, onBlur: props.onBlur }) as any) : undefined}
         onComplete={props.onComplete ?? ((ev: any) => { ev.target.blur() })}
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`.toLowerCase())}
         simpleStyle
     />
-}
+})
 
-export function FInputPassword(props: FTextFieldProps) {
+export const FInputPassword = forwardRef<any, FTextFieldProps>((props, ref) => {
     const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
     const [isShowPass, setIsShowPass] = useState(false)
 
     return <TextField
+        ref={ref}
         {...props}
         autoComplete="off"
         type={isShowPass ? "text" : "password"}
@@ -50,7 +52,8 @@ export function FInputPassword(props: FTextFieldProps) {
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`.toLowerCase())}
         simpleStyle
     />
-}
+})
+
 interface FTextAreaProps {
     id?: string;
     autoHeight?: boolean;
@@ -66,12 +69,14 @@ interface FTextAreaProps {
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
 }
 
-export function FTextArea({ autoHeight, onChange, ...props }: FTextAreaProps) {
+export const FTextArea = forwardRef<any, FTextAreaProps>(({ autoHeight, onChange, ...props }, ref) => {
     const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
 
     return <TextArea
         ref={autoHeight ? ((txtAreaRef) => {
+            if (typeof ref === 'function') ref(txtAreaRef)
+            else if (ref) ref.current = txtAreaRef
             if (txtAreaRef) {
                 const txtAreaElement = txtAreaRef.inputElement as HTMLTextAreaElement
                 txtAreaElement.style.scrollbarWidth = `none`
@@ -97,7 +102,7 @@ export function FTextArea({ autoHeight, onChange, ...props }: FTextAreaProps) {
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`).toLowerCase()}
         simpleStyle
     />
-}
+})
 
 interface FRadioButtonProps {
     id?: string;
