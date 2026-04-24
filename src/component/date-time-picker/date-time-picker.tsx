@@ -153,14 +153,16 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                                 const inputValue = ev.target.value.trim()
                                 let dateValue: Date | undefined = undefined
                                 if (inputValue.match(/[0-9]{1,2}(\/|-)[0-9]{1,2}(\/|-)[0-9]{4}/g)) {
-                                    dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
-                                    if (differenceInCalendarDays(dateValue, props.min ?? startDate) > -1 && differenceInCalendarDays(props.max ?? endDate, dateValue) > -1) {
-                                    } else if (differenceInCalendarDays(props.min ?? startDate, dateValue) > -1) {
-                                        dateValue = props.min ?? startDate
-                                    } else if (differenceInCalendarDays(dateValue, props.min ?? endDate) > -1) {
-                                        dateValue = props.max ?? endDate
-                                    } else {
-                                        dateValue = undefined
+                                    dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/') as any
+                                    if (dateValue) {
+                                        if (differenceInCalendarDays(dateValue, props.min ?? startDate) > -1 && differenceInCalendarDays(props.max ?? endDate, dateValue) > -1) {
+                                        } else if (differenceInCalendarDays(props.min ?? startDate, dateValue) > -1) {
+                                            dateValue = props.min ?? startDate
+                                        } else if (differenceInCalendarDays(dateValue, props.min ?? endDate) > -1) {
+                                            dateValue = props.max ?? endDate
+                                        } else {
+                                            dateValue = undefined
+                                        }
                                     }
                                 }
                                 setValue(dateValue)
@@ -352,6 +354,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                         const inputValue = ev.target.value
                         if (regexDate.test(inputValue)) {
                             const dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
+                            if (!dateValue) return;
                             if ((pickerType.includes("range") || pickerType === "auto") && differenceInCalendarDays(methods.getValues('date-end'), dateValue) < 0) {
                                 methods.setValue('date-end', dateValue)
                                 inputEndRef.current!.inputElement!.value = Util.dateToString(dateValue)
@@ -383,7 +386,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                             const inputValue = ev.target.value
                             if (regexDate.test(inputValue)) {
                                 const dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
-                                if (differenceInCalendarDays(dateValue, methods.getValues('date-start')) < 0) {
+                                if (dateValue && differenceInCalendarDays(dateValue, methods.getValues('date-start')) < 0) {
                                     methods.setValue('date-start', dateValue)
                                     inputStartRef.current!.inputElement!.value = Util.dateToString(dateValue)
                                 }
