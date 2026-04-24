@@ -1027,33 +1027,33 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case ComponentType.textField:
             const { IsPassword, ...typeProps2 } = typeProps
             if (IsPassword)
-                return <FInputPassword {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
+                return <FInputPassword ref={htmlElementRef} {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
             else
-                return <FTextField {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
+                return <FTextField ref={htmlElementRef} {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
         case ComponentType.textArea:
-            return <FTextArea {...typeProps} {...restOfActions} name={props.item.NameField} methods={props.methods} />
+            return <FTextArea ref={htmlElementRef} {...typeProps} {...restOfActions} name={props.item.NameField} methods={props.methods} />
         case ComponentType.radio:
             if (_options?.length) return <FGroupRadioButton {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} options={_options} />
-            else return <FRadioButton {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            else return <FRadioButton ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.checkbox:
             if (_options?.length) return <FGroupCheckbox {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} options={_options} />
-            else return <FCheckbox {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            else return <FCheckbox ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.switch:
-            return <FSwitch {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FSwitch ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case "Select1":
         case "SelectMultiple":
         case ComponentType.selectDropdown:
             if (props.item.Setting?.multiple || props.item.Type === "SelectMultiple") typeProps.multiple = true
-            return <FSelectDropdownForm {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
+            return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
         case ComponentType.colorPicker:
-            return <FColorPicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FColorPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.numberPicker:
-            return <FNumberPicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FNumberPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.dateTimePicker:
         case ComponentType.datePicker:
-            return <FDateTimePicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FDateTimePicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.upload:
-            return <FUploadMultipleFileType {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FUploadMultipleFileType ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.ckEditor:
             return <CustomCkEditor5
                 {...typeProps}
