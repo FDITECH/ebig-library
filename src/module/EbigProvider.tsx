@@ -212,13 +212,13 @@ export const useEbigContext = () => {
 const appendStyleSheet = () => {
     const tmp = document.createElement("div")
     tmp.innerHTML = `
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/root.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/layout.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/typography.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/toast-noti.min.css">
-        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.42/style.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.47/root.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.47/layout.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.47/typography.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.47/toast-noti.min.css">
+        <link rel="stylesheet" href="https://cdn.ebig.co/library/style/v0.0.47/style.css">
     `
-    document.head.querySelectorAll(`:scope > link[rel="stylesheet"][href^="https://cdn.ebig.co/library/style/v0.0.42/"]`).forEach(e => e.remove())
+    document.head.querySelectorAll(`:scope > link[rel="stylesheet"][href^="https://cdn.ebig.co/library/style/v0.0.47/"]`).forEach(e => e.remove())
     document.head.children[0].before(...tmp.childNodes)
     tmp.remove()
 }
