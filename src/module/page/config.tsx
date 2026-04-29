@@ -19,5 +19,5 @@ export const encodeClassName = (cls: string, prefix?: string) => {
 export const decodeClassName = (cls: string, prefix?: string) => {
     return cls.replace(`_${prefix ?? "ebig"}-`, "").replace("_axts4_37", "")
 }
-
+export const regexResponsiveClassCol = /col([0-9]|1[0-9]|2[0-4])/;
 export const handleErrorImgSrc = "https://cdn.ebig.co/icon-library/image-placeholder.png";

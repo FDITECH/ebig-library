@@ -1,7 +1,7 @@
 import { CSSProperties, forwardRef, HTMLAttributes, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
-import { handleErrorImgSrc, LayoutElement } from "./config"
+import { handleErrorImgSrc, LayoutElement, regexResponsiveClassCol } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
 import { FormById } from "../form/formById"
 import { CardById } from "../card/cardById"
@@ -163,7 +163,7 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
             } catch (error) {
                 console.error("item: ", props.item, " --- match: ", m, " --- p1: ", p1, " --- error: ", error)
             }
-            return getValue
+            return Array.isArray(getValue) ? JSON.stringify(getValue) : getValue
         })
         switch (replaceTmp.trim()) {
             case "undefined":
@@ -248,6 +248,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         if (props.style) _props.style = { ..._props.style, ...props.style }
         delete _props.style.order
         if (props.className) _props.className = [..._props.className.split(" "), ...props.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
+        if (!regexResponsiveClassCol.test(_props.className)) delete _props.style["--gutter"]
         delete _props.action
         if (props.propsData && props.propsData[findId]) var extendProps = props.type === "card" ? (props.propsData[findId] as any)(props.indexItem, props.index, props.methods) : props.propsData[findId]
         if (extendProps) {
