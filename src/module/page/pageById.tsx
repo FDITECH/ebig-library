@@ -234,9 +234,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const params = useParams()
     // first processing item's setting 
     const memeCustomProps = useMemo(() => {
-        let _props = { ...props.item.Setting, ...watchForCustomProps }
+        let _props = { ...props.item.Setting }
         _props.style ??= {}
         _props.className ??= ""
+        if (watchForCustomProps) {
+            const { style, ...restOfCustomProps } = watchForCustomProps
+            _props = { ..._props, ...restOfCustomProps }
+            if (style) _props.style = { ..._props.style, ...style }
+        }
         delete _props.action
         delete _props.unmounted
         delete _props.aspectRatio
