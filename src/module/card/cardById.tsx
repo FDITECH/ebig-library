@@ -269,7 +269,7 @@ const StateCard = ({ data, cardItem, layers, extendData, methods, ...props }: { 
 
     return data.map((item, index) => {
         return <RenderCard
-            key={item.Id}
+            key={`${item.Id}-${index}`}
             {...props}
             cardItem={cardItem}
             layers={layers}

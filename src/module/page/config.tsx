@@ -1,4 +1,3 @@
-export const supportProperties = ["Icon", "Selector", "Layout", "Position", "Dimension", "Font", "Appearance", "Background"]
 export enum LayoutElement {
     main = "_ebig-main-layout_axts4_37",
     header = "_ebig-header-layout_axts4_37",

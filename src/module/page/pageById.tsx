@@ -1,7 +1,7 @@
 import { CSSProperties, forwardRef, HTMLAttributes, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
-import { handleErrorImgSrc, LayoutElement, supportProperties } from "./config"
+import { handleErrorImgSrc, LayoutElement } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
 import { FormById } from "../form/formById"
 import { CardById } from "../card/cardById"
@@ -181,22 +181,15 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
         }
     }
     const stateCustomProps = useMemo(() => {
-        const tmp: { [p: string]: any } = {}
+        let tmp: { [p: string]: any } = {}
         const triggerState = props.item.State?.filter((e: any) => e.Trigger?.length)
         if (triggerState?.length) {
             for (const st of triggerState) {
                 const checked = replaceThisVariables(st.Trigger)
                 if (checked) {
-                    for (const sp of supportProperties) {
-                        if (st[sp]) {
-                            Object.keys(st[sp]).forEach(k => {
-                                if (st[sp][k]) {
-                                    tmp[k] ??= {}
-                                    tmp[k] = typeof st[sp][k] === "object" ? { ...tmp[k], ...st[sp][k] } : st[sp][k]
-                                }
-                            })
-                        }
-                    }
+                    st.Setting ??= {}
+                    st.Setting.unmounted ??= false
+                    tmp = { ...tmp, ...st.Setting }
                 }
             }
         }
@@ -204,8 +197,10 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
     }, [location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), props.indexItem, defferWatch, ebigContextData.globalData, ebigContextData.userData, ebigContextData.i18n.language])
     // 
     const watchForCustomProps = useDeferredValue(stateCustomProps)
+
+    const isMounted = useMemo(() => !(typeof watchForCustomProps?.unmounted === "boolean" ? watchForCustomProps.unmounted : (props.item.Setting?.unmounted ?? false)), [watchForCustomProps?.unmounted, props.item.Setting?.unmounted])
     /** Check unmounted */
-    if (watchForCustomProps?.unmounted || (props.item.Setting?.unmounted && typeof watchForCustomProps?.unmounted === "boolean")) return null;
+    if (!isMounted) return null;
     else return <>
         <Popup ref={popupRef} />
         <ElementUI
@@ -239,21 +234,15 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const params = useParams()
     // first processing item's setting 
     const memeCustomProps = useMemo(() => {
-        let _props = { ...props.item.Setting }
+        let _props = { ...props.item.Setting, ...watchForCustomProps }
         _props.style ??= {}
         _props.className ??= ""
         delete _props.action
+        delete _props.unmounted
+        delete _props.aspectRatio
         if (props.style) _props.style = { ..._props.style, ...props.style }
-        if (watchForCustomProps?.style) {
-            _props.style = { ..._props.style, ...watchForCustomProps.style }
-            delete watchForCustomProps.style
-        }
         delete _props.style.order
         if (props.className) _props.className = [..._props.className.split(" "), ...props.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
-        if (watchForCustomProps?.className) {
-            _props.className = [..._props.className.split(" "), ...watchForCustomProps.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
-            delete watchForCustomProps.className
-        }
         delete _props.action
         if (props.propsData && props.propsData[findId]) var extendProps = props.type === "card" ? (props.propsData[findId] as any)(props.indexItem, props.index, props.methods) : props.propsData[findId]
         if (extendProps) {
@@ -261,8 +250,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             delete extendProps.style
             _props = { ..._props, ...extendProps }
         }
-        return watchForCustomProps ? { ..._props, ...watchForCustomProps } : _props
-    }, [props.item, props.propsData, props.indexItem, watchForCustomProps])
+        return _props
+    }, [props.item, props.propsData, props.indexItem, watchForCustomProps, JSON.stringify(props.style), props.className])
     const customProps = useDeferredValue(memeCustomProps)
     const customActions = useMemo(() => {
         const _propsActions = props.item.Setting?.action
@@ -440,7 +429,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             return tmpAct
         }
         return undefined
-    }, [props.item.Setting?.action, props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData])
+    }, [props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData])
 
     // handle listener
     const handleListener = (funcString: string) => {
@@ -872,6 +861,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case ComponentType.navLink:
         case ComponentType.container:
             if (props.childrenData && props.childrenData[findId]) var childComponent = props.type === "card" ? (props.childrenData[findId] as any)(props.indexItem, props.index, props.methods) : props.childrenData[findId]
+            const isRow = typeProps.className?.split(" ").includes("row")
+            let gutterStyle: any = undefined
+            if (isRow) {
+                const gutter = typeProps.style?.columnGap ?? typeProps.style?.gap ?? 0
+                gutterStyle = { "--gutter": isNaN(gutter) ? gutter : `${gutter}px` }
+            }
             if (dataValue && dataValue.backgroundImage) var containerProps: any = { ...typeProps, style: { ...typeProps.style, ...dataValue } }
             const dataValueProps = { ...(containerProps ?? typeProps), ...restOfActions }
             delete dataValueProps.emptyElement
@@ -892,10 +887,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         {childComponent ??
                             (typeProps.className?.includes(LayoutElement.body) ?
                                 <>
-                                    {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)}
+                                    {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)}
                                     {props.bodyChildren}
                                 </> :
-                                children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)
+                                children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)
                             )}
                     </RenderContainer>
                 })
@@ -904,10 +899,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     {childComponent ??
                         (typeProps.className?.includes(LayoutElement.body) ?
                             <>
-                                {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)}
+                                {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)}
                                 {props.bodyChildren}
                             </> :
-                            children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)
+                            children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)
                         )}
                 </RenderContainer>
             }
@@ -1181,11 +1176,14 @@ interface PageByIdProps extends Props {
      * */
     itemData?: { [p: string]: ReactNode } | { [p: string]: (indexItem: { [p: string]: any }, index: number, methods: UseFormReturn) => ReactNode },
     onlyLayout?: boolean,
-    onlyBody?: boolean
+    onlyBody?: boolean,
+    /** children of layout-body */
+    children?: ReactNode;
 }
 
 export const globalTableCache = new Map()
-export const PageById = (props: PageByIdProps) => {
+const cacheLayout = new Map()
+export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
     const methods = useForm({ shouldFocusError: false })
     const pageController = new TableController("page")
     const layoutController = new TableController("layout")
@@ -1195,6 +1193,14 @@ export const PageById = (props: PageByIdProps) => {
     const [memoLayers, setLayers] = useState<{ [p: string]: any }[]>([])
     const layers = useMemo(() => memoLayers.sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [memoLayers])
     const [loading, setLoading] = useState(true)
+    const layoutBody = useMemo(() => {
+        if (!pageItem?.LayoutId) return undefined;
+        if (layout.length) return layout.find(e => e.Setting?.className?.includes(LayoutElement.body))
+        else if (cacheLayout.has(pageItem.LayoutId)) {
+            const layoutFromCache = cacheLayout.get(pageItem.LayoutId)
+            return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
+        } else return undefined
+    }, [layout, layers.length, pageItem?.LayoutId])
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1212,6 +1218,7 @@ export const PageById = (props: PageByIdProps) => {
 
     useEffect(() => {
         if (pageItem && !props.onlyLayout) setLayers(pageItem.Setting ? JSON.parse(pageItem.Setting) : [])
+        else setLayers([])
     }, [pageItem, props.onlyLayout])
 
     useEffect(() => {
@@ -1219,7 +1226,9 @@ export const PageById = (props: PageByIdProps) => {
             layoutController.getById(pageItem.LayoutId).then((res) => {
                 if (res.code === 200 && res.data) {
                     const layoutData = res.data
-                    setLayout(layoutData?.Setting ? JSON.parse(layoutData.Setting) : [])
+                    const layoutSetting = layoutData?.Setting ? JSON.parse(layoutData.Setting) : []
+                    setLayout(layoutSetting)
+                    cacheLayout.set(layoutData.Id, layoutSetting)
                     setLoading(false)
                 } else {
                     methods.reset()
@@ -1227,8 +1236,35 @@ export const PageById = (props: PageByIdProps) => {
                     console.error("Failed to load layout data:", res.message)
                 }
             })
-        }
+        } else setLayout([])
     }, [pageItem?.LayoutId, props.onlyBody])
+
+    const gutterOfBody = useMemo(() => {
+        if (props.onlyLayout || !pageItem?.LayoutId || !layers.length || !layoutBody) return undefined;
+        const isRow = layoutBody.Setting.className?.split(" ").includes("row")
+        if (!isRow) return undefined
+        const gutter = layoutBody.Setting.style?.columnGap ?? layoutBody.Setting.style?.gap ?? 0
+        return { "--gutter": isNaN(gutter) ? gutter : `${gutter}px` }
+    }, [props.onlyBody, layers.length, pageItem?.LayoutId, layoutBody])
+
+    useEffect(() => {
+        if (gutterOfBody && layers.length && layoutBody) {
+            setLayers(prev => prev.map((e: any) => {
+                if (!e.ParentId || e.ParentId === layoutBody.Id) return { ...e, Setting: { ...e.Setting, style: { ...e.Setting.style, ...gutterOfBody } } }
+                return e
+            }))
+        }
+    }, [layers.length, gutterOfBody, layoutBody])
+
+    const propsChildren: any = useMemo(() => {
+        if (props.children && layoutBody && props.onlyLayout) {
+            return {
+                ...childrenData,
+                [layoutBody.Setting?.id ?? layoutBody.Id]: props.children
+            }
+        }
+        return childrenData
+    }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
     if (pageItem) {
         if (props.onlyLayout) {
@@ -1236,13 +1272,14 @@ export const PageById = (props: PageByIdProps) => {
                 key={pageItem.LayoutId}
                 layers={layout}
                 {...props}
+                childrenData={propsChildren}
                 methods={props.methods ?? methods}
             />
         } else if (props.onlyBody) {
-            return <RenderPageView key={pageItem.Id} layers={layers} {...props} methods={props.methods ?? methods} />
+            return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
         } else {
-            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} methods={props.methods ?? methods}>
-                <RenderPageView key={pageItem.Id} layers={layers} {...props} methods={props.methods ?? methods} bodyId={layout.find(e => e.Setting?.className?.includes(LayoutElement.body))?.Id} />
+            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
+                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
             </RenderPageView> : null
         }
     } else return null
@@ -1281,6 +1318,14 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
     const [memoLayers, setLayers] = useState<{ [p: string]: any }[]>([])
     const layers = useMemo(() => memoLayers.sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [memoLayers])
     const [loading, setLoading] = useState(true)
+    const layoutBody = useMemo(() => {
+        if (!pageItem?.LayoutId) return undefined;
+        if (layout.length) return layout.find(e => e.Setting?.className?.includes(LayoutElement.body))
+        else if (cacheLayout.has(pageItem.LayoutId)) {
+            const layoutFromCache = cacheLayout.get(pageItem.LayoutId)
+            return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
+        } else return undefined
+    }, [layout, layers.length, pageItem?.LayoutId])
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1303,6 +1348,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
 
     useEffect(() => {
         if (pageItem && !props.onlyLayout) setLayers(pageItem.Setting ? JSON.parse(pageItem.Setting) : [])
+        else setLayers([])
     }, [pageItem, props.onlyLayout])
 
     useEffect(() => {
@@ -1310,7 +1356,9 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
             layoutController.getById(pageItem.LayoutId).then((res) => {
                 if (res.code === 200 && res.data) {
                     const layoutData = res.data
-                    setLayout(layoutData?.Setting ? JSON.parse(layoutData.Setting) : [])
+                    const layoutSetting = layoutData?.Setting ? JSON.parse(layoutData.Setting) : []
+                    setLayout(layoutSetting)
+                    cacheLayout.set(layoutData.Id, layoutSetting)
                     setLoading(false)
                 } else {
                     methods.reset()
@@ -1318,30 +1366,50 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
                     console.error("Failed to load layout data:", res.message)
                 }
             })
-        }
+        } else setLayout([])
     }, [pageItem?.LayoutId, props.onlyBody])
+
+    const gutterOfBody = useMemo(() => {
+        if (props.onlyLayout || !pageItem?.LayoutId || !layers.length || !layoutBody) return undefined;
+        const isRow = layoutBody.Setting.className?.split(" ").includes("row")
+        if (!isRow) return undefined
+        const gutter = layoutBody.Setting.style?.columnGap ?? layoutBody.Setting.style?.gap ?? 0
+        return { "--gutter": isNaN(gutter) ? gutter : `${gutter}px` }
+    }, [props.onlyBody, layers.length, pageItem?.LayoutId, layoutBody])
+
+    useEffect(() => {
+        if (gutterOfBody && layers.length && layoutBody) {
+            setLayers(prev => prev.map((e: any) => {
+                if (!e.ParentId || e.ParentId === layoutBody.Id) return { ...e, Setting: { ...e.Setting, style: { ...e.Setting.style, ...gutterOfBody } } }
+                return e
+            }))
+        }
+    }, [layers.length, gutterOfBody, layoutBody])
+
+    const propsChildren: any = useMemo(() => {
+        if (props.children && layoutBody && props.onlyLayout) {
+            return {
+                ...childrenData,
+                [layoutBody.Setting?.id ?? layoutBody.Id]: props.children
+            }
+        }
+        return childrenData
+    }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
     if (pageItem) {
         if (props.onlyLayout) {
-            if (props.children) {
-                const layoutBody = layout.find(e => e.Setting?.className?.includes(LayoutElement.body))
-                if (layoutBody) {
-                    var propsChildren: any = childrenData ?? {};
-                    propsChildren[layoutBody.Setting?.id ?? layoutBody.Id] = props.children
-                }
-            }
             return !!layout.length && <RenderPageView
                 key={pageItem.LayoutId}
                 layers={layout}
                 {...props}
-                childrenData={propsChildren ?? childrenData}
+                childrenData={propsChildren}
                 methods={props.methods ?? methods}
             />
         } else if (props.onlyBody) {
             return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
         } else {
             return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layout.find(e => e.Setting?.className?.includes(LayoutElement.body))?.Id} />}
+                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
             </RenderPageView> : null
         }
     } else return null
