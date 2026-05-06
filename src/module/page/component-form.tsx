@@ -20,14 +20,14 @@ interface FTextFieldProps {
 }
 
 
-export const FTextField = forwardRef<any, FTextFieldProps>((props, ref) => {
-    const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
+export const FTextField = forwardRef<any, FTextFieldProps>(({ methods, ...props }, ref) => {
+    const _covertErrors = useMemo(() => props.name ? convertErrors(methods.formState.errors, props.name) : undefined, [props.name, methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
 
     return <TextField
         ref={ref}
         {...props}
-        register={props.name?.length ? (props.methods!.register(props.name, { required: props.required, onChange: props.onChange, onBlur: props.onBlur }) as any) : undefined}
+        register={props.name?.length ? (methods!.register(props.name, { required: props.required, onChange: props.onChange, onBlur: props.onBlur }) as any) : undefined}
         onComplete={props.onComplete ?? ((ev: any) => { ev.target.blur() })}
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`.toLowerCase())}
         simpleStyle
@@ -69,8 +69,8 @@ interface FTextAreaProps {
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
 }
 
-export const FTextArea = forwardRef<any, FTextAreaProps>(({ autoHeight, onChange, ...props }, ref) => {
-    const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
+export const FTextArea = forwardRef<any, FTextAreaProps>(({ autoHeight, onChange, methods, ...props }, ref) => {
+    const _covertErrors = useMemo(() => props.name ? convertErrors(methods.formState.errors, props.name) : undefined, [props.name, methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
 
     return <TextArea
@@ -90,7 +90,7 @@ export const FTextArea = forwardRef<any, FTextAreaProps>(({ autoHeight, onChange
             ev.target.style.height = `${ev.target.scrollHeight}px`
             onChange?.(ev)
         })}
-        register={props.name?.length ? (props.methods!.register(props.name, {
+        register={props.name?.length ? (methods!.register(props.name, {
             required: props.required,
             onChange: (ev) => {
                 ev.target.style.height = `0px`

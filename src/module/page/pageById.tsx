@@ -757,6 +757,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case ComponentType.textField:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.defaultValue)) tmpProps.defaultValue = replaceThisVariables(tmpProps.defaultValue)
                         break;
+                    case ComponentType.switch:
+                    case ComponentType.checkbox:
                     case ComponentType.numberPicker:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         break;
