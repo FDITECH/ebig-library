@@ -1,10 +1,9 @@
 .icon-library-container {
-    padding: 0 0.8rem;
     width: 400px;
     height: 400px;
     overflow: hidden auto;
     gap: 0.8rem;
-    border-radius: 0.8rem;
+    border-radius: 8px;
     background-color: var(--neutral-absolute-background-color);
     box-shadow: 2px 0 16px #0000000a;
     border: var(--neutral-main-border);
@@ -12,16 +11,17 @@
 
 .icon-library-container>div {
     content-visibility: auto;
+    gap: 0.8rem;
+    padding: 0.8rem 1.6rem;
 }
 
-.search-container {
+.icon-library-container>.search-container {
     position: sticky;
     top: 0;
     z-index: 5;
     overflow: visible;
-    gap: 0.8rem;
-    padding: 0.8rem;
     background-color: var(--neutral-absolute-background-color);
+    content-visibility: auto;
 }
 
 .search-input {
@@ -80,8 +80,6 @@
     bottom: 0;
     z-index: 2;
     background-color: var(--neutral-absolute-background-color);
-    padding: 0.8rem;
-    gap: 0.8rem;
     width: 100%;
     border-top: var(--neutral-main-border);
 }

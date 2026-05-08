@@ -1,5 +1,3 @@
-import { Ebigicon } from "../component/icon/ebig-icon"
-
 export enum ComponentType {
     text = 'Text',
     img = 'Image',
@@ -130,33 +128,4 @@ export enum DesignTokenType {
     border = "border",
     boxShadow = "box-shadow",
     custom = "custom",
-}
-
-export enum ColDataType {
-    text = "text",
-    icon = "icon",
-    label = "label",
-    datetime = "datetime",
-    money = "money",
-    website = "website",
-    formula = "formula",
-    people = "people",
-    files = "files",
-    progress = "progress",
-    rate = "rate"
-}
-
-export const ColDataTypeIcon = {
-    [ColDataType.text]: <Ebigicon src='outline/text/text' size={"1.2rem"} />,
-    [ColDataType.icon]: <Ebigicon src='fill/development/icon' size={"1.2rem"} />,
-    [ColDataType.people]: <Ebigicon src='outline/location/explore-user' size={"1.2rem"} />,
-    [ColDataType.label]: <Ebigicon src='outline/shopping/tag' size={"1.2rem"} />,
-    [ColDataType.datetime]: <Ebigicon src='outline/user-interface/calendar-date-2' size={"1.2rem"} />,
-    [ColDataType.money]: <Ebigicon src='outline/business/round-dollar' size={"1.2rem"} />,
-    [ColDataType.website]: <Ebigicon src='outline/user-interface/web-link' size={"1.2rem"} />,
-    [ColDataType.formula]: <Ebigicon src='outline/business/math' size={"1.2rem"} />,
-    [ColDataType.files]: <Ebigicon src='outline/files/document' size={"1.2rem"} />,
-    [ColDataType.progress]: <Ebigicon src='outline/user-interface/progress-indicator' size={"1.2rem"} />,
-    [ColDataType.rate]: <Ebigicon src='outline/user-interface/star' size={"1.2rem"} />,
-    [""]: <Ebigicon src='outline/text/text' size={"1.2rem"} />
 }
