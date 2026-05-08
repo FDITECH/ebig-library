@@ -109,7 +109,7 @@ interface FRadioButtonProps {
     label?: string;
     labelPosition?: "left" | "right";
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
-    value?: string | number | readonly string[];
+    value?: string;
     cheked?: boolean;
     disabled?: boolean;
     style?: CSSProperties;
@@ -281,10 +281,11 @@ export const FSelectDropdownForm = forwardRef<any, FDropdownSelectProps>(({ meth
         control={methods.control}
         rules={{ required: props.required }}
         render={({ field }) => {
+            const tmp = field.value ?? methods.watch(props.name!)
             return <SelectDropdown
                 ref={ref}
                 {...customprops}
-                value={field.value ?? methods.watch(props.name!)}
+                value={props.multiple ? tmp?.split(",") : tmp}
                 onChange={(ev: any) => {
                     const value = props.multiple ? ev : ev?.id;
                     field.onChange(value);
@@ -307,7 +308,7 @@ export const FGroupRadioButton = forwardRef<any[], FGroupRadioButtonProps>((prop
     return props.options.map((e, i) => {
         return <FRadioButton ref={r => {
             if (r) listRef.current[i] = r
-        }} key={`${e.id} - ${i}`} {...props} value={e.id} label={props.label ? e.name : ""} />
+        }} key={`${e.id} - ${i}`} {...props} value={`${e.id}`} label={props.label ? e.name : ""} />
     })
 })
 

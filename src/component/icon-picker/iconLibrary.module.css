@@ -10,6 +10,10 @@
     border: var(--neutral-main-border);
 }
 
+.icon-library-container>div {
+    content-visibility: auto;
+}
+
 .search-container {
     position: sticky;
     top: 0;

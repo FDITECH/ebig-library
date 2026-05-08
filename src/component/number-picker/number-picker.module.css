@@ -7,14 +7,14 @@
 }
 
 .number-picker-container[number-picker-type="outline"] {
-    border-radius: 0.8rem;
+    border-radius: 8px;
     padding: 0 0.6rem;
     border: var(--neutral-bolder-border, 1px solid light-dark(#D7D7DB, #494950));
 }
 
 .number-picker-container[number-picker-type="outline"]>div:has(>svg),
 .simple-number-picker[number-picker-type="outline"]>div:has(>svg) {
-    padding: 0.6rem;
+    padding: max(0.5rem, 2px);
     border-radius: 0;
 }
 
@@ -40,8 +40,8 @@
 }
 
 .number-picker-container[class~="size24"]>div>svg {
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 12px;
+    height: 12px;
 }
 
 .number-picker-container[number-picker-type="icon-button"]>div:has(>svg),
@@ -54,7 +54,7 @@
 .simple-number-picker>input {
     flex: 1;
     width: 100%;
-    min-width: 5.6rem;
+    min-width: 3.6rem;
     border: none;
     border-color: transparent;
     color: inherit;

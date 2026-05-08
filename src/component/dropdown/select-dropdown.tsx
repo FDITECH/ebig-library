@@ -260,7 +260,7 @@ export const SelectDropdown = forwardRef<SelectDropdownRef, SelectDropdownProps>
     useEffect(() => {
         if (multiple) setMultiValue((props as MultipleProps).value ?? [])
         else setSingleValue((props as SingleProps).value)
-    }, [props.value])
+    }, [JSON.stringify(props.value)])
     useEffect(() => { setOptions(props.options ?? []) }, [props.options])
 
     // Open

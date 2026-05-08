@@ -32,7 +32,6 @@ export enum ComponentType {
     form = "Form",
     card = "Card",
     view = "View",
-    report = "Report",
     popup = "Popup",
     colorPicker = "ColorPicker",
     emoji = "Emoji",

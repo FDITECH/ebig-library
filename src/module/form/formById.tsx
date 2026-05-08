@@ -6,7 +6,6 @@ import { ComponentType, FEDataType } from "../da"
 import { validateForm } from "./config"
 import { TableController } from "../../controller/setting"
 import { ConfigData, specialCharsRegex } from "../../controller/config"
-import { CustomerAvatar } from "../table/config"
 
 interface Props {
     id: string;
@@ -123,7 +122,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                                 break;
                             case FEDataType.BOOLEAN:
                                 methods.setValue(prop, dataItem[prop])
-                                if (_col.Form.ComponentType === ComponentType.radio) methods.setValue(prop, `${dataItem[prop]}`)
                                 break;
                             case FEDataType.NUMBER:
                                 methods.setValue(prop, typeof dataItem[prop] === 'string' ? Number(dataItem[prop]) : dataItem[prop])
@@ -152,10 +150,10 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                         } else {
                             const pkController = new DataController(_rel.TablePK)
                             pkController.getByListId(_tmpParse).then(pkRes => {
-                                if (pkRes.code === 200) methodOptions.setValue(`${_rel.Column}_Options`, pkRes.data?.filter(Boolean)?.map((e: any) => ({ id: e.Id, name: e.Name, prefix: (_rel.TablePK === "Customer" || _rel.TablePK === "User") ? <CustomerAvatar data={e} /> : undefined, ...e })) ?? [])
+                                if (pkRes.code === 200) methodOptions.setValue(`${_rel.Column}_Options`, pkRes.data?.filter(Boolean)?.map((e: any) => ({ id: e.Id, name: e.Name, ...e })) ?? [])
                             })
                         }
-                        methods.setValue(prop, (_rel.Form.ComponentType === "SelectMultiple" || _rel.Form.Multiple) ? _tmpParse : _tmpParse[0])
+                        methods.setValue(prop, _tmpParse.join(","))
                     } else {
                         methods.setValue(prop, dataItem[prop])
                     }
@@ -262,7 +260,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                         dataItem[_col.Name] = null
                         continue;
                     }
-                    if (_col.Query) continue;
                     // handle other columns value
                     switch (_col.DataType) {
                         case FEDataType.STRING:
@@ -276,15 +273,15 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                             dataItem[_col.Name] = [true, 1, "true"].includes(dataItem[_col.Name]) ? true : false
                             break;
                         case FEDataType.NUMBER:
-                            dataItem[_col.Name] = typeof dataItem[_col.Name] === 'string' ? parseFloat(dataItem[_col.Name]) : dataItem[_col.Name]
+                            dataItem[_col.Name] = typeof dataItem[_col.Name] === 'string' ? Number(dataItem[_col.Name]) : dataItem[_col.Name]
                             break;
                         case FEDataType.DATE:
                         case FEDataType.DATETIME:
                             dataItem[_col.Name] = dataItem[_col.Name].getTime()
                             break;
                         case FEDataType.MONEY:
-                            if (dataItem[_col.Name].replace(/,/g, '').length)
-                                dataItem[_col.Name] = parseInt(dataItem[_col.Name].replace(/,/g, ''))
+                            if (!isNaN(Number(dataItem[_col.Name].replace(/,/g, ''))))
+                                dataItem[_col.Name] = Number(dataItem[_col.Name].replace(/,/g, ''))
                             else delete dataItem[_col.Name]
                             break;
                         case FEDataType.PASSWORD:
@@ -293,24 +290,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                                 dataItem[_col.Name] = getHashPassword.data
                             }
                             break;
-                        // case FEDataType.HTML:
-                        //     if (dataItem[_col.Name].length || htmlContent.current[_col.Name]) {
-                        //         const createHtmlFile = Util.stringToFile(dataItem[_col.Name], `${dataItem.Name}'s ${_col.Name}.txt`)
-                        //         const res = await BaseDA.uploadFiles(htmlContent.current[_col.Name] ? [{ id: htmlContent.current[_col.Name], file: createHtmlFile }] : [createHtmlFile])
-                        //         if (res?.length) dataItem[_col.Name] = res[0].Id
-                        //     }
-                        //     break;
-                        // case FEDataType.FILE:
-                        //     if (ev[_col.Name] && Array.isArray(ev[_col.Name])) {
-                        //         const uploadFiles = ev[_col.Name].filter((e: any) => !!e?.file)
-                        //         if (uploadFiles.length) {
-                        //             const res = await BaseDA.uploadFiles(uploadFiles.map((e: any) => e.file))
-                        //             if (res?.length) dataItem[_col.Name] = ev[_col.Name].map((e: any) => e.file ? res.shift().Id : e.exactUrl).filter(Boolean).join(",")
-                        //         } else {
-                        //             dataItem[_col.Name] = ev[_col.Name].map((e: any) => e.exactUrl ?? e.id).join(",")
-                        //         }
-                        //     }
-                        //     break;
                         default:
                             break;
                     }
@@ -413,7 +392,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                     return {
                         id: e.Id,
                         name: e.Name,
-                        prefix: (_rel.TablePK === "Customer" || _rel.TablePK === "User") ? <CustomerAvatar data={e} /> : undefined,
                         parentId: e.ParentId,
                         totalChild: e.totalChild ? typeof e.totalChild === "string" ? parseInt(e.totalChild) : e.totalChild : undefined
                     }

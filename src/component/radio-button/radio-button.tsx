@@ -4,7 +4,7 @@ import styles from './radio-button.module.css';
 interface RadioButtonProps {
     id?: string,
     onChange?: React.ChangeEventHandler<HTMLInputElement>,
-    value?: string | number | readonly string[],
+    value?: string,
     disabled?: boolean,
     style?: CSSProperties,
     size?: number | string,

@@ -45,7 +45,6 @@ export { ChartById, ChartByType } from './module/chart/chartById'
 export { FormById } from './module/form/formById'
 export { ViewById } from './module/view/viewById'
 export { PageById, PageByUrl } from './module/page/pageById'
-export * from './module/table/tableById'
 
 export { useTranslation } from './language/i18n';
 export { Route, useNavigate, useParams, useLocation, useSearchParams, Navigate, NavLink, Outlet } from 'react-router-dom'

@@ -1,8 +1,8 @@
 import { BaseDA, ConfigData, getHeaders } from "./config";
 
 export class TableController {
-    private module: "table" | "column" | "rel" | "menu" | "page" | "layout" | "designtoken" | "workflow" | "process" | "step";
-    constructor(module: "table" | "column" | "rel" | "menu" | "page" | "layout" | "designtoken" | "workflow" | "process" | "step") {
+    private module: "table" | "column" | "rel" | "menu" | "space" | "function" | "page" | "layout" | "layer" | "designtoken" | "diagram" | "whiteboard" | "workflow" | "process" | "step";
+    constructor(module: "table" | "column" | "rel" | "menu" | "space" | "function" | "page" | "layout" | "layer" | "designtoken" | "diagram" | "whiteboard" | "workflow" | "process" | "step") {
         if (!["table", "column", "rel", "menu", "page", "layout", "designtoken", "workflow", "process", "step"].includes(module)) {
             throw new Error("Invalid module")
         }

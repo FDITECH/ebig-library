@@ -165,8 +165,8 @@ export class DataController {
 }
 
 export class SettingDataController {
-    private setting: "report" | "chart" | "form" | "card" | "view";
-    constructor(setting: "report" | "chart" | "form" | "card" | "view") {
+    private setting: "chart" | "form" | "card" | "view";
+    constructor(setting: "chart" | "form" | "card" | "view") {
         this.setting = setting
     }
 

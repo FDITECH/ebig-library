@@ -605,7 +605,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
                 default:
                     if (_rel.Form?.Options?.length) {
-                        if (_rel.Form.ComponentType === "SelectMultiple" || props.item.Setting?.multiple) {
+                        if (props.item.Type === "SelectMultiple" || props.item.Setting?.multiple) {
                             tmpValue = _rel.Form.Options.filter((e: any) => {
                                 switch (_rel.DataType) {
                                     case FEDataType.BOOLEAN:
@@ -657,7 +657,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
                 default:
                     if (_col.Form?.Options?.length) {
-                        if (_col.Form.ComponentType === "SelectMultiple" || props.item.Setting?.multiple) {
+                        if (props.item.Type === "SelectMultiple" || props.item.Setting?.multiple) {
                             tmpValue = _col.Form.Options.filter((e: any) => (_col.DataType === FEDataType.BOOLEAN ? (tmpValue === e.id || `${tmpValue}` === `${e.id}`) : tmpValue?.includes(e.id))).map((e: any) => e.name).join(",")
                         } else {
                             tmpValue = _col.Form.Options.find((e: any) => e.id === tmpValue)?.name ?? tmpValue
@@ -1088,6 +1088,12 @@ const RenderContainer = forwardRef<any, { type: "label" | "p" | "form" | "a" | "
     switch (type) {
         case "label":
             return <label ref={ref} {...props}>{children}</label>
+        case "ol":
+            return <ol ref={ref} {...props}>{children}</ol>
+        case "ul":
+            return <ul ref={ref} {...props}>{children}</ul>
+        case "li":
+            return <li ref={ref} {...props}>{children}</li>
         case "p":
             return <p ref={ref} {...props}>{children}</p>
         case "form":
