@@ -301,7 +301,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     onSubmit: async () => {
                                         if (actItem.Caculate) {
                                             await (new AsyncFunction(
-                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
+                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
                                                 `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                             ))(
                                                 props.indexItem ?? props.methods?.getValues(),
@@ -315,6 +315,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                                 ToastMessage,
                                                 BaseDA.uploadFiles,
                                                 BaseDA.getFilesInfor,
+                                                BaseDA.post,
+                                                BaseDA.get,
                                                 showDialog,
                                                 showHTMLPopup,
                                                 ComponentStatus,
@@ -331,7 +333,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             case ActionType.custom:
                                 if (actItem.Caculate) {
                                     const asyncFuncResponse = await (new AsyncFunction(
-                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                                         `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                     ))(
                                         props.indexItem ?? props.methods?.getValues(),
@@ -345,6 +347,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                         ToastMessage,
                                         BaseDA.uploadFiles,
                                         BaseDA.getFilesInfor,
+                                        BaseDA.post,
+                                        BaseDA.get,
                                         showDialog,
                                         showHTMLPopup,
                                         ComponentStatus,
@@ -507,7 +511,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
-                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                 `${customActions.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
@@ -520,6 +524,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 ToastMessage,
                 BaseDA.uploadFiles,
                 BaseDA.getFilesInfor,
+                BaseDA.post,
+                BaseDA.get,
                 showDialog,
                 showHTMLPopup,
                 ComponentStatus,
@@ -832,7 +838,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.card:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
@@ -845,6 +851,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             ToastMessage,
                             BaseDA.uploadFiles,
                             BaseDA.getFilesInfor,
+                            BaseDA.post,
+                            BaseDA.get,
                             showDialog,
                             showHTMLPopup,
                             ComponentStatus,

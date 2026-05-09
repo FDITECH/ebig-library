@@ -138,8 +138,8 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     const [userData, setUserData] = useState<{ [k: string]: any } | undefined>(undefined)
     const [projectData, setProjectData] = useState<ProjectItem | undefined>(undefined)
     const [globalData, setGlobalData] = useState<{ [k: string]: any } | undefined>(undefined)
-    const [rawFunctions, setFunctions] = useState<{ [k: string]: any }[]>([])
-    const functions = useRef(undefined)
+    const [rawFunctions, setRawFunctions] = useState<{ [k: string]: any }[]>([])
+    const [functions, setFunctions] = useState<{ [k: string]: any } | undefined>(undefined)
 
     useEffect(() => {
         loadCdnTranslations(ConfigData.ebigCdn)
@@ -174,7 +174,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
                 if (res.code === 200 && res.data.length) appendDesignTokens(res.data)
             })
             functionController.getAll().then((res) => {
-                if (res.code === 200 && res.data.length) setFunctions(res.data)
+                if (res.code === 200 && res.data.length) setRawFunctions(res.data)
             })
             const result = await languageController.getAll()
             if (result.code === 200 && result.data.length) {
@@ -198,12 +198,12 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
         else setLoadedResources(true)
     }, [props.pid, props.imgUrlId, props.fileUrl])
 
-    return <EbigContext.Provider value={{ projectData, theme, setTheme, i18n, userData, setUserData, globalData, setGlobalData, functions: functions.current, setFunctions }}>
+    return <EbigContext.Provider value={{ projectData, theme, setTheme, i18n, userData, setUserData, globalData, setGlobalData, functions, setFunctions: setRawFunctions }}>
         <OfflineBanner />
         <BrowserRouter>
             <ToastContainer />
             <Dialog />
-            <HandleFunctions ref={functions} rawFunctions={rawFunctions} />
+            <HandleFunctions rawFunctions={rawFunctions} setFunctions={setFunctions} />
             {loadedResources && <Routes>{props.children}</Routes>}
         </BrowserRouter>
     </EbigContext.Provider>
@@ -227,7 +227,7 @@ function extractAllFunctionNames(code: string) {
     return [...names];
 }
 
-const HandleFunctions = forwardRef((props: { rawFunctions: any[] }, ref) => {
+const HandleFunctions = (props: { rawFunctions: any[], setFunctions: (data: { [k: string]: any }[]) => void }) => {
     const ebigContextData = useEbigContext()
     const { i18n, theme, projectData, userData, globalData } = ebigContextData
     const location = useLocation()
@@ -253,7 +253,7 @@ const HandleFunctions = forwardRef((props: { rawFunctions: any[] }, ref) => {
 
             try {
                 const fn = new Function(
-                    "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "useParams", "useNavigate", "location", "useEbigContext",
+                    "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "useParams", "useNavigate", "location", "useEbigContext",
                     wrappedCode
                 );
                 const result = fn(
@@ -263,6 +263,8 @@ const HandleFunctions = forwardRef((props: { rawFunctions: any[] }, ref) => {
                     ToastMessage,
                     BaseDA.uploadFiles,
                     BaseDA.getFilesInfor,
+                    BaseDA.post,
+                    BaseDA.get,
                     showDialog,
                     ({ className, clickOverlayClosePopup, hideOverlay, content }: { className?: string, clickOverlayClosePopup?: boolean, hideOverlay?: boolean, content: ReactNode | HTMLElement }) => {
                         showPopup({ ref: popupRef, className, clickOverlayClosePopup, hideOverlay, content })
@@ -287,9 +289,12 @@ const HandleFunctions = forwardRef((props: { rawFunctions: any[] }, ref) => {
         return tmp
     }, [props.rawFunctions, globalData, projectData, userData, i18n.language, theme, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
 
-    useImperativeHandle(ref, () => ({ functions }), [functions])
+    useEffect(() => {
+        props.setFunctions(functions)
+    }, [functions])
+
     return <Popup ref={popupRef} />
-})
+}
 
 export const useEbigContext = () => {
     const context = useContext(EbigContext);

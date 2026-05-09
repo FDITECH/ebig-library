@@ -42,7 +42,7 @@ const ChartById = forwardRef<ChartRef, Props>(({ id, style, className, ...props 
         if (settingData.GetData?.length) {
             try {
                 (new AsyncFunction(
-                    "entityData", "tableName", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "ComponentStatus", "useEbigContext",
+                    "entityData", "tableName", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "ComponentStatus", "useEbigContext",
                     settingData.GetData // This string can now safely contain the 'await' keyword
                 ))(
                     {},
@@ -53,6 +53,8 @@ const ChartById = forwardRef<ChartRef, Props>(({ id, style, className, ...props 
                     ToastMessage,
                     BaseDA.uploadFiles,
                     BaseDA.getFilesInfor,
+                    BaseDA.post,
+                    BaseDA.get,
                     showDialog,
                     ComponentStatus,
                     () => ebigContextData
