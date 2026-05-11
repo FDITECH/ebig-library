@@ -1010,7 +1010,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             if (props.item.NameField) return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} percent={dataValue} />
             return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.icon:
-            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} />
+            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle />
             else if (props.item.NameField) return null
             else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.chart:

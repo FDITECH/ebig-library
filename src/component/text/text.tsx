@@ -10,6 +10,7 @@ interface TextProps {
     onClick?: React.MouseEventHandler<HTMLDivElement>,
     onHover?: React.MouseEventHandler<HTMLDivElement>,
     html?: string,
+    title?: string
 }
 
 export const Text = React.forwardRef<HTMLDivElement, TextProps>((props, ref) => {
@@ -17,6 +18,6 @@ export const Text = React.forwardRef<HTMLDivElement, TextProps>((props, ref) => 
     if (props.maxLine) {
         convertStyle = { ...convertStyle, '--max-line': props.maxLine } as CSSProperties
     }
-    return props.html ? <div ref={ref} dangerouslySetInnerHTML={{ __html: props.html }} id={props.id} onMouseOver={props.onHover} onClick={props.onClick} className={`comp-text-innerhtml ${props.className ?? ''}`} style={convertStyle} /> :
-        <div ref={ref} id={props.id} onMouseOver={props.onHover} onClick={props.onClick} className={`comp-text ${props.onClick ? 'type-button' : ''} ${props.className ?? ''}`} style={convertStyle}>{props.children}</div>
+    return props.html ? <div ref={ref} title={props.title} dangerouslySetInnerHTML={{ __html: props.html }} id={props.id} onMouseOver={props.onHover} onClick={props.onClick} className={`comp-text-innerhtml ${props.className ?? ''}`} style={convertStyle} /> :
+        <div ref={ref} id={props.id} title={props.title} onMouseOver={props.onHover} onClick={props.onClick} className={`comp-text ${props.onClick ? 'type-button' : ''} ${props.className ?? ''}`} style={convertStyle}>{props.children}</div>
 })

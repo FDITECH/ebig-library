@@ -18,6 +18,7 @@ interface EbigIconProps {
     onMouseDown?: React.MouseEventHandler<HTMLDivElement>,
     onDoubleClick?: React.MouseEventHandler<HTMLDivElement>,
     simpleStyle?: boolean,
+    title?: string
 }
 
 interface EbigIconRef {
@@ -29,7 +30,7 @@ function delay(t: number) {
 }
 
 const fetchIcons: { [key: string]: number } = {}
-export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link, className, style = {}, size, color, alt, onClick, tooltip, onMouseDown, onDoubleClick, simpleStyle }, ref) => {
+export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link, className, style = {}, size, color, alt, onClick, tooltip, onMouseDown, onDoubleClick, simpleStyle, title }, ref) => {
     const divRef = useRef<HTMLDivElement>(null)
     const timoutRef = useRef<NodeJS.Timeout>(null)
     const [svgData, setSvgData] = useState<string>()
@@ -94,6 +95,7 @@ export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link,
         <div
             ref={divRef}
             id={id}
+            title={title}
             onClick={onClick}
             onDoubleClick={onDoubleClick}
             onMouseDown={onMouseDown}
