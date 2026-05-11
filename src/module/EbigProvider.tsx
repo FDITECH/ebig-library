@@ -204,7 +204,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
             <ToastContainer />
             <Dialog />
             <HandleFunctions rawFunctions={rawFunctions} setFunctions={setFunctions} />
-            {loadedResources && projectData && <Routes>{props.children}</Routes>}
+            {loadedResources && (!loadResources || projectData) && <Routes>{props.children}</Routes>}
         </BrowserRouter>
     </EbigContext.Provider>
 }
