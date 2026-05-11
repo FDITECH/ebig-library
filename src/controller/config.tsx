@@ -51,11 +51,11 @@ export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
 
 const maxFileSize = 200 * 1024 * 1024
 export class BaseDA {
-    static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
+    static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any, withCredentials?: boolean }) => {
         try {
             let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
-            const response = await axios.post(url, options?.body, { headers: _headers })
+            const response = await axios.post(url, options?.body, { headers: _headers, withCredentials: options?.withCredentials ?? true })
             if (response.status === 200 || response.status === 201) {
                 return response.data
             } else if (response.status === 204) {
@@ -76,7 +76,7 @@ export class BaseDA {
         }
     }
 
-    static postFile = async (url: string, options?: { headers?: { [k: string]: any }, body?: FormData }) => {
+    static postFile = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {
             if (options?.headers) {
                 options.headers["Content-Type"] = "multipart/form-data"
@@ -105,11 +105,11 @@ export class BaseDA {
         }
     }
 
-    static get = async (url: string, options?: { headers?: { [k: string]: any } }) => {
+    static get = async (url: string, options?: { headers?: { [k: string]: any }, withCredentials?: boolean }) => {
         try {
             let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
-            const response = await axios.get(url, { headers: _headers })
+            const response = await axios.get(url, { headers: _headers, withCredentials: options?.withCredentials ?? true })
             if (response.status === 200 || response.status === 201) {
                 return response.data
             } else if (response.status === 204) {
