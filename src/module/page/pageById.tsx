@@ -12,7 +12,7 @@ import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
 import { BaseDA, CkEditorUploadAdapter, ConfigData, imgFileTypes } from "../../controller/config"
 import { FCheckbox, FColorPicker, FDateTimePicker, FGroupCheckbox, FGroupRadioButton, FInputPassword, FNumberPicker, FRadioButton, FSelectDropdownForm, FSwitch, FTextArea, FTextField, FUploadMultipleFileType } from "./component-form"
-import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup } from "../../index"
+import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController } from "../../index"
 
 interface Props {
     methods?: UseFormReturn
@@ -301,7 +301,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     onSubmit: async () => {
                                         if (actItem.Caculate) {
                                             await (new AsyncFunction(
-                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
+                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
                                                 `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                             ))(
                                                 props.indexItem ?? props.methods?.getValues(),
@@ -310,6 +310,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                                 props.item.NameField,
                                                 Util,
+                                                AccountController,
                                                 DataController,
                                                 randomGID,
                                                 ToastMessage,
@@ -333,7 +334,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             case ActionType.custom:
                                 if (actItem.Caculate) {
                                     const asyncFuncResponse = await (new AsyncFunction(
-                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                                         `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                     ))(
                                         props.indexItem ?? props.methods?.getValues(),
@@ -342,6 +343,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                         props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                         props.item.NameField,
                                         Util,
+                                        AccountController,
                                         DataController,
                                         randomGID,
                                         ToastMessage,
@@ -511,7 +513,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
-                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                 `${customActions.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
@@ -519,6 +521,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 props.tbName,
                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                 Util,
+                AccountController,
                 DataController,
                 randomGID,
                 ToastMessage,
@@ -838,7 +841,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.card:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
@@ -846,6 +849,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             props.tbName,
                             props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                             Util,
+                            AccountController,
                             DataController,
                             randomGID,
                             ToastMessage,

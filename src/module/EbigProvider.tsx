@@ -8,7 +8,7 @@ import { DesignTokenType, ProjectItem } from "./da"
 import { randomGID, Util } from "../controller/utils"
 import { useTranslation } from "react-i18next"
 import { loadCdnTranslations } from "../language/i18n"
-import { DataController } from "../controller/data"
+import { AccountController, DataController } from "../controller/data"
 import { encodeClassName, LayoutElement } from "./page/config"
 import { i18n } from "i18next"
 import { getValidLink } from "./page/pageById"
@@ -204,24 +204,33 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
             <ToastContainer />
             <Dialog />
             <HandleFunctions rawFunctions={rawFunctions} setFunctions={setFunctions} />
-            {loadedResources && <Routes>{props.children}</Routes>}
+            {loadedResources && projectData && <Routes>{props.children}</Routes>}
         </BrowserRouter>
     </EbigContext.Provider>
 }
 
-function extractAllFunctionNames(code: string) {
+const extractAllFunctionNames = (code: string) => {
+    const depthAt = (pos: number): number => {
+        let depth = 0;
+        for (let i = 0; i < pos; i++) {
+            if (code[i] === '{') depth++;
+            else if (code[i] === '}') depth--;
+        }
+        return depth;
+    };
+
     const patterns = [
-        // function foo() {}
-        /function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g,
-        // const foo = function() {}  OR  const foo = () => {}
-        /(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:function|\(|[a-zA-Z_$])/g,
+        // function foo() {}  |  async function foo() {}
+        /(?:async\s+)?function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g,
+        // const foo = function() {}  |  const foo = async function() {}  |  const foo = () => {}  |  const foo = async () => {}  |  const foo = a => {}  |  const foo = async a => {}
+        /(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:async\s+)?(?:function|\(|[a-zA-Z_$])/g,
     ];
 
     const names = new Set();
     for (const regex of patterns) {
         let match;
         while ((match = regex.exec(code)) !== null) {
-            names.add(match[1]);
+            if (depthAt(match.index) === 0) names.add(match[1]);
         }
     }
     return [...names];
@@ -234,18 +243,21 @@ const HandleFunctions = (props: { rawFunctions: any[], setFunctions: (data: { [k
     const params = useParams()
     const navigate = useNavigate()
     const popupRef = useRef<any>(null)
+    const namesByFunctions = useMemo(() => {
+        if (!props.rawFunctions.length) return []
+        return props.rawFunctions.map((func: any) => ({ title: func.Name, names: extractAllFunctionNames(func.Value), code: func.Value }))
+    }, [props.rawFunctions])
     const functions = useMemo(() => {
-        if (!props.rawFunctions.length) return undefined
+        if (!namesByFunctions.length) return undefined
         const tmp: any = {}
-        for (const func of props.rawFunctions) {
-            const names = extractAllFunctionNames(func.Value);
+        for (const func of namesByFunctions) {
 
-            if (names.length === 0) continue;
+            if (func.names.length === 0) continue;
 
             const wrappedCode = `
-    ${func.Value}
+    ${func.code}
     try {
-      return { ${names.join(', ')} };
+      return { ${func.names.join(', ')} };
     } catch(e) {
       return {};
     }
@@ -253,11 +265,12 @@ const HandleFunctions = (props: { rawFunctions: any[], setFunctions: (data: { [k
 
             try {
                 const fn = new Function(
-                    "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "useParams", "useNavigate", "location", "useEbigContext",
+                    "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "useParams", "useNavigate", "location", "useEbigContext",
                     wrappedCode
                 );
                 const result = fn(
                     Util,
+                    AccountController,
                     DataController,
                     randomGID,
                     ToastMessage,
@@ -277,7 +290,7 @@ const HandleFunctions = (props: { rawFunctions: any[], setFunctions: (data: { [k
                 );
 
                 // Filter out anything that isn't actually a function
-                tmp[func.Name] = Object.fromEntries(
+                tmp[func.title] = Object.fromEntries(
                     Object.entries(result).filter(([_, v]) => typeof v === 'function')
                 );
             } catch (e) {
@@ -287,7 +300,7 @@ const HandleFunctions = (props: { rawFunctions: any[], setFunctions: (data: { [k
         }
         if (Object.keys(tmp).length === 0) return undefined
         return tmp
-    }, [props.rawFunctions, globalData, projectData, userData, i18n.language, theme, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
+    }, [namesByFunctions, globalData, projectData, userData, i18n.language, theme, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
 
     useEffect(() => {
         props.setFunctions(functions)
