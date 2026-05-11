@@ -453,7 +453,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             tmp.params = JSON.stringify(params)
             tmp.state = JSON.stringify(location.state)
         }
-        if (funcString.includes("ebigContextData")) {
+        if (funcString.includes("useEbigContext")) {
             tmp.language = ebigContextData.i18n.language
             tmp.globalData = JSON.stringify(ebigContextData.globalData)
             tmp.userData = JSON.stringify(ebigContextData.userData)
