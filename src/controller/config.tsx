@@ -15,38 +15,6 @@ export class ConfigData {
 export const refreshTokenHeaders = { 'Content-Type': 'application/json', pid: "wini" }
 export const specialCharsRegex = /[^a-zA-Z0-9]/g;
 
-export const getHeaders = async () => {
-    let timeRefresh: any = Util.getCookie("timeRefresh")
-    if (typeof timeRefresh === "string") timeRefresh = parseInt(timeRefresh)
-    const now = Date.now() / 1000
-    if (timeRefresh && timeRefresh > 0 && timeRefresh <= now) {
-        const res = await fetch(ConfigData.url + 'data/refreshToken', {
-            method: 'POST',
-            headers: refreshTokenHeaders,
-            body: JSON.stringify({ 'refreshToken': `Bearer ${Util.getCookie("refreshToken")}` }),
-        })
-        if (res.status === 200 || res.status === 201) {
-            const jsonData = await res.json()
-            if (jsonData.code === 200) {
-                Util.setCookie("accessToken", jsonData.accessToken)
-                Util.setCookie("timeRefresh", Date.now() / 1000 + 9 * 60)
-                return {
-                    'refreshToken': `Bearer ${Util.getCookie("refreshToken")}`,
-                    'Authorization': `Bearer ${Util.getCookie("accessToken")}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        }
-        ConfigData.onInvalidToken()
-    } else if (Util.getCookie("accessToken")) {
-        return {
-            'Authorization': `Bearer ${Util.getCookie("accessToken")}`,
-            'Content-Type': 'application/json'
-        }
-    }
-    return { 'Content-Type': 'application/json' }
-}
-
 export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
 
 const maxFileSize = 200 * 1024 * 1024
@@ -138,8 +106,7 @@ export class BaseDA {
         const files = listFile.map(e => e instanceof File ? e : e.file);
         const ids = listFile.map(e => e instanceof File ? null : e.id).filter(Boolean);
 
-        let _headers: { [k: string]: any } = await getHeaders()
-        const headersObj: any = { ..._headers, pid: ConfigData.pid, ...headers }
+        const headersObj: any = { pid: ConfigData.pid, ...headers }
         // Remove Content-Type - browser will set it with boundary for multipart
 
         const listRequest: Array<{ files: File[], ids: string[] }> = [{ files: [], ids: [] }]
@@ -211,8 +178,7 @@ export class BaseDA {
         loader.className = "loader"
         document.body.appendChild(loader)
 
-        let _headers: { [k: string]: any } = await getHeaders()
-        const headersObj: any = { ..._headers, pid: ConfigData.pid, ...headers }
+        const headersObj: any = { "Content-Type": "application/json", pid: ConfigData.pid, ...headers }
 
         const response = await BaseDA.post(ConfigData.url + 'file/deleteFiles', {
             headers: headersObj,
@@ -227,8 +193,7 @@ export class BaseDA {
         loader.className = "loader"
         document.body.appendChild(loader)
 
-        let _headers: { [k: string]: any } = await getHeaders()
-        const headersObj: any = { ..._headers, pid: ConfigData.pid, ...headers }
+        const headersObj: any = { "Content-Type": "application/json", pid: ConfigData.pid, ...headers }
 
         const response = await BaseDA.post(ConfigData.url + 'file/duplicateFiles', {
             headers: headersObj,
