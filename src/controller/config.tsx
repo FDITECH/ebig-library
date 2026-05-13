@@ -23,7 +23,7 @@ export class BaseDA {
         try {
             let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
-            const response = await axios.post(url, options?.body, { headers: _headers, withCredentials: options?.withCredentials ?? (url === ConfigData.url) })
+            const response = await axios.post(url, options?.body, { headers: _headers, withCredentials: options?.withCredentials ?? (url.startsWith(ConfigData.url)) })
             if (response.status === 200 || response.status === 201) {
                 return response.data
             } else if (response.status === 204) {
@@ -77,7 +77,7 @@ export class BaseDA {
         try {
             let _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
-            const response = await axios.get(url, { headers: _headers, withCredentials: options?.withCredentials ?? (url === ConfigData.url) })
+            const response = await axios.get(url, { headers: _headers, withCredentials: options?.withCredentials ?? (url.startsWith(ConfigData.url)) })
             if (response.status === 200 || response.status === 201) {
                 return response.data
             } else if (response.status === 204) {
