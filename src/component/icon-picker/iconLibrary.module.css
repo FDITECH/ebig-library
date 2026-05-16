@@ -21,7 +21,7 @@
     z-index: 5;
     overflow: visible;
     background-color: var(--neutral-absolute-background-color);
-    content-visibility: auto;
+    content-visibility: visible;
 }
 
 .search-input {
@@ -41,6 +41,7 @@
     border: var(--neutral-main-border);
     width: 10.8rem;
     gap: 2px;
+    content-visibility: visible;
 }
 
 .filter-options>.option {
