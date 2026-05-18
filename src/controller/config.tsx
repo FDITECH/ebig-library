@@ -44,12 +44,11 @@ export class BaseDA {
         }
     }
 
-    static postFile = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
+    static postFile = async (url: string, options?: { headers?: { [k: string]: any }, body?: any, withCredentials?: boolean }) => {
         try {
-            if (options?.headers) {
-                options.headers["Content-Type"] = "multipart/form-data"
-            }
-            const response = await axios.post(url, options?.body, { headers: options?.headers ?? { "Content-Type": "multipart/form-data" } })
+            let _headers = { 'Content-Type': 'multipart/form-data' }
+            if (options?.headers) _headers = { ...options.headers, ..._headers }
+            const response = await axios.post(url, options?.body, { headers: _headers, withCredentials: options?.withCredentials ?? (url.startsWith(ConfigData.url)) })
             switch (response.status) {
                 case 200:
                 case 201:
