@@ -3,7 +3,7 @@ import { BaseDA, ConfigData } from "./config";
 export class TableController {
     private module: "table" | "column" | "rel" | "space" | "function" | "page" | "layout" | "layer" | "designtoken" | "diagram" | "whiteboard" | "workflow" | "process" | "step";
     constructor(module: "table" | "column" | "rel" | "space" | "function" | "page" | "layout" | "layer" | "designtoken" | "diagram" | "whiteboard" | "workflow" | "process" | "step") {
-        if (!["table", "column", "rel", "space", "function", "page", "layout", "layer", "designtoken", "diagram", "whiteboard", "workflow", "process", "step"].includes(module)) {
+        if (!["table", "column", "rel", "space", "function", "page", "layout", "layer", "designtoken", "diagram", "whiteboard", "workflow", "process", "step", "menu"].includes(module)) {
             throw new Error("Invalid module")
         }
         this.module = module
