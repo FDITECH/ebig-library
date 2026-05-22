@@ -728,9 +728,11 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             case ComponentType.video:
             case ComponentType.audio:
             case ComponentType.iframe:
-            case ComponentType.icon:
                 if (regexGetVariables.test(tmpProps.src)) tmpProps.src = replaceThisVariables(tmpProps.src)
                 tmpProps.src = getValidLink(tmpProps.src)
+                break;
+            case ComponentType.icon:
+                if (regexGetVariables.test(tmpProps.src)) tmpProps.src = replaceThisVariables(tmpProps.src)
                 break;
             case ComponentType.pagination:
                 if (tmpProps.currentPage && regexGetVariables.test(tmpProps.currentPage)) {
@@ -951,7 +953,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         }}
                         alt=""
                         referrerPolicy="no-referrer"
-                        onError={(ev) => { ev.currentTarget.src = handleErrorImgSrc }}
+                        onError={(ev) => {
+                            console.log("error src: ", ev.currentTarget.src)
+                            ev.currentTarget.src = handleErrorImgSrc
+                        }}
                         {...typeProps}
                         {...restOfActions}
                         src={ConfigData.regexGuid.test(f.id) ? (ConfigData.imgUrlId + f.id) : f.url}
