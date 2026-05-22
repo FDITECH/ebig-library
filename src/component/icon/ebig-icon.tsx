@@ -206,7 +206,7 @@ export const showTooltipElement = ({ element, tooltip }: { element: any, tooltip
     }
 }
 
-export type EbigIconName = "color/accessibility/accessibility-lift" |
+type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/accessibility/accessibility" |
     "color/accessibility/adaptive-bike" |
     "color/accessibility/audio-description" |

@@ -30,6 +30,7 @@ interface Props {
     theme?: "light" | "dark",
     /** default true */
     loadResources?: boolean,
+    loadingView?: React.ReactNode,
 }
 
 const appendDesignTokens = (list: Array<{ [p: string]: any }>) => {
@@ -120,7 +121,7 @@ interface EbigContextProps {
     globalData?: { [k: string]: any },
     setGlobalData: (data?: { [k: string]: any }) => void,
     functions?: { [k: string]: any },
-    setFunctions: (data: { [k: string]: any }[]) => void
+    setFunctions: (data: { [k: string]: any }[]) => void,
 }
 
 const EbigContext = createContext<EbigContextProps | undefined>(undefined)
@@ -204,7 +205,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
             <ToastContainer />
             <Dialog />
             <HandleFunctions rawFunctions={rawFunctions} setFunctions={setFunctions} />
-            {loadedResources && (!loadResources || projectData) && <Routes>{props.children}</Routes>}
+            {(loadedResources && (!loadResources || projectData)) ? <Routes>{props.children}</Routes> : props.loadingView}
         </BrowserRouter>
     </EbigContext.Provider>
 }
