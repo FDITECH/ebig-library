@@ -119,6 +119,7 @@ export const RenderLayerElement = (props: RenderLayerElementProps) => {
 }
 
 export const getValidLink = (link: string) => {
+    if (!link) return ""
     if (link.startsWith("http")) return link
     if (ConfigData.regexGuid.test(link)) return ConfigData.imgUrlId + link
     else return ConfigData.fileUrl + link
