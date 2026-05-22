@@ -45,7 +45,7 @@ export class DataController {
         return res
     }
 
-    async patternList(options: { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, exact?: boolean, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } } }) {
+    async patternList(options: { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, exact?: boolean, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } | { searchRaw?: string, reducers: string }[] } }) {
         const res = await BaseDA.post(ConfigData.url + 'data/patternList', {
             headers: {
                 pid: ConfigData.pid,
