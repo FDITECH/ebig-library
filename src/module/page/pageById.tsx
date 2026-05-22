@@ -729,6 +729,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             case ComponentType.iframe:
             case ComponentType.icon:
                 if (regexGetVariables.test(tmpProps.src)) tmpProps.src = replaceThisVariables(tmpProps.src)
+                tmpProps.src = getValidLink(tmpProps.src)
                 break;
             case ComponentType.pagination:
                 if (tmpProps.currentPage && regexGetVariables.test(tmpProps.currentPage)) {
