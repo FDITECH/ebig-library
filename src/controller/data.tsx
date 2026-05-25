@@ -213,6 +213,11 @@ export class AccountController {
         return res
     }
 
+    async logout() {
+        const res = await BaseDA.get(ConfigData.url + 'data/logout')
+        return res
+    }
+
     async getInfor() {
         const res = await BaseDA.get(ConfigData.url + 'data/getInfo', {
             headers: { module: this.module, pid: ConfigData.pid },
