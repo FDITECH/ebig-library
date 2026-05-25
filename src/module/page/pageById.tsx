@@ -446,6 +446,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
 
     // handle listener
     const handleListener = (funcString: string) => {
+        if (typeof funcString !== "string") return undefined
         const tmp: any = {}
         if (funcString.includes("entityData")) tmp.indexItem = JSON.stringify(props.indexItem ?? props.methods?.getValues())
         if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
