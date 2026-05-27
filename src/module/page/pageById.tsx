@@ -155,12 +155,13 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
                     "location",
                     "query",
                     "params",
+                    "theme",
                     "user",
                     "lang",
                     "t",
                     "global",
                     `return ${p1.replace(/this/g, "indexItem")}`
-                )({ ...props.indexItem, index: props.index }, Util, props.methods!.watch, location, query, params, ebigContextData.userData, ebigContextData.i18n.language, ebigContextData.i18n.t, ebigContextData.globalData)
+                )({ ...props.indexItem, index: props.index }, Util, props.methods!.watch, location, query, params, ebigContextData.theme, ebigContextData.userData, ebigContextData.i18n.language, ebigContextData.i18n.t, ebigContextData.globalData)
             } catch (error) {
                 console.error("item: ", props.item, " --- match: ", m, " --- p1: ", p1, " --- error: ", error)
             }
