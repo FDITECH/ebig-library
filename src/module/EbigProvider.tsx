@@ -320,7 +320,7 @@ export const useEbigContext = () => {
     return context;
 }
 
-const href = "https://cdn.ebig.co/library/style/v0.0.58/"
+const href = "https://cdn.ebig.co/library/style/v0.0.81/"
 const appendStyleSheet = () => {
     const tmp = document.createElement("div")
     tmp.innerHTML = `
