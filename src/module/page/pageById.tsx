@@ -772,6 +772,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case ComponentType.textField:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.defaultValue)) tmpProps.defaultValue = replaceThisVariables(tmpProps.defaultValue)
                         break;
+                    case ComponentType.ebigEditor:
+                        if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.initValue)) tmpProps.initValue = replaceThisVariables(tmpProps.initValue)
+                        break;
                     case ComponentType.switch:
                     case ComponentType.checkbox:
                     case ComponentType.numberPicker:
@@ -1085,7 +1088,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             return <CustomCkEditor5
                 {...typeProps}
                 {...restOfActions}
-                methods={props.methods}
                 extraPlugins={[
                     function (editor: any) {
                         editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => new CkEditorUploadAdapter(loader)
@@ -1099,7 +1101,16 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 }}
             />
         case ComponentType.ebigEditor:
-            return <EbigEditor simpleStyle {...typeProps} {...restOfActions} />
+            return <EbigEditor
+                simpleStyle
+                {...typeProps}
+                {...restOfActions}
+                initValue={props.item.NameField ? props.methods?.watch(props.item.NameField) : typeProps.initValue}
+                onBlur={(vl) => {
+                    if (props.item.NameField) props.methods?.setValue(props.item.NameField, vl)
+                    if (restOfActions.onBlur) restOfActions.onBlur(vl)
+                }}
+            />
         case ComponentType.pagination:
             return <Pagination simpleStyle {...typeProps} {...restOfActions} />
         default:

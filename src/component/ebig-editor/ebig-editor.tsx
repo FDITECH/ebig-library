@@ -197,7 +197,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
 
     useEffect(() => {
         if (initValue && inputContentRef.current && inputContentRef.current.innerHTML.trim() !== initValue.trim()) inputContentRef.current!.innerHTML = initValue
-    }, [initValue])
+    }, [!initValue?.length])
 
     const [activeStyles, setActiveStyles] = useState({
         bold: false,
