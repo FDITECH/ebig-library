@@ -12,7 +12,7 @@ import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
 import { BaseDA, CkEditorUploadAdapter, ConfigData, imgFileTypes } from "../../controller/config"
 import { FCheckbox, FColorPicker, FDateTimePicker, FGroupCheckbox, FGroupRadioButton, FInputPassword, FNumberPicker, FRadioButton, FSelectDropdownForm, FSwitch, FTextArea, FTextField, FUploadMultipleFileType } from "./component-form"
-import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController } from "../../index"
+import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController, EbigEditor } from "../../index"
 
 interface Props {
     methods?: UseFormReturn
@@ -1098,6 +1098,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     if (restOfActions.onBlur) restOfActions.onBlur(editorData)
                 }}
             />
+        case ComponentType.ebigEditor:
+            return <EbigEditor simpleStyle {...typeProps} {...restOfActions} />
         case ComponentType.pagination:
             return <Pagination simpleStyle {...typeProps} {...restOfActions} />
         default:

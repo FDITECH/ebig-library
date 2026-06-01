@@ -26,6 +26,7 @@ interface Props {
     /** default: ["emoji", "bold", "italic", "underline", "hyperlink"] */
     customToolbar?: ReactNode | Array<ReactNode | "emoji" | "bold" | "italic" | "underline" | "hyperlink">;
     simpleStyle?: boolean;
+    readOnly?: boolean;
 }
 
 interface RefProps {
@@ -36,7 +37,7 @@ interface RefProps {
     focus: () => void;
 }
 
-export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, disabled, placeholder, style = {}, className, onSuggest, autoFocus, initValue, hideToolbar, helperText, helperTextColor, customToolbar, simpleStyle }, ref) => {
+export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, disabled, readOnly, placeholder, style = {}, className, onSuggest, autoFocus, initValue, hideToolbar, helperText, helperTextColor, customToolbar, simpleStyle }, ref) => {
     const inputContentRef = useRef<HTMLDivElement>(null)
     const savedRange = useRef<any>(null)
     const popupRef = useRef<any>(null)
@@ -195,7 +196,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
     }, [autoFocus])
 
     useEffect(() => {
-        if (initValue) inputContentRef.current!.innerHTML = initValue
+        if (initValue && inputContentRef.current && inputContentRef.current.innerHTML.trim() !== initValue.trim()) inputContentRef.current!.innerHTML = initValue
     }, [initValue])
 
     const [activeStyles, setActiveStyles] = useState({
@@ -286,7 +287,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/emoticons/smile' size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={(ev) => {
+            onClick={(disabled || readOnly) ? undefined : ((ev) => {
                 if (isOpenEmoji) return null;
                 const rect = ev.currentTarget.getBoundingClientRect()
                 const tmp = document.createElement("div")
@@ -309,7 +310,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                     delete offset.left
                 }
                 showEmoji(offset)
-            }} />
+            })} />
     }
 
     const returnBold = (k?: string) => {
@@ -320,7 +321,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             size={14}
             color={activeStyles.bold ? "var(--primary-main-color)" : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={() => { handleFormat("bold") }}
+            onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("bold") })}
         />
     }
 
@@ -332,7 +333,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             size={14}
             color={activeStyles.italic ? "var(--primary-main-color)" : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={() => { handleFormat("italic") }}
+            onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("italic") })}
         />
     }
 
@@ -344,7 +345,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             size={14}
             color={activeStyles.underline ? "var(--primary-main-color)" : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={() => { handleFormat("underline") }}
+            onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("underline") })}
         />
     }
 
@@ -355,7 +356,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             className='icon-button size32'
             size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={handleLink}
+            onClick={(disabled || readOnly) ? undefined : handleLink}
         />
     }
 
@@ -369,16 +370,16 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         <div ref={inputContentRef}
             className={`${styles["ebig-editor-input"]}`}
             suppressContentEditableWarning
-            contentEditable={!disabled}
-            onFocus={disabled ? undefined : onSaveRange}
-            onInput={disabled ? undefined : onInput}
-            onPaste={disabled ? undefined : ((ev) => {
+            contentEditable={!disabled && !readOnly}
+            onFocus={(disabled || readOnly) ? undefined : onSaveRange}
+            onInput={(disabled || readOnly) ? undefined : onInput}
+            onPaste={(disabled || readOnly) ? undefined : ((ev) => {
                 ev.preventDefault()
                 const text = ev.clipboardData.getData("text/plain")
                 onRestoreRange(text)
                 onChange?.(inputContentRef.current!.innerHTML, inputContentRef.current!)
             })}
-            onBlur={disabled ? undefined : (() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) })}
+            onBlur={(disabled || readOnly) ? undefined : (() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) })}
             {...(placeholder ? { placeholder: placeholder } : {})}
         />
         {showLinkDetails && <PopupLinkDetails
