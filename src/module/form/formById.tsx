@@ -280,8 +280,8 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                             dataItem[_col.Name] = dataItem[_col.Name].getTime()
                             break;
                         case FEDataType.MONEY:
-                            if (!isNaN(Number(dataItem[_col.Name].replace(/,/g, ''))))
-                                dataItem[_col.Name] = Number(dataItem[_col.Name].replace(/,/g, ''))
+                            if (!isNaN(Number(`${dataItem[_col.Name]}`.replace(/,/g, ''))))
+                                dataItem[_col.Name] = Number(`${dataItem[_col.Name]}`.replace(/,/g, ''))
                             else delete dataItem[_col.Name]
                             break;
                         case FEDataType.PASSWORD:
