@@ -26,8 +26,8 @@ interface ValueProps {
 
 interface DateTimePickerProps {
     id?: string,
-    value?: Date,
-    endValue?: Date,
+    value?: Date | number,
+    endValue?: Date | number,
     min?: Date,
     max?: Date,
     pickOnly?: boolean,
@@ -82,14 +82,14 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
         switch (pickerType) {
             case "date":
             case "datetime":
-                setValue(props.value)
+                setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
                 break;
             case "auto":
-                if (props.endValue) setValue({ start: props.value, end: props.endValue, repeatData: props.repeatValue })
-                else setValue(props.value)
+                if (props.endValue) setValue({ start: typeof props.value === "number" ? new Date(props.value) : props.value, end: typeof props.endValue === "number" ? new Date(props.endValue) : props.endValue, repeatData: props.repeatValue })
+                else setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
                 break;
             default:
-                setValue((!props.value || !props.endValue) ? undefined : { start: props.value, end: props.endValue })
+                setValue((!props.value || !props.endValue) ? undefined : { start: typeof props.value === "number" ? new Date(props.value) : props.value, end: typeof props.endValue === "number" ? new Date(props.endValue) : props.endValue })
                 break;
         }
     }, [props.value, props.endValue, props.repeatValue, pickerType])
