@@ -97,7 +97,7 @@ export function IconLibrary({ onSelect, style = {}, onClose, className }: IconLi
         </div>
         {categories.map((cate) => {
             const icons = data.data.filter(e => e.category === cate)
-            return <div key={cate} className='col' style={{ gap: "0.8rem", padding: "0.8rem", display: icons.length ? "flex" : "none" }}>
+            return <div key={cate} className='col' style={{ display: icons.length ? "flex" : "none" }}>
                 <Text className='label-1'>{cate.slice(0, 1).toUpperCase() + cate.slice(1)}</Text>
                 <div className='row' style={{ flexWrap: "wrap", gap: "0.8rem", padding: "0.8 1.6rem", alignItems: "stretch" }}>
                     {icons.map((src: any, i: number) => <div key={src.name + src.id + i} className={`col col6 ${styles['icon-item']} ${staticPreview?.id === src.id ? styles['selected'] : ""}`}

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 export interface SuggestionProps {
     triggerPattern: string;
-    render: (offset: { top: number, left: number }, match: string, handleSelectSuggest: (newElement?: HTMLElement) => void) => ReactNode;
+    render: (offset: { top: number, left: number }, match: string, handleSelectSuggest: (newElement?: HTMLElement) => void) => ReactNode | HTMLElement;
 }
 
 interface Props {
@@ -25,6 +25,8 @@ interface Props {
     helperTextColor?: string;
     /** default: ["emoji", "bold", "italic", "underline", "hyperlink"] */
     customToolbar?: ReactNode | Array<ReactNode | "emoji" | "bold" | "italic" | "underline" | "hyperlink">;
+    simpleStyle?: boolean;
+    readOnly?: boolean;
 }
 
 interface RefProps {
@@ -35,12 +37,12 @@ interface RefProps {
     focus: () => void;
 }
 
-export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, disabled, placeholder, style = {}, className, onSuggest, autoFocus, initValue, hideToolbar, helperText, helperTextColor, customToolbar }, ref) => {
+export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, disabled, readOnly, placeholder, style = {}, className, onSuggest, autoFocus, initValue, hideToolbar, helperText, helperTextColor, customToolbar, simpleStyle }, ref) => {
     const inputContentRef = useRef<HTMLDivElement>(null)
     const savedRange = useRef<any>(null)
     const popupRef = useRef<any>(null)
     const emojiOffsetRef = useRef<CSSProperties>(null)
-    const inserLinkOffsetRef = useRef<CSSProperties>(null)
+    const insertLinkOffsetRef = useRef<CSSProperties>(null)
     const [isOpenEmoji, setIsOpenEmoji] = useState<{ height?: number, emojiStyle?: EmojiStyle, searchDisabled?: boolean, emojiPickerClassName?: string }>()
     const [showLinkPrompt, setShowLinkPrompt] = useState(false);
     const [showLinkDetails, setShowLinkDetails] = useState<HTMLAnchorElement | null>(null);
@@ -194,8 +196,8 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
     }, [autoFocus])
 
     useEffect(() => {
-        if (initValue) inputContentRef.current!.innerHTML = initValue
-    }, [initValue])
+        if (initValue && inputContentRef.current && inputContentRef.current.innerHTML.trim() !== initValue.trim()) inputContentRef.current!.innerHTML = initValue
+    }, [!initValue?.length])
 
     const [activeStyles, setActiveStyles] = useState({
         bold: false,
@@ -221,11 +223,11 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             }
             selectedLink.onclick = () => {
                 const rectLink = selectedLink.getBoundingClientRect();
-                inserLinkOffsetRef.current = { top: rectLink.bottom + 2 }
+                insertLinkOffsetRef.current = { top: rectLink.bottom + 2 }
                 setShowLinkDetails(selectedLink)
             }
             const rect = savedRange.current.getBoundingClientRect();
-            inserLinkOffsetRef.current = { top: rect.bottom + 2 }
+            insertLinkOffsetRef.current = { top: rect.bottom + 2 }
             setShowLinkPrompt(true);
         }
     };
@@ -285,7 +287,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/emoticons/smile' size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={(ev) => {
+            onClick={(disabled || readOnly) ? undefined : ((ev) => {
                 if (isOpenEmoji) return null;
                 const rect = ev.currentTarget.getBoundingClientRect()
                 const tmp = document.createElement("div")
@@ -308,7 +310,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                     delete offset.left
                 }
                 showEmoji(offset)
-            }} />
+            })} />
     }
 
     const returnBold = (k?: string) => {
@@ -319,7 +321,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             size={14}
             color={activeStyles.bold ? "var(--primary-main-color)" : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={() => { handleFormat("bold") }}
+            onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("bold") })}
         />
     }
 
@@ -331,7 +333,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             size={14}
             color={activeStyles.italic ? "var(--primary-main-color)" : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={() => { handleFormat("italic") }}
+            onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("italic") })}
         />
     }
 
@@ -343,7 +345,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             size={14}
             color={activeStyles.underline ? "var(--primary-main-color)" : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={() => { handleFormat("underline") }}
+            onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("underline") })}
         />
     }
 
@@ -354,29 +356,30 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             className='icon-button size32'
             size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={handleLink}
+            onClick={(disabled || readOnly) ? undefined : handleLink}
         />
     }
 
     return <div
         id={id}
-        className={`col ${styles["ebig-editor-container"]} ${disabled ? styles["disabled"] : ""} ${className ?? "body-3"} ${helperText?.length ? styles['helper-text'] : ""}`}
+        className={`col ${simpleStyle ? styles["ebig-editor-simple-style"] : styles["ebig-editor-container"]} ${disabled ? styles["disabled"] : ""} ${className ?? "body-3"} ${helperText?.length ? styles['helper-text'] : ""}`}
         style={{ '--helper-text-color': helperTextColor ?? '#e14337', ...style } as CSSProperties}
         helper-text={helperText}
     >
         <Popup ref={popupRef} />
         <div ref={inputContentRef}
             className={`${styles["ebig-editor-input"]}`}
-            suppressContentEditableWarning contentEditable
-            onFocus={onSaveRange}
-            onInput={onInput}
-            onPaste={(ev) => {
+            suppressContentEditableWarning
+            contentEditable={!disabled && !readOnly}
+            onFocus={(disabled || readOnly) ? undefined : onSaveRange}
+            onInput={(disabled || readOnly) ? undefined : onInput}
+            onPaste={(disabled || readOnly) ? undefined : ((ev) => {
                 ev.preventDefault()
                 const text = ev.clipboardData.getData("text/plain")
                 onRestoreRange(text)
                 onChange?.(inputContentRef.current!.innerHTML, inputContentRef.current!)
-            }}
-            onBlur={() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) }}
+            })}
+            onBlur={(disabled || readOnly) ? undefined : (() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) })}
             {...(placeholder ? { placeholder: placeholder } : {})}
         />
         {showLinkDetails && <PopupLinkDetails
@@ -388,7 +391,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 showLinkDetails.replaceWith(...showLinkDetails.childNodes)
             }}
             onApply={applyLinkToATag}
-            style={inserLinkOffsetRef.current as any}
+            style={insertLinkOffsetRef.current as any}
         />}
         {showLinkPrompt && <PopupLinkPrompt
             onClose={() => {
@@ -398,7 +401,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 }, 150)
             }}
             onApply={applyLink}
-            style={inserLinkOffsetRef.current as any}
+            style={insertLinkOffsetRef.current as any}
         />}
         {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 4 }}>
             {Array.isArray(customToolbar) ? customToolbar.map((tb, i) => {

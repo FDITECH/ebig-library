@@ -1,9 +1,9 @@
-import { BaseDA, ConfigData, getHeaders } from "./config";
+import { BaseDA, ConfigData } from "./config";
 
 export class TableController {
-    private module: "table" | "column" | "rel" | "menu" | "page" | "layout" | "designtoken" | "workflow" | "process" | "step";
-    constructor(module: "table" | "column" | "rel" | "menu" | "page" | "layout" | "designtoken" | "workflow" | "process" | "step") {
-        if (!["table", "column", "rel", "menu", "page", "layout", "designtoken", "workflow", "process", "step"].includes(module)) {
+    private module: "table" | "column" | "rel" | "space" | "function" | "page" | "layout" | "layer" | "designtoken" | "diagram" | "whiteboard" | "workflow" | "process" | "step";
+    constructor(module: "table" | "column" | "rel" | "space" | "function" | "page" | "layout" | "layer" | "designtoken" | "diagram" | "whiteboard" | "workflow" | "process" | "step") {
+        if (!["table", "column", "rel", "space", "function", "page", "layout", "layer", "designtoken", "diagram", "whiteboard", "workflow", "process", "step", "menu"].includes(module)) {
             throw new Error("Invalid module")
         }
         this.module = module
@@ -52,10 +52,8 @@ export class TableController {
     }
 
     async group(options: { searchRaw?: string, reducers: string }) {
-        let _headers: { [k: string]: any } = await getHeaders()
         const res = await BaseDA.post(ConfigData.url + 'setting/group', {
             headers: {
-                ..._headers,
                 pid: ConfigData.pid,
                 module: this.module,
             },

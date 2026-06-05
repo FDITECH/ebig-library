@@ -14,6 +14,7 @@ interface ButtonProps {
     target?: string,
     style?: CSSProperties,
     type?: "button" | "reset" | "submit",
+    title?: string,
     /** 
      * default: size32: button-text-3 \
      * recommend: size64: button-text-1 | size56: button-text-1 | size48: button-text-1 | size40: button-text-3 | size32: button-text-3 | size24: button-text-5 \
@@ -21,6 +22,7 @@ interface ButtonProps {
      * */
     className?: string,
     onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
+    onAuxClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
     onFocus?: React.FocusEventHandler<HTMLButtonElement | HTMLAnchorElement>,
     onMouseEnter?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
     onMouseLeave?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
@@ -28,7 +30,7 @@ interface ButtonProps {
     tooltip?: { message: string, position?: "top" | "bottom" | "left" | "right", textStyle?: CSSProperties },
 }
 
-export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(({ tooltip, disabled, linkTo, className, type = "button", prefix, suffix, label, target, onClick, ...props }, ref) => {
+export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(({ tooltip, disabled, linkTo, className, type = "button", prefix, suffix, label, target, onClick, onAuxClick, ...props }, ref) => {
     const btnRef = useRef<HTMLButtonElement>(null)
     const [showTooltip, setShowTooltip] = useState<boolean>(false)
     const timoutRef = useRef<NodeJS.Timeout>(null)
@@ -77,17 +79,19 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(({ toolt
     return <>
         {linkTo ? <a ref={btnRef as any} href={disabled ? undefined : linkTo} target={target} className={`${styles['button-container']} row ${className ?? "button-text-3"}`}
             onClick={disabled ? undefined : onClick}
+            onAuxClick={disabled ? undefined : onAuxClick}
             onMouseOver={tooltip ? onMouseOver : undefined} onMouseOut={tooltip ? onMouseOut : undefined} onMouseLeave={tooltip ? onMouseLeave : undefined}
             {...props}>
             {prefix}
-            <Text maxLine={1} className={styles['button-label']}>{label}</Text>
+            <span className={styles['button-label']}>{label}</span>
             {suffix}
         </a> : <button ref={btnRef} type={type} disabled={disabled} className={`${styles['button-container']} row ${className ?? "button-text-3"}`}
             onClick={disabled ? undefined : onClick}
             onMouseOver={tooltip ? onMouseOver : undefined} onMouseOut={tooltip ? onMouseOut : undefined} onMouseLeave={tooltip ? onMouseLeave : undefined}
+            onAuxClick={disabled ? undefined : onAuxClick}
             {...props}>
             {prefix}
-            <Text maxLine={1} className={styles['button-label']}>{label}</Text>
+            <span className={styles['button-label']}>{label}</span>
             {suffix}
         </button>}
         {tooltip && showTooltip && ReactDOM.createPortal(showTooltipElement({ element: btnRef.current, tooltip: tooltip }), document.body)}
@@ -95,15 +99,28 @@ export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(({ toolt
 })
 
 export const SimpleButton = forwardRef<HTMLButtonElement | null, ButtonProps>((props, ref) => {
-    return <button ref={ref} id={props.id} type={"button"} disabled={props.disabled} className={`${props.className ?? "row"}`} style={props.style}
+    return <button
+        ref={ref}
+        id={props.id}
+        type={"button"}
+        title={props.title}
+        disabled={props.disabled}
+        className={`${props.className ?? "row"}`}
+        style={props.style}
         onClick={async (ev: any) => {
             const btn = ev.target.closest("button")
             btn.disabled = true
             await props.onClick?.(ev)
             if (btn) btn.disabled = false
-        }} onFocus={props.onFocus} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave} onMouseMove={props.onMouseMove}>
+        }}
+        onFocus={props.onFocus}
+        onMouseEnter={props.onMouseEnter}
+        onMouseLeave={props.onMouseLeave}
+        onMouseMove={props.onMouseMove}
+        onAuxClick={props.onAuxClick}
+    >
         {props.prefix}
-        <Text maxLine={1} className={styles['button-label']}>{props.label}</Text>
+        <span className={styles['button-label']}>{props.label}</span>
         {props.suffix}
     </button>
 })

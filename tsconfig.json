@@ -8,8 +8,8 @@
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"], // ✅ Add this line
-    "target": "ES6", // ✅ Add this line
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "target": "ES6",
     "useDefineForClassFields": true,
     "esModuleInterop": true,
     "strict": true,

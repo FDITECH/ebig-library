@@ -45,7 +45,9 @@ export const NumberPicker = ({ type = "icon-button", volume = 1, style = {}, ...
         <Ebigicon src={`outline/user-interface/e-delete`}
             className="icon-button light"
             style={{ padding: "0.6rem", color: props.iconColor }}
-            onClick={() => {
+            onClick={(ev) => {
+                ev.stopPropagation()
+                ev.preventDefault()
                 let newValue = val - volume
                 if (props.min === undefined || newValue >= props.min) {
                     if (volume % 1 === 0) newValue = Math.round(newValue)
@@ -94,7 +96,9 @@ export const NumberPicker = ({ type = "icon-button", volume = 1, style = {}, ...
         <Ebigicon src={`outline/user-interface/e-add`}
             className="icon-button light"
             style={{ padding: "0.6rem", color: props.iconColor }}
-            onClick={() => {
+            onClick={(ev) => {
+                ev.stopPropagation()
+                ev.preventDefault()
                 let newValue = val + volume
                 if (props.max === undefined || newValue <= props.max) {
                     if (volume % 1 === 0) newValue = Math.round(newValue)

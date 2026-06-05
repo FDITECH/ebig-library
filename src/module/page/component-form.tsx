@@ -1,5 +1,5 @@
 import styles from "./component-form.module.css";
-import { CSSProperties, KeyboardEventHandler, ReactNode, useMemo, useState } from "react";
+import { CSSProperties, forwardRef, KeyboardEventHandler, ReactNode, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Controller, FieldValues, UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Checkbox, ColorPicker, DateTimePicker, ImportFile, NumberPicker, RadioButton, Switch, TextArea, TextField, UploadFiles, Ebigicon, SelectDropdown } from "../../index"
@@ -20,25 +20,27 @@ interface FTextFieldProps {
 }
 
 
-export function FTextField(props: FTextFieldProps) {
-    const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
+export const FTextField = forwardRef<any, FTextFieldProps>(({ methods, ...props }, ref) => {
+    const _covertErrors = useMemo(() => props.name ? convertErrors(methods.formState.errors, props.name) : undefined, [props.name, methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
 
     return <TextField
+        ref={ref}
         {...props}
-        register={props.name?.length ? (props.methods!.register(props.name, { required: props.required, onChange: props.onChange, onBlur: props.onBlur }) as any) : undefined}
+        register={props.name?.length ? (methods!.register(props.name, { required: props.required, onChange: props.onChange, onBlur: props.onBlur }) as any) : undefined}
         onComplete={props.onComplete ?? ((ev: any) => { ev.target.blur() })}
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`.toLowerCase())}
         simpleStyle
     />
-}
+})
 
-export function FInputPassword(props: FTextFieldProps) {
+export const FInputPassword = forwardRef<any, FTextFieldProps>((props, ref) => {
     const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
     const [isShowPass, setIsShowPass] = useState(false)
 
     return <TextField
+        ref={ref}
         {...props}
         autoComplete="off"
         type={isShowPass ? "text" : "password"}
@@ -50,7 +52,8 @@ export function FInputPassword(props: FTextFieldProps) {
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`.toLowerCase())}
         simpleStyle
     />
-}
+})
+
 interface FTextAreaProps {
     id?: string;
     autoHeight?: boolean;
@@ -66,12 +69,14 @@ interface FTextAreaProps {
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
 }
 
-export function FTextArea({ autoHeight, onChange, ...props }: FTextAreaProps) {
-    const _covertErrors = useMemo(() => props.name ? convertErrors(props.methods.formState.errors, props.name) : undefined, [props.name, props.methods.formState.errors?.[props.name!]])
+export const FTextArea = forwardRef<any, FTextAreaProps>(({ autoHeight, onChange, methods, ...props }, ref) => {
+    const _covertErrors = useMemo(() => props.name ? convertErrors(methods.formState.errors, props.name) : undefined, [props.name, methods.formState.errors?.[props.name!]])
     const { t } = useTranslation()
 
     return <TextArea
         ref={autoHeight ? ((txtAreaRef) => {
+            if (typeof ref === 'function') ref(txtAreaRef)
+            else if (ref) ref.current = txtAreaRef
             if (txtAreaRef) {
                 const txtAreaElement = txtAreaRef.inputElement as HTMLTextAreaElement
                 txtAreaElement.style.scrollbarWidth = `none`
@@ -85,7 +90,7 @@ export function FTextArea({ autoHeight, onChange, ...props }: FTextAreaProps) {
             ev.target.style.height = `${ev.target.scrollHeight}px`
             onChange?.(ev)
         })}
-        register={props.name?.length ? (props.methods!.register(props.name, {
+        register={props.name?.length ? (methods!.register(props.name, {
             required: props.required,
             onChange: (ev) => {
                 ev.target.style.height = `0px`
@@ -97,14 +102,14 @@ export function FTextArea({ autoHeight, onChange, ...props }: FTextAreaProps) {
         helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("input")} ${props.name} ${t("value")}`).toLowerCase()}
         simpleStyle
     />
-}
+})
 
 interface FRadioButtonProps {
     id?: string;
     label?: string;
     labelPosition?: "left" | "right";
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
-    value?: string | number | readonly string[];
+    value?: string;
     cheked?: boolean;
     disabled?: boolean;
     style?: CSSProperties;
@@ -116,8 +121,8 @@ interface FRadioButtonProps {
     methods: UseFormReturn<FieldValues, any, undefined>;
 }
 
-export const FRadioButton = ({ labelPosition = "right", ...props }: FRadioButtonProps) => {
-    return <label id={props.id} className={`row ${styles["f-radio-button"]} ${props.className ?? ""}`} style={props.style}>
+export const FRadioButton = forwardRef<any, FRadioButtonProps>(({ labelPosition = "right", ...props }, ref) => {
+    return <label ref={ref} id={props.id} className={`row ${styles["f-radio-button"]} ${props.className ?? ""}`} style={props.style}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}
@@ -147,7 +152,7 @@ export const FRadioButton = ({ labelPosition = "right", ...props }: FRadioButton
         />}
         {!!props.label && labelPosition === "right" && <span>{props.label}</span>}
     </label>
-}
+})
 
 interface FCheckboxProps {
     id?: string;
@@ -169,8 +174,8 @@ interface FCheckbox1Props extends FCheckboxProps {
     onChange?: (value: boolean, target: HTMLInputElement) => void;
 }
 
-export const FCheckbox = ({ labelPosition = "right", shape = "rectangle", ...props }: FCheckbox1Props) => {
-    return <label id={props.id} className={`row ${styles["f-checkbox"]} ${props.className ?? ""}`} style={props.style}>
+export const FCheckbox = forwardRef<any, FCheckbox1Props>(({ labelPosition = "right", shape = "rectangle", ...props }, ref) => {
+    return <label ref={ref} id={props.id} className={`row ${styles["f-checkbox"]} ${props.className ?? ""}`} style={props.style}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}
@@ -196,7 +201,7 @@ export const FCheckbox = ({ labelPosition = "right", shape = "rectangle", ...pro
         />}
         {!!props.label && labelPosition === "right" && <span>{props.label}</span>}
     </label>
-}
+})
 
 interface FSwitchProps {
     id?: string;
@@ -214,8 +219,8 @@ interface FSwitchProps {
     methods: UseFormReturn<FieldValues, any, undefined>;
 }
 
-export const FSwitch = ({ labelPosition = "right", ...props }: FSwitchProps) => {
-    return <label id={props.id} className={`row ${styles["f-switch"]} ${props.className ?? ""}`} style={props.style}>
+export const FSwitch = forwardRef<any, FSwitchProps>(({ labelPosition = "right", ...props }, ref) => {
+    return <label ref={ref} id={props.id} className={`row ${styles["f-switch"]} ${props.className ?? ""}`} style={props.style}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}
@@ -241,7 +246,7 @@ export const FSwitch = ({ labelPosition = "right", ...props }: FSwitchProps) => 
         />}
         {!!props.label && labelPosition === "right" && <span>{props.label}</span>}
     </label>
-}
+})
 
 interface FDropdownSelectProps {
     id?: string;
@@ -265,7 +270,7 @@ interface FDropdownSelectProps {
     customPreviewValue?: ReactNode;
 }
 
-export function FSelectDropdownForm({ methods, ...props }: FDropdownSelectProps) {
+export const FSelectDropdownForm = forwardRef<any, FDropdownSelectProps>(({ methods, ...props }, ref) => {
     const _covertErrors = useMemo(() => props.name ? convertErrors(methods.formState.errors, props.name) : undefined, [props.name, methods.formState.errors])
     const { t } = useTranslation()
 
@@ -276,9 +281,11 @@ export function FSelectDropdownForm({ methods, ...props }: FDropdownSelectProps)
         control={methods.control}
         rules={{ required: props.required }}
         render={({ field }) => {
+            const tmp = field.value ?? methods.watch(props.name!)
             return <SelectDropdown
+                ref={ref}
                 {...customprops}
-                value={field.value ?? methods.watch(props.name!)}
+                value={props.multiple ? tmp?.split(",") : tmp}
                 onChange={(ev: any) => {
                     const value = props.multiple ? ev : ev?.id;
                     field.onChange(value);
@@ -287,18 +294,23 @@ export function FSelectDropdownForm({ methods, ...props }: FDropdownSelectProps)
                 helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${t("choose")} ${props.name} ${t("value")}`.toLowerCase())}
             />
         }}
-    /> : <SelectDropdown {...customprops} />
-}
+    /> : <SelectDropdown ref={ref} {...customprops} />
+})
 
 interface FGroupRadioButtonProps extends FRadioButtonProps {
     options: Array<{ id: string, name: string }>
 }
 
-export const FGroupRadioButton = (props: FGroupRadioButtonProps) => {
+export const FGroupRadioButton = forwardRef<any[], FGroupRadioButtonProps>((props, ref) => {
+    const listRef = useRef<any[]>([])
+    useImperativeHandle(ref, () => listRef.current, [listRef.current])
+
     return props.options.map((e, i) => {
-        return <FRadioButton key={`${e.id} - ${i}`} {...props} value={e.id} label={props.label ? e.name : ""} />
+        return <FRadioButton ref={r => {
+            if (r) listRef.current[i] = r
+        }} key={`${e.id} - ${i}`} {...props} value={`${e.id}`} label={props.label ? e.name : ""} />
     })
-}
+})
 
 interface FGroupCheckboxProps extends FCheckboxProps {
     value?: string;
@@ -527,7 +539,7 @@ interface FUploadMultipleFileTypeFormProps {
     readOnly?: boolean;
 }
 
-export const FUploadMultipleFileType = ({ methods, ...params }: FUploadMultipleFileTypeFormProps) => {
+export const FUploadMultipleFileType = forwardRef<any, FUploadMultipleFileTypeFormProps>(({ methods, ...params }, ref) => {
     const { t } = useTranslation()
 
     return params.name ? <Controller
@@ -536,6 +548,7 @@ export const FUploadMultipleFileType = ({ methods, ...params }: FUploadMultipleF
         render={({ field }) => {
             const _covertErrors = convertErrors(methods.formState.errors, params.name!)
             return <UploadFiles
+                ref={ref}
                 {...params}
                 files={field.value}
                 onChange={(ev: any) => {
@@ -547,7 +560,7 @@ export const FUploadMultipleFileType = ({ methods, ...params }: FUploadMultipleF
             />
         }}
     /> : <UploadFiles {...params} simpleStyle />
-}
+})
 
 const convertErrors = (errors: any, name: string) => {
     if (errors && Object.keys(errors).length) {

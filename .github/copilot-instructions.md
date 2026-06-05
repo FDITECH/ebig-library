@@ -27,7 +27,7 @@ This repository is a React + TypeScript UI component library (library entry: `sr
 ### Critical patterns
 
 - **Provider contract**: `EbigProvider` accepts `pid`, `url`, `fileUrl`, `imgUrlId`. Call `initializeProject(url, {pid})` before any controller. `useEbigContext()` throws outside the provider.
-- **API auth**: `getHeaders()` in `config.tsx` auto-refreshes the `accessToken` cookie using `refreshToken` when `timeRefresh` cookie expires. `ConfigData.onInvalidToken` is called on 401.
+- **API auth**:  expires. `ConfigData.onInvalidToken` is called on 401.
 - **Design tokens**: `appendDesignTokens()` in `EbigProvider.tsx` injects `<style class="designTokens">` into `<head>` at runtime. Token `Value` fields may be JSON strings — parsed with `JSON.parse`.
 - **File uploads**: `BaseDA.uploadFiles` batches into chunks of 12 files / 200 MB max per batch. Changing this requires updating `BaseDA` in `config.tsx`.
 

@@ -26,8 +26,8 @@ interface ValueProps {
 
 interface DateTimePickerProps {
     id?: string,
-    value?: Date,
-    endValue?: Date,
+    value?: Date | number,
+    endValue?: Date | number,
     min?: Date,
     max?: Date,
     pickOnly?: boolean,
@@ -82,14 +82,14 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
         switch (pickerType) {
             case "date":
             case "datetime":
-                setValue(props.value)
+                setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
                 break;
             case "auto":
-                if (props.endValue) setValue({ start: props.value, end: props.endValue, repeatData: props.repeatValue })
-                else setValue(props.value)
+                if (props.endValue) setValue({ start: typeof props.value === "number" ? new Date(props.value) : props.value, end: typeof props.endValue === "number" ? new Date(props.endValue) : props.endValue, repeatData: props.repeatValue })
+                else setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
                 break;
             default:
-                setValue((!props.value || !props.endValue) ? undefined : { start: props.value, end: props.endValue })
+                setValue((!props.value || !props.endValue) ? undefined : { start: typeof props.value === "number" ? new Date(props.value) : props.value, end: typeof props.endValue === "number" ? new Date(props.endValue) : props.endValue })
                 break;
         }
     }, [props.value, props.endValue, props.repeatValue, pickerType])
@@ -150,21 +150,27 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                                 }
                             }}
                             onBlur={props.pickOnly ? undefined : (ev) => {
-                                const inputValue = ev.target.value.trim()
-                                let dateValue: Date | undefined = undefined
-                                if (inputValue.match(/[0-9]{1,2}(\/|-)[0-9]{1,2}(\/|-)[0-9]{4}/g)) {
-                                    dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
-                                    if (differenceInCalendarDays(dateValue, props.min ?? startDate) > -1 && differenceInCalendarDays(props.max ?? endDate, dateValue) > -1) {
-                                    } else if (differenceInCalendarDays(props.min ?? startDate, dateValue) > -1) {
-                                        dateValue = props.min ?? startDate
-                                    } else if (differenceInCalendarDays(dateValue, props.min ?? endDate) > -1) {
-                                        dateValue = props.max ?? endDate
-                                    } else {
-                                        dateValue = undefined
+                                setTimeout(() => {
+                                    const inputValue = ev.target.value.trim()
+                                    let dateValue: Date | undefined = undefined
+                                    if (inputValue.match(/[0-9]{1,2}(\/|-)[0-9]{1,2}(\/|-)[0-9]{4}/g)) {
+                                        dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/') as any
+                                        if (dateValue) {
+                                            if (differenceInCalendarDays(dateValue, props.min ?? startDate) > -1 && differenceInCalendarDays(props.max ?? endDate, dateValue) > -1) {
+                                            } else if (differenceInCalendarDays(props.min ?? startDate, dateValue) > -1) {
+                                                dateValue = props.min ?? startDate
+                                            } else if (differenceInCalendarDays(dateValue, props.min ?? endDate) > -1) {
+                                                dateValue = props.max ?? endDate
+                                            } else {
+                                                dateValue = undefined
+                                            }
+                                        }
                                     }
-                                }
-                                setValue(dateValue)
-                                if (props.onChange) props.onChange(dateValue)
+                                    if (dateValue !== value) {
+                                        setValue(dateValue)
+                                        if (props.onChange) props.onChange(dateValue)
+                                    }
+                                }, 150)
                             }}
                         />
                         {props.suffix}
@@ -352,6 +358,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                         const inputValue = ev.target.value
                         if (regexDate.test(inputValue)) {
                             const dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
+                            if (!dateValue) return;
                             if ((pickerType.includes("range") || pickerType === "auto") && differenceInCalendarDays(methods.getValues('date-end'), dateValue) < 0) {
                                 methods.setValue('date-end', dateValue)
                                 inputEndRef.current!.inputElement!.value = Util.dateToString(dateValue)
@@ -383,7 +390,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                             const inputValue = ev.target.value
                             if (regexDate.test(inputValue)) {
                                 const dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
-                                if (differenceInCalendarDays(dateValue, methods.getValues('date-start')) < 0) {
+                                if (dateValue && differenceInCalendarDays(dateValue, methods.getValues('date-start')) < 0) {
                                     methods.setValue('date-start', dateValue)
                                     inputStartRef.current!.inputElement!.value = Util.dateToString(dateValue)
                                 }

@@ -784,7 +784,7 @@ await ctrl.aggregateList({ filter: '@Price:[100 200]', sortby: [{ prop: 'Price',
 
 ### SettingDataController
 
-For system-level setting entities (`report`, `chart`, `form`, `card`, `view`).
+For system-level setting entities (`chart`, `form`, `card`, `view`).
 
 ```tsx
 import { SettingDataController } from 'ebig-library'

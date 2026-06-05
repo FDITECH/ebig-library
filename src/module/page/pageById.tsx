@@ -1,7 +1,7 @@
 import { CSSProperties, forwardRef, HTMLAttributes, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
-import { handleErrorImgSrc, LayoutElement, supportProperties } from "./config"
+import { handleErrorImgSrc, LayoutElement, regexResponsiveClassCol } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
 import { FormById } from "../form/formById"
 import { CardById } from "../card/cardById"
@@ -12,7 +12,7 @@ import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
 import { BaseDA, CkEditorUploadAdapter, ConfigData, imgFileTypes } from "../../controller/config"
 import { FCheckbox, FColorPicker, FDateTimePicker, FGroupCheckbox, FGroupRadioButton, FInputPassword, FNumberPicker, FRadioButton, FSelectDropdownForm, FSwitch, FTextArea, FTextField, FUploadMultipleFileType } from "./component-form"
-import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup } from "../../index"
+import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController, EbigEditor } from "../../index"
 
 interface Props {
     methods?: UseFormReturn
@@ -119,6 +119,7 @@ export const RenderLayerElement = (props: RenderLayerElementProps) => {
 }
 
 export const getValidLink = (link: string) => {
+    if (!link) return ""
     if (link.startsWith("http")) return link
     if (ConfigData.regexGuid.test(link)) return ConfigData.imgUrlId + link
     else return ConfigData.fileUrl + link
@@ -154,16 +155,17 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
                     "location",
                     "query",
                     "params",
+                    "theme",
                     "user",
                     "lang",
                     "t",
                     "global",
                     `return ${p1.replace(/this/g, "indexItem")}`
-                )({ ...props.indexItem, index: props.index }, Util, props.methods!.watch, location, query, params, ebigContextData.userData, ebigContextData.i18n.language, ebigContextData.i18n.t, ebigContextData.globalData)
+                )({ ...props.indexItem, index: props.index }, Util, props.methods!.watch, location, query, params, ebigContextData.theme, ebigContextData.userData, ebigContextData.i18n.language, ebigContextData.i18n.t, ebigContextData.globalData)
             } catch (error) {
                 console.error("item: ", props.item, " --- match: ", m, " --- p1: ", p1, " --- error: ", error)
             }
-            return getValue
+            return Array.isArray(getValue) ? JSON.stringify(getValue) : getValue
         })
         switch (replaceTmp.trim()) {
             case "undefined":
@@ -181,22 +183,15 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
         }
     }
     const stateCustomProps = useMemo(() => {
-        const tmp: { [p: string]: any } = {}
+        let tmp: { [p: string]: any } = {}
         const triggerState = props.item.State?.filter((e: any) => e.Trigger?.length)
         if (triggerState?.length) {
             for (const st of triggerState) {
                 const checked = replaceThisVariables(st.Trigger)
                 if (checked) {
-                    for (const sp of supportProperties) {
-                        if (st[sp]) {
-                            Object.keys(st[sp]).forEach(k => {
-                                if (st[sp][k]) {
-                                    tmp[k] ??= {}
-                                    tmp[k] = typeof st[sp][k] === "object" ? { ...tmp[k], ...st[sp][k] } : st[sp][k]
-                                }
-                            })
-                        }
-                    }
+                    st.Setting ??= {}
+                    st.Setting.unmounted ??= false
+                    tmp = { ...tmp, ...st.Setting }
                 }
             }
         }
@@ -204,8 +199,10 @@ const CaculateLayer = (props: RenderLayerElementProps) => {
     }, [location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), props.indexItem, defferWatch, ebigContextData.globalData, ebigContextData.userData, ebigContextData.i18n.language])
     // 
     const watchForCustomProps = useDeferredValue(stateCustomProps)
+
+    const isMounted = useMemo(() => !(typeof watchForCustomProps?.unmounted === "boolean" ? watchForCustomProps.unmounted : (props.item.Setting?.unmounted ?? false)), [watchForCustomProps?.unmounted, props.item.Setting?.unmounted])
     /** Check unmounted */
-    if (watchForCustomProps?.unmounted || (props.item.Setting?.unmounted && typeof watchForCustomProps?.unmounted === "boolean")) return null;
+    if (!isMounted) return null;
     else return <>
         <Popup ref={popupRef} />
         <ElementUI
@@ -242,18 +239,18 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         let _props = { ...props.item.Setting }
         _props.style ??= {}
         _props.className ??= ""
-        delete _props.action
-        if (props.style) _props.style = { ..._props.style, ...props.style }
-        if (watchForCustomProps?.style) {
-            _props.style = { ..._props.style, ...watchForCustomProps.style }
-            delete watchForCustomProps.style
+        if (watchForCustomProps) {
+            const { style, ...restOfCustomProps } = watchForCustomProps
+            _props = { ..._props, ...restOfCustomProps }
+            if (style) _props.style = { ..._props.style, ...style }
         }
+        delete _props.action
+        delete _props.unmounted
+        delete _props.aspectRatio
+        if (props.style) _props.style = { ..._props.style, ...props.style }
         delete _props.style.order
         if (props.className) _props.className = [..._props.className.split(" "), ...props.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
-        if (watchForCustomProps?.className) {
-            _props.className = [..._props.className.split(" "), ...watchForCustomProps.className.split(" ")].filter((cls, i, arr) => cls.length && arr.indexOf(cls) === i).join(" ")
-            delete watchForCustomProps.className
-        }
+        if (!regexResponsiveClassCol.test(_props.className)) delete _props.style["--gutter"]
         delete _props.action
         if (props.propsData && props.propsData[findId]) var extendProps = props.type === "card" ? (props.propsData[findId] as any)(props.indexItem, props.index, props.methods) : props.propsData[findId]
         if (extendProps) {
@@ -261,8 +258,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             delete extendProps.style
             _props = { ..._props, ...extendProps }
         }
-        return watchForCustomProps ? { ..._props, ...watchForCustomProps } : _props
-    }, [props.item, props.propsData, props.indexItem, watchForCustomProps])
+        return _props
+    }, [props.item, props.propsData, props.indexItem, watchForCustomProps, JSON.stringify(props.style), props.className])
     const customProps = useDeferredValue(memeCustomProps)
     const customActions = useMemo(() => {
         const _propsActions = props.item.Setting?.action
@@ -306,7 +303,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     onSubmit: async () => {
                                         if (actItem.Caculate) {
                                             await (new AsyncFunction(
-                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
+                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
                                                 `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                             ))(
                                                 props.indexItem ?? props.methods?.getValues(),
@@ -315,11 +312,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                                 props.item.NameField,
                                                 Util,
+                                                AccountController,
                                                 DataController,
                                                 randomGID,
                                                 ToastMessage,
                                                 BaseDA.uploadFiles,
                                                 BaseDA.getFilesInfor,
+                                                BaseDA.post,
+                                                BaseDA.get,
                                                 showDialog,
                                                 showHTMLPopup,
                                                 ComponentStatus,
@@ -336,7 +336,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             case ActionType.custom:
                                 if (actItem.Caculate) {
                                     const asyncFuncResponse = await (new AsyncFunction(
-                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                                         `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                     ))(
                                         props.indexItem ?? props.methods?.getValues(),
@@ -345,11 +345,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                         props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                         props.item.NameField,
                                         Util,
+                                        AccountController,
                                         DataController,
                                         randomGID,
                                         ToastMessage,
                                         BaseDA.uploadFiles,
                                         BaseDA.getFilesInfor,
+                                        BaseDA.post,
+                                        BaseDA.get,
                                         showDialog,
                                         showHTMLPopup,
                                         ComponentStatus,
@@ -440,10 +443,11 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             return tmpAct
         }
         return undefined
-    }, [props.item.Setting?.action, props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData])
+    }, [props.propsData, props.indexItem, watchForCustomProps, defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData])
 
     // handle listener
     const handleListener = (funcString: string) => {
+        if (typeof funcString !== "string") return undefined
         const tmp: any = {}
         if (funcString.includes("entityData")) tmp.indexItem = JSON.stringify(props.indexItem ?? props.methods?.getValues())
         if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
@@ -452,7 +456,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             tmp.params = JSON.stringify(params)
             tmp.state = JSON.stringify(location.state)
         }
-        if (funcString.includes("ebigContextData")) {
+        if (funcString.includes("useEbigContext")) {
             tmp.language = ebigContextData.i18n.language
             tmp.globalData = JSON.stringify(ebigContextData.globalData)
             tmp.userData = JSON.stringify(ebigContextData.userData)
@@ -512,7 +516,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
-                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                 `${customActions.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
@@ -520,11 +524,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 props.tbName,
                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                 Util,
+                AccountController,
                 DataController,
                 randomGID,
                 ToastMessage,
                 BaseDA.uploadFiles,
                 BaseDA.getFilesInfor,
+                BaseDA.post,
+                BaseDA.get,
                 showDialog,
                 showHTMLPopup,
                 ComponentStatus,
@@ -610,7 +617,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
                 default:
                     if (_rel.Form?.Options?.length) {
-                        if (_rel.Form.ComponentType === "SelectMultiple" || props.item.Setting?.multiple) {
+                        if (props.item.Type === "SelectMultiple" || props.item.Setting?.multiple) {
                             tmpValue = _rel.Form.Options.filter((e: any) => {
                                 switch (_rel.DataType) {
                                     case FEDataType.BOOLEAN:
@@ -662,7 +669,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
                 default:
                     if (_col.Form?.Options?.length) {
-                        if (_col.Form.ComponentType === "SelectMultiple" || props.item.Setting?.multiple) {
+                        if (props.item.Type === "SelectMultiple" || props.item.Setting?.multiple) {
                             tmpValue = _col.Form.Options.filter((e: any) => (_col.DataType === FEDataType.BOOLEAN ? (tmpValue === e.id || `${tmpValue}` === `${e.id}`) : tmpValue?.includes(e.id))).map((e: any) => e.name).join(",")
                         } else {
                             tmpValue = _col.Form.Options.find((e: any) => e.id === tmpValue)?.name ?? tmpValue
@@ -723,6 +730,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             case ComponentType.video:
             case ComponentType.audio:
             case ComponentType.iframe:
+                if (regexGetVariables.test(tmpProps.src)) tmpProps.src = replaceThisVariables(tmpProps.src)
+                tmpProps.src = getValidLink(tmpProps.src)
+                break;
             case ComponentType.icon:
                 if (regexGetVariables.test(tmpProps.src)) tmpProps.src = replaceThisVariables(tmpProps.src)
                 break;
@@ -761,6 +771,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case ComponentType.textArea:
                     case ComponentType.textField:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.defaultValue)) tmpProps.defaultValue = replaceThisVariables(tmpProps.defaultValue)
+                        break;
+                    case ComponentType.ebigEditor:
+                        if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.initValue)) tmpProps.initValue = replaceThisVariables(tmpProps.initValue)
+                        break;
+                    case ComponentType.switch:
+                    case ComponentType.checkbox:
+                    case ComponentType.numberPicker:
+                        if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         break;
                     case ComponentType.datePicker:
                     case ComponentType.dateTimePicker:
@@ -832,7 +850,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.card:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
@@ -840,11 +858,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             props.tbName,
                             props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                             Util,
+                            AccountController,
                             DataController,
                             randomGID,
                             ToastMessage,
                             BaseDA.uploadFiles,
                             BaseDA.getFilesInfor,
+                            BaseDA.post,
+                            BaseDA.get,
                             showDialog,
                             showHTMLPopup,
                             ComponentStatus,
@@ -872,6 +893,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case ComponentType.navLink:
         case ComponentType.container:
             if (props.childrenData && props.childrenData[findId]) var childComponent = props.type === "card" ? (props.childrenData[findId] as any)(props.indexItem, props.index, props.methods) : props.childrenData[findId]
+            const isRow = typeProps.className?.split(" ").includes("row")
+            let gutterStyle: any = undefined
+            if (isRow) {
+                const gutter = typeProps.style?.columnGap ?? typeProps.style?.gap ?? 0
+                gutterStyle = { "--gutter": isNaN(gutter) ? gutter : `${gutter}px` }
+            }
             if (dataValue && dataValue.backgroundImage) var containerProps: any = { ...typeProps, style: { ...typeProps.style, ...dataValue } }
             const dataValueProps = { ...(containerProps ?? typeProps), ...restOfActions }
             delete dataValueProps.emptyElement
@@ -892,10 +919,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         {childComponent ??
                             (typeProps.className?.includes(LayoutElement.body) ?
                                 <>
-                                    {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)}
+                                    {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)}
                                     {props.bodyChildren}
                                 </> :
-                                children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)
+                                children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)
                             )}
                     </RenderContainer>
                 })
@@ -904,10 +931,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     {childComponent ??
                         (typeProps.className?.includes(LayoutElement.body) ?
                             <>
-                                {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)}
+                                {children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)}
                                 {props.bodyChildren}
                             </> :
-                            children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={undefined} className={undefined} />)
+                            children.map(e => <RenderLayerElement key={e.Id} {...props} item={e} style={gutterStyle} className={undefined} />)
                         )}
                 </RenderContainer>
             }
@@ -931,7 +958,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         }}
                         alt=""
                         referrerPolicy="no-referrer"
-                        onError={(ev) => { ev.currentTarget.src = handleErrorImgSrc }}
+                        onError={(ev) => {
+                            console.log("error src: ", ev.currentTarget.src)
+                            ev.currentTarget.src = handleErrorImgSrc
+                        }}
                         {...typeProps}
                         {...restOfActions}
                         src={ConfigData.regexGuid.test(f.id) ? (ConfigData.imgUrlId + f.id) : f.url}
@@ -996,7 +1026,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             if (props.item.NameField) return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} percent={dataValue} />
             return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.icon:
-            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} />
+            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle />
             else if (props.item.NameField) return null
             else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.chart:
@@ -1027,38 +1057,37 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case ComponentType.textField:
             const { IsPassword, ...typeProps2 } = typeProps
             if (IsPassword)
-                return <FInputPassword {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
+                return <FInputPassword ref={htmlElementRef} {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
             else
-                return <FTextField {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
+                return <FTextField ref={htmlElementRef} {...typeProps2} {...restOfActions} name={props.item.NameField} methods={props.methods} />
         case ComponentType.textArea:
-            return <FTextArea {...typeProps} {...restOfActions} name={props.item.NameField} methods={props.methods} />
+            return <FTextArea ref={htmlElementRef} {...typeProps} {...restOfActions} name={props.item.NameField} methods={props.methods} />
         case ComponentType.radio:
             if (_options?.length) return <FGroupRadioButton {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} options={_options} />
-            else return <FRadioButton {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            else return <FRadioButton ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.checkbox:
             if (_options?.length) return <FGroupCheckbox {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} options={_options} />
-            else return <FCheckbox {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            else return <FCheckbox ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.switch:
-            return <FSwitch {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FSwitch ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case "Select1":
         case "SelectMultiple":
         case ComponentType.selectDropdown:
             if (props.item.Setting?.multiple || props.item.Type === "SelectMultiple") typeProps.multiple = true
-            return <FSelectDropdownForm {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
+            return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
         case ComponentType.colorPicker:
-            return <FColorPicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FColorPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.numberPicker:
-            return <FNumberPicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FNumberPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.dateTimePicker:
         case ComponentType.datePicker:
-            return <FDateTimePicker {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FDateTimePicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.upload:
-            return <FUploadMultipleFileType {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
+            return <FUploadMultipleFileType ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.ckEditor:
             return <CustomCkEditor5
                 {...typeProps}
                 {...restOfActions}
-                methods={props.methods}
                 extraPlugins={[
                     function (editor: any) {
                         editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => new CkEditorUploadAdapter(loader)
@@ -1069,6 +1098,17 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     const editorData = editor.getData()
                     if (props.item.NameField) props.methods?.setValue(props.item.NameField, editorData)
                     if (restOfActions.onBlur) restOfActions.onBlur(editorData)
+                }}
+            />
+        case ComponentType.ebigEditor:
+            return <EbigEditor
+                simpleStyle
+                {...typeProps}
+                {...restOfActions}
+                initValue={props.item.NameField ? props.methods?.watch(props.item.NameField) : typeProps.initValue}
+                onBlur={(vl) => {
+                    if (props.item.NameField) props.methods?.setValue(props.item.NameField, vl)
+                    if (restOfActions.onBlur) restOfActions.onBlur(vl)
                 }}
             />
         case ComponentType.pagination:
@@ -1082,6 +1122,12 @@ const RenderContainer = forwardRef<any, { type: "label" | "p" | "form" | "a" | "
     switch (type) {
         case "label":
             return <label ref={ref} {...props}>{children}</label>
+        case "ol":
+            return <ol ref={ref} {...props}>{children}</ol>
+        case "ul":
+            return <ul ref={ref} {...props}>{children}</ul>
+        case "li":
+            return <li ref={ref} {...props}>{children}</li>
         case "p":
             return <p ref={ref} {...props}>{children}</p>
         case "form":
@@ -1181,11 +1227,14 @@ interface PageByIdProps extends Props {
      * */
     itemData?: { [p: string]: ReactNode } | { [p: string]: (indexItem: { [p: string]: any }, index: number, methods: UseFormReturn) => ReactNode },
     onlyLayout?: boolean,
-    onlyBody?: boolean
+    onlyBody?: boolean,
+    /** children of layout-body */
+    children?: ReactNode;
 }
 
 export const globalTableCache = new Map()
-export const PageById = (props: PageByIdProps) => {
+const cacheLayout = new Map()
+export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
     const methods = useForm({ shouldFocusError: false })
     const pageController = new TableController("page")
     const layoutController = new TableController("layout")
@@ -1195,6 +1244,14 @@ export const PageById = (props: PageByIdProps) => {
     const [memoLayers, setLayers] = useState<{ [p: string]: any }[]>([])
     const layers = useMemo(() => memoLayers.sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [memoLayers])
     const [loading, setLoading] = useState(true)
+    const layoutBody = useMemo(() => {
+        if (!pageItem?.LayoutId) return undefined;
+        if (layout.length) return layout.find(e => e.Setting?.className?.includes(LayoutElement.body))
+        else if (cacheLayout.has(pageItem.LayoutId)) {
+            const layoutFromCache = cacheLayout.get(pageItem.LayoutId)
+            return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
+        } else return undefined
+    }, [layout, layers.length, pageItem?.LayoutId])
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1212,6 +1269,7 @@ export const PageById = (props: PageByIdProps) => {
 
     useEffect(() => {
         if (pageItem && !props.onlyLayout) setLayers(pageItem.Setting ? JSON.parse(pageItem.Setting) : [])
+        else setLayers([])
     }, [pageItem, props.onlyLayout])
 
     useEffect(() => {
@@ -1219,7 +1277,9 @@ export const PageById = (props: PageByIdProps) => {
             layoutController.getById(pageItem.LayoutId).then((res) => {
                 if (res.code === 200 && res.data) {
                     const layoutData = res.data
-                    setLayout(layoutData?.Setting ? JSON.parse(layoutData.Setting) : [])
+                    const layoutSetting = layoutData?.Setting ? JSON.parse(layoutData.Setting) : []
+                    setLayout(layoutSetting)
+                    cacheLayout.set(layoutData.Id, layoutSetting)
                     setLoading(false)
                 } else {
                     methods.reset()
@@ -1227,8 +1287,35 @@ export const PageById = (props: PageByIdProps) => {
                     console.error("Failed to load layout data:", res.message)
                 }
             })
-        }
+        } else setLayout([])
     }, [pageItem?.LayoutId, props.onlyBody])
+
+    const gutterOfBody = useMemo(() => {
+        if (props.onlyLayout || !pageItem?.LayoutId || !layers.length || !layoutBody) return undefined;
+        const isRow = layoutBody.Setting.className?.split(" ").includes("row")
+        if (!isRow) return undefined
+        const gutter = layoutBody.Setting.style?.columnGap ?? layoutBody.Setting.style?.gap ?? 0
+        return { "--gutter": isNaN(gutter) ? gutter : `${gutter}px` }
+    }, [props.onlyBody, layers.length, pageItem?.LayoutId, layoutBody])
+
+    useEffect(() => {
+        if (gutterOfBody && layers.length && layoutBody) {
+            setLayers(prev => prev.map((e: any) => {
+                if (!e.ParentId || e.ParentId === layoutBody.Id) return { ...e, Setting: { ...e.Setting, style: { ...e.Setting.style, ...gutterOfBody } } }
+                return e
+            }))
+        }
+    }, [layers.length, gutterOfBody, layoutBody])
+
+    const propsChildren: any = useMemo(() => {
+        if (props.children && layoutBody && props.onlyLayout) {
+            return {
+                ...childrenData,
+                [layoutBody.Setting?.id ?? layoutBody.Id]: props.children
+            }
+        }
+        return childrenData
+    }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
     if (pageItem) {
         if (props.onlyLayout) {
@@ -1236,13 +1323,14 @@ export const PageById = (props: PageByIdProps) => {
                 key={pageItem.LayoutId}
                 layers={layout}
                 {...props}
+                childrenData={propsChildren}
                 methods={props.methods ?? methods}
             />
         } else if (props.onlyBody) {
-            return <RenderPageView key={pageItem.Id} layers={layers} {...props} methods={props.methods ?? methods} />
+            return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
         } else {
-            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} methods={props.methods ?? methods}>
-                <RenderPageView key={pageItem.Id} layers={layers} {...props} methods={props.methods ?? methods} bodyId={layout.find(e => e.Setting?.className?.includes(LayoutElement.body))?.Id} />
+            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
+                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
             </RenderPageView> : null
         }
     } else return null
@@ -1281,6 +1369,14 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
     const [memoLayers, setLayers] = useState<{ [p: string]: any }[]>([])
     const layers = useMemo(() => memoLayers.sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [memoLayers])
     const [loading, setLoading] = useState(true)
+    const layoutBody = useMemo(() => {
+        if (!pageItem?.LayoutId) return undefined;
+        if (layout.length) return layout.find(e => e.Setting?.className?.includes(LayoutElement.body))
+        else if (cacheLayout.has(pageItem.LayoutId)) {
+            const layoutFromCache = cacheLayout.get(pageItem.LayoutId)
+            return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
+        } else return undefined
+    }, [layout, layers.length, pageItem?.LayoutId])
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1303,6 +1399,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
 
     useEffect(() => {
         if (pageItem && !props.onlyLayout) setLayers(pageItem.Setting ? JSON.parse(pageItem.Setting) : [])
+        else setLayers([])
     }, [pageItem, props.onlyLayout])
 
     useEffect(() => {
@@ -1310,7 +1407,9 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
             layoutController.getById(pageItem.LayoutId).then((res) => {
                 if (res.code === 200 && res.data) {
                     const layoutData = res.data
-                    setLayout(layoutData?.Setting ? JSON.parse(layoutData.Setting) : [])
+                    const layoutSetting = layoutData?.Setting ? JSON.parse(layoutData.Setting) : []
+                    setLayout(layoutSetting)
+                    cacheLayout.set(layoutData.Id, layoutSetting)
                     setLoading(false)
                 } else {
                     methods.reset()
@@ -1318,30 +1417,50 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
                     console.error("Failed to load layout data:", res.message)
                 }
             })
-        }
+        } else setLayout([])
     }, [pageItem?.LayoutId, props.onlyBody])
+
+    const gutterOfBody = useMemo(() => {
+        if (props.onlyLayout || !pageItem?.LayoutId || !layers.length || !layoutBody) return undefined;
+        const isRow = layoutBody.Setting.className?.split(" ").includes("row")
+        if (!isRow) return undefined
+        const gutter = layoutBody.Setting.style?.columnGap ?? layoutBody.Setting.style?.gap ?? 0
+        return { "--gutter": isNaN(gutter) ? gutter : `${gutter}px` }
+    }, [props.onlyBody, layers.length, pageItem?.LayoutId, layoutBody])
+
+    useEffect(() => {
+        if (gutterOfBody && layers.length && layoutBody) {
+            setLayers(prev => prev.map((e: any) => {
+                if (!e.ParentId || e.ParentId === layoutBody.Id) return { ...e, Setting: { ...e.Setting, style: { ...e.Setting.style, ...gutterOfBody } } }
+                return e
+            }))
+        }
+    }, [layers.length, gutterOfBody, layoutBody])
+
+    const propsChildren: any = useMemo(() => {
+        if (props.children && layoutBody && props.onlyLayout) {
+            return {
+                ...childrenData,
+                [layoutBody.Setting?.id ?? layoutBody.Id]: props.children
+            }
+        }
+        return childrenData
+    }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
     if (pageItem) {
         if (props.onlyLayout) {
-            if (props.children) {
-                const layoutBody = layout.find(e => e.Setting?.className?.includes(LayoutElement.body))
-                if (layoutBody) {
-                    var propsChildren: any = childrenData ?? {};
-                    propsChildren[layoutBody.Setting?.id ?? layoutBody.Id] = props.children
-                }
-            }
             return !!layout.length && <RenderPageView
                 key={pageItem.LayoutId}
                 layers={layout}
                 {...props}
-                childrenData={propsChildren ?? childrenData}
+                childrenData={propsChildren}
                 methods={props.methods ?? methods}
             />
         } else if (props.onlyBody) {
             return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
         } else {
             return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layout.find(e => e.Setting?.className?.includes(LayoutElement.body))?.Id} />}
+                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
             </RenderPageView> : null
         }
     } else return null

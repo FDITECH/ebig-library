@@ -82,6 +82,7 @@ export class Util {
     }
 
     static stringToDate(_date: string, _format = "dd/mm/yyyy", _delimiter = "/") {
+        if (!_date) return null;
         let dayformat = _format.toLowerCase();
         let hourformat = '';
         let day = _date;

@@ -54,7 +54,7 @@ interface CardRef {
 }
 
 const globalCardCache = new Map()
-export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
+export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLink, emptyMessage, ...props }, ref) => {
     const methods = useForm({ shouldFocusError: false })
     const [cardItem, setCardItem] = useState<{ [p: string]: any }>()
     const layers = useMemo(() => (cardItem?.Props ?? []).sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [cardItem])
@@ -235,11 +235,11 @@ export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
     return cardItem ? data.totalCount === 0 ?
-        (props.emptyElement ?? (props.emptyLink && <EmptyPage
-            imgUrl={props.emptyLink}
+        (emptyElement ?? (emptyLink && <EmptyPage
+            imgUrl={emptyLink}
             imgStyle={{ maxWidth: "16.4rem" }}
             style={props.style}
-            title={props.emptyMessage ?? t("noDataFound")}
+            title={emptyMessage ?? t("noDataFound")}
         />)) : <StateCard
             key={cardItem.Id}
             {...props}
@@ -269,7 +269,7 @@ const StateCard = ({ data, cardItem, layers, extendData, methods, ...props }: { 
 
     return data.map((item, index) => {
         return <RenderCard
-            key={item.Id}
+            key={`${item.Id}-${index}`}
             {...props}
             cardItem={cardItem}
             layers={layers}

@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react';
+import { CSSProperties, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { useRef } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
