@@ -169,7 +169,8 @@ interface DropListBaseProps {
     getOptions: GetOptionsFn
     hiddenSearchOptions?: boolean
     onClose: (ev: any) => void
-    renderOptions: (data: OptionsItem[], searchValue: string) => ReactNode
+    renderOptions: (data: OptionsItem[], searchValue: string) => void;
+    children?: ReactNode
 }
 
 function useDropListData(getOptions: GetOptionsFn, searchValue: string) {
@@ -187,7 +188,7 @@ function useDropListData(getOptions: GetOptionsFn, searchValue: string) {
     return { options, initTotal: initTotal.current, loadMore: () => getData(options.data.length) }
 }
 
-function OptionDropListShell({ divRef, style, className, getOptions, hiddenSearchOptions, onClose, renderOptions }: DropListBaseProps) {
+function OptionDropListShell({ divRef, style, className, getOptions, hiddenSearchOptions, onClose, renderOptions, children }: DropListBaseProps) {
     const [searchInput, setSearchInput] = useState('')
     const searchValue = useDeferredValue(searchInput)
     const { t } = useTranslation()
@@ -203,10 +204,15 @@ function OptionDropListShell({ divRef, style, className, getOptions, hiddenSearc
         return () => { document.body.removeEventListener('mousedown', handler) }
     }, [divRef.current])
 
-    const emptyState = <div className='col' style={{ alignItems: 'center' }}>
-        <Ebigicon src='color/files/archive-file' size={28} />
-        <h6 className='heading-7' style={{ margin: '0.8rem' }}>{t('noResultFound')}</h6>
-    </div>
+    useEffect(() => {
+        if (searchValue.length) {
+            const timer = setTimeout(() => {
+                renderOptions(options.data, searchValue)
+            }, 150)
+            return () => clearTimeout(timer)
+        } else renderOptions(options.data, searchValue)
+    }, [options.data, searchValue])
+    const initSearch = useRef(false)
 
     return <div
         ref={divRef}
@@ -217,24 +223,32 @@ function OptionDropListShell({ divRef, style, className, getOptions, hiddenSearc
         className={`col ${styles['select-popup']} ${className ?? ''}`}
         style={style}
     >
-        {options.totalCount === 0 && !initTotal ? emptyState : <>
-            {!hiddenSearchOptions && initTotal && initTotal > 10 && <div className={`col ${styles['search-options']}`}>
-                <TextField
-                    ref={r => {
-                        if (r) {
-                            r.inputElement?.focus({ preventScroll: true })
-                            setTimeout(() => divRef.current?.scrollTo({ top: 0 }), 100)
-                        }
-                    }}
-                    className={`body-3 ${divRef.current!.offsetWidth > 88 ? 'size32' : 'size24'}`}
-                    placeholder={t('search')}
-                    prefix={<Ebigicon src='outline/development/zoom' size={14} />}
-                    onChange={ev => setSearchInput(ev.target.value.trim())}
-                    onComplete={(ev: any) => ev.target.blur()}
-                />
-            </div>}
-            {options.totalCount === 0 ? emptyState : renderOptions(options.data, searchValue)}
-        </>}
+        {(options.totalCount === 0 && !initTotal) ?
+            <div className='col' style={{ alignItems: 'center' }}>
+                <Ebigicon src='color/files/archive-file' size={28} />
+                <h6 className='heading-7' style={{ margin: '0.8rem' }}>{t('noResultFound')}</h6>
+            </div> : <>
+                {!hiddenSearchOptions && initTotal && initTotal > 10 && <div className={`col ${styles['search-options']}`}>
+                    <TextField
+                        ref={r => {
+                            if (r && !initSearch.current) {
+                                r.inputElement?.focus({ preventScroll: true })
+                                setTimeout(() => divRef.current?.scrollTo({ top: 0 }), 100)
+                                initSearch.current = true
+                            }
+                        }}
+                        className={`body-3 ${divRef.current!.offsetWidth > 88 ? 'size32' : 'size24'}`}
+                        placeholder={t('search')}
+                        prefix={<Ebigicon src='outline/development/zoom' size={14} />}
+                        onChange={ev => setSearchInput(ev.target.value.trim())}
+                        onComplete={(ev: any) => ev.target.blur()}
+                    />
+                </div>}
+                {options.totalCount === 0 ? <div className='col' style={{ alignItems: 'center' }}>
+                    <Ebigicon src='color/files/archive-file' size={28} />
+                    <h6 className='heading-7' style={{ margin: '0.8rem' }}>{t('noResultFound')}</h6>
+                </div> : children}
+            </>}
     </div>
 }
 
@@ -479,6 +493,10 @@ function SingleDropList(props: {
         tile?.scrollIntoView({ block: 'nearest' })
     }, [highlightedIndex])
 
+    const flatIdx = useRef(0)
+    const [roots, setRoots] = useState<OptionsItem[]>([])
+    const renderRef = useRef<{ data: OptionsItem[], searchValue: string }>({ data: [], searchValue: '' })
+
     return <OptionDropListShell
         divRef={divRef}
         style={props.style}
@@ -487,10 +505,11 @@ function SingleDropList(props: {
         hiddenSearchOptions={props.hiddenSearchOptions}
         onClose={props.onClose}
         renderOptions={(data, searchValue) => {
+            renderRef.current = { data, searchValue }
             // Build flat list
             const flat: OptionsItem[] = []
-            const roots = data.filter(e => !e.parentId)
-            roots.forEach(opt => { if (!opt.totalChild) flat.push(opt) })
+            const _roots = data.filter(e => !e.parentId)
+            _roots.forEach(opt => { if (!opt.totalChild) flat.push(opt) })
             flatRef.current = flat
 
             // Sync highlighted to selected
@@ -498,24 +517,24 @@ function SingleDropList(props: {
                 const idx = flat.findIndex(o => o.id === props.selected)
                 if (idx >= 0) setTimeout(() => setHighlightedIndex(idx), 0)
             }
-
-            let flatIdx = 0
-            return roots.map((opt, i) => {
-                const curIdx = !opt.totalChild ? flatIdx++ : -1
-                return <SingleTile
-                    key={opt.id + '-' + i}
-                    item={opt}
-                    selected={opt.id === props.selected}
-                    highlighted={curIdx === highlightedIndex}
-                    flatIndex={curIdx}
-                    children={data.filter(e => e.parentId === opt.id)}
-                    onClick={props.onSelect}
-                    optionStyle={props.optionStyle}
-                    getOptions={p => props.getOptions({ ...p, search: searchValue })}
-                />
-            })
+            setRoots(_roots)
         }}
-    />
+    >
+        {roots.map((opt, i) => {
+            const curIdx = !opt.totalChild ? flatIdx.current++ : -1
+            return <SingleTile
+                key={opt.id + '-' + i}
+                item={opt}
+                selected={opt.id === props.selected}
+                highlighted={curIdx === highlightedIndex}
+                flatIndex={curIdx}
+                children={renderRef.current.data.filter(e => e.parentId === opt.id)}
+                onClick={props.onSelect}
+                optionStyle={props.optionStyle}
+                getOptions={p => props.getOptions({ ...p, search: renderRef.current.searchValue })}
+            />
+        })}
+    </OptionDropListShell>
 }
 
 // ─── SingleTile ──────────────────────────────────────────────────────────────
@@ -576,6 +595,9 @@ function MultiDropList(props: {
     getOptions: GetOptionsFn, hiddenSearchOptions?: boolean
 }) {
     const divRef = useRef<HTMLDivElement>(null)
+    const search = useRef<string>('')
+    const [roots, setRoots] = useState<OptionsItem[]>([])
+
     return <OptionDropListShell
         divRef={divRef}
         style={props.style}
@@ -583,17 +605,20 @@ function MultiDropList(props: {
         getOptions={props.getOptions}
         hiddenSearchOptions={props.hiddenSearchOptions}
         onClose={props.onClose}
-        renderOptions={(data, searchValue) =>
-            data.filter(e => !e.parentId).map((opt, i) => <MultiTile
-                key={opt.id + '-' + i}
-                item={opt}
-                selected={props.selected}
-                children={data.filter(e => e.parentId === opt.id)}
-                getOptions={p => props.getOptions({ ...p, search: searchValue })}
-                onChange={props.onChange}
-            />)
-        }
-    />
+        renderOptions={(data, searchValue) => {
+            search.current = searchValue
+            setRoots(data)
+        }}
+    >
+        {roots.filter(e => !e.parentId).map((opt, i) => <MultiTile
+            key={opt.id + '-' + i}
+            item={opt}
+            selected={props.selected}
+            children={roots.filter(e => e.parentId === opt.id)}
+            getOptions={p => props.getOptions({ ...p, search: search.current })}
+            onChange={props.onChange}
+        />)}
+    </OptionDropListShell>
 }
 
 // ─── MultiTile ───────────────────────────────────────────────────────────────
