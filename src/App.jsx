@@ -41,6 +41,8 @@ import {
   UploadFiles,
   VideoPlayer,
   useTranslation,
+  DataController,
+  ConfigData,
 } from './index'
 
 /* ── Styles ────────────────────────────────────────────────── */
@@ -188,12 +190,31 @@ export default function App() {
           <SelectDropdown
             placeholder="Multi select"
             multiple
-            options={[
-              { id: 'a', name: 'Alpha' },
-              { id: 'b', name: 'Beta' },
-              { id: 'c', name: 'Gamma' },
-            ]}
             style={{ width: '30rem' }}
+            getOptions={async ({ length, parentId, search }) => {
+              ConfigData.url = "https://api.itm.vn/api/"
+              ConfigData.pid = "f5e4a5074091423981f047cf9f883175"
+              const controller = new DataController("Exam")
+              const res = await controller.getListSimple({
+                page: Math.floor(length / 20) + 1, size: 20,
+                query: search.length ? `@Name:("${search}")` : "*",
+              })
+              if (res.code === 200) {
+                const result = res.data
+                if (res.Parent?.length && !parentId) result.push(...res.Parent)
+                return {
+                  data: res.data.filter((e, i, arr) => !!e && arr.findIndex(f => f.Id === e.Id) === i).map((e) => {
+                    return {
+                      id: e.Id,
+                      name: e.Name,
+                      parentId: e.ParentId,
+                      totalChild: e.totalChild ? typeof e.totalChild === "string" ? parseInt(e.totalChild) : e.totalChild : undefined
+                    }
+                  }),
+                  totalCount: res.totalCount
+                }
+              } else return { data: [], totalCount: 0 }
+            }}
           />
         </div>
       </section>
