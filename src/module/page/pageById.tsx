@@ -1071,7 +1071,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case "SelectMultiple":
         case ComponentType.selectDropdown:
             if (props.item.Setting?.multiple || props.item.Type === "SelectMultiple") typeProps.multiple = true
-            const _getOptions = restOfActions.onGetOptions ?? typeProps.getOptions
+            const _getOptions = restOfActions.onGetOptions ? dropdownOnGetOptions : typeProps.getOptions
             return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} getOptions={_getOptions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
         case ComponentType.colorPicker:
             return <FColorPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
