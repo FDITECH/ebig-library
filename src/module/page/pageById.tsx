@@ -761,10 +761,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case "Select1":
                     case "SelectMultiple":
                     case ComponentType.selectDropdown:
-                        if (customProps.onGetOptions) {
-                            tmpProps.getOptions = dropdownOnGetOptions
-                            delete tmpProps.onGetOptions
-                        } else tmpProps.getOptions = props.rels?.find(e => e.Column === props.item.NameField)?.getOptions
+                        tmpProps.getOptions = props.rels?.find(e => e.Column === props.item.NameField)?.getOptions
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         if ((props.item.Type === "SelectMultiple" || tmpProps.multiple) && tmpProps.value && !Array.isArray(tmpProps.value)) tmpProps.value = []
                         break;
@@ -1074,7 +1071,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case "SelectMultiple":
         case ComponentType.selectDropdown:
             if (props.item.Setting?.multiple || props.item.Type === "SelectMultiple") typeProps.multiple = true
-            return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
+            const _getOptions = restOfActions.onGetOptions ?? typeProps.getOptions
+            return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} getOptions={_getOptions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
         case ComponentType.colorPicker:
             return <FColorPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.numberPicker:
