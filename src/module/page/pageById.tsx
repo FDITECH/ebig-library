@@ -429,6 +429,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.loaded:
                             tmpAct.onLoaded = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.error:
+                            tmpAct.onError = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
                         case TriggerType.locationChange:
                             tmpAct.onLocationChange = (ev: any) => handleEvent(triggerActions, ev)
                             break;
