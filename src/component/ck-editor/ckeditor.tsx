@@ -421,86 +421,6 @@ class RubySupport extends Plugin {
     }
 }
 
-class RubyToolbarPlugin extends Plugin {
-    static get pluginName() {
-        return 'RubyToolbarPlugin' as const;
-    }
-
-    init() {
-        const editor = this.editor;
-
-        editor.ui.componentFactory.add('rubyText', locale => {
-            const button = new ButtonView(locale);
-
-            button.set({
-                label: 'Ruby',
-                tooltip: true,
-                withText: true,
-            });
-
-            // Enable/disable based on whether text is selected
-            this.listenTo(editor.model.document.selection, 'change', () => {
-                const selection = editor.model.document.selection;
-                button.isEnabled = !selection.isCollapsed;
-            });
-
-            button.on('execute', () => {
-                this._insertRuby();
-            });
-
-            return button;
-        });
-    }
-
-    private _insertRuby() {
-        const editor = this.editor;
-        const selection = editor.model.document.selection;
-
-        if (selection.isCollapsed) return;
-
-        const range = selection.getFirstRange()!;
-        let selectedText = '';
-        for (const item of range.getItems()) {
-            if (item.is('$text') || item.is('$textProxy')) {
-                selectedText += item.data;
-            }
-        }
-
-        if (!selectedText) return;
-
-        const rubyAnnotation = window.prompt('Enter ruby annotation:', '');
-        if (rubyAnnotation === null || !rubyAnnotation.trim()) return;
-
-        // Step 1: insert unique marker at exact selection position
-        const marker = `RUBYMARKER${Date.now()}`;
-
-        editor.model.change(writer => {
-            writer.remove(range);
-            const position = editor.model.document.selection.getFirstPosition()!;
-            writer.insertText(marker, position);
-        });
-
-        // Step 2: get HTML with marker
-        const currentHtml = editor.getData();
-
-        // Step 3: replace marker — note marker will be plain text in the HTML
-        // The marker replaces selectedText, so we just wrap it
-        const rubyHtml =
-            `<span>
-                <span>${selectedText}</span>
-                <rp>(</rp>
-                <rt>${rubyAnnotation}</rt>
-                <rp>)</rp>
-            </span>`;
-
-        // Replace the marker text in the HTML string directly
-        const newHtml = currentHtml.replace(marker, rubyHtml);
-
-        // Step 4: setData with the clean ruby HTML
-        editor.setData(newHtml);
-    }
-}
-
 class ExportPdfPlugin extends Plugin {
     static get pluginName() {
         return 'ExportPdf';
@@ -561,7 +481,6 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
                 'italic',
                 'underline',
                 'strikethrough',
-                'rubyText',
                 // 'subscript',
                 // 'superscript',
                 // 'code',
@@ -569,7 +488,6 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
                 '|',
                 'insertImage',
                 'specialCharacters',
-                'ruby',
                 'horizontalLine',
                 'pageBreak',
                 'link',
@@ -674,7 +592,7 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
         ],
         balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
         extraPlugins: [
-            RubyToolbarPlugin, ExportPdfPlugin, createMediaPropertiesPlugin(t), ...extraPlugins
+            ExportPdfPlugin, createMediaPropertiesPlugin(t), ...extraPlugins
         ],
         mediaEmbed: {
             previewsInData: true,
