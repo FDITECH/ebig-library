@@ -569,7 +569,6 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
                 '|',
                 'insertImage',
                 'specialCharacters',
-                'ruby',
                 'horizontalLine',
                 'pageBreak',
                 'link',
