@@ -495,6 +495,7 @@ export default function App() {
       <section style={sectionStyle}>
         <div style={headingStyle}>EbigEditor</div>
         <EbigEditor
+          initValue='<p><span style="font-family:&quot;Time New Roman&quot;,serif;font-size:12.0pt;"><span style="line-height:115%;"><ruby style="ruby-align:space-around;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">受付</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">うけつけ</rt><rp>)</rp></ruby><ruby style="ruby-align:space-around;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">山田</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">やまだ</rt><rp>)</rp></ruby></span></span><span style="font-family:&quot;UD Digi Kyokasho NK-R&quot;,serif;font-size:15.0pt;"><span lang="JA" dir="ltr">躾とは、ルールを守る習慣を身につけることである。</span></span></p>'
           placeholder="Type something with rich-text support…"
           style={{ width: '100%', minHeight: '12rem' }}
           onChange={(value) => console.log('Editor value:', value)}
@@ -531,6 +532,7 @@ export default function App() {
         </Text>
         <div style={{ marginTop: '1.2rem' }}>
           <CustomCkEditor5
+            value='<p><span style="font-family:&quot;Time New Roman&quot;,serif;font-size:12.0pt;"><span style="line-height:115%;"><ruby style="ruby-align:space-around;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">受付</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">うけつけ</rt><rp>)</rp></ruby><ruby style="ruby-align:space-around;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">山田</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">やまだ</rt><rp>)</rp></ruby></span></span><span style="font-family:&quot;UD Digi Kyokasho NK-R&quot;,serif;font-size:15.0pt;"><span lang="JA" dir="ltr">躾とは、ルールを守る習慣を身につけることである。</span></span></p>'
             style={{ width: '100%', height: 300, borderRadius: 8 }}
             onChange={(data) => console.log('CKEditor data:', data)}
           />

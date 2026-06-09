@@ -279,3 +279,28 @@
 .ck.ck-color-grid>button {
     border-radius: 4px !important;
 }
+
+/* In your global CSS or component styles */
+.ck-editor__editable ruby,
+.ck-content ruby {
+    display: ruby !important;
+    ruby-position: over !important;
+}
+
+.ck-editor__editable rt,
+.ck-content rt {
+    display: ruby-text !important;
+    ruby-position: over !important;
+    font-size: 0.5em !important;
+    line-height: 1 !important;
+}
+
+.ck-editor__editable rp,
+.ck-content rp {
+    display: none !important;
+}
+
+span:has(>ruby) {
+    display: ruby !important;
+    ruby-position: over !important;
+}
