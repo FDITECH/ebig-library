@@ -183,6 +183,27 @@ class ExportPdfCommand extends Command {
                         font-weight: 700;
                         background: #0000000d;
                     }
+                        
+                    ruby {
+                        display: ruby !important;
+                        ruby-position: over !important;
+                    }
+
+                    rt {
+                        display: ruby-text !important;
+                        ruby-position: over !important;
+                        font-size: 0.5em !important;
+                        line-height: 1 !important;
+                    }
+
+                    rp {
+                        display: none !important;
+                    }
+
+                    span:has(>ruby) {
+                        display: ruby !important;
+                        ruby-position: over !important;
+                    }
 
                     .a4-page {
                         width: 210mm;
@@ -322,7 +343,164 @@ function createMediaPropertiesPlugin(t: (key: string) => string) {
     };
 }
 
-// 3. Export PDF Plugin
+class RubySupport extends Plugin {
+    static get requires() {
+        return [GeneralHtmlSupport];
+    }
+
+    static get pluginName() {
+        return 'RubySupport' as const;
+    }
+
+    init() {
+        const dataFilter = this.editor.plugins.get('DataFilter');
+        const dataSchema = this.editor.plugins.get('DataSchema');
+
+        // Register rt and rp FIRST (ruby depends on them)
+        dataSchema.registerInlineElement({
+            view: 'rt',
+            model: 'htmlRt',
+        });
+
+        dataSchema.registerInlineElement({
+            view: 'rp',
+            model: 'htmlRp',
+        });
+
+        // Register ruby — modelSchema handles its own structure
+        dataSchema.registerInlineElement({
+            view: 'ruby',
+            model: 'htmlRuby',
+        });
+
+        // Allow elements
+        dataFilter.allowElement('ruby');
+        dataFilter.allowElement('rt');
+        dataFilter.allowElement('rp');
+
+        // Allow all attributes/styles
+        const allAttrs: any = { attributes: true, classes: true, styles: true };
+        dataFilter.allowAttributes({ name: 'ruby', ...allAttrs });
+        dataFilter.allowAttributes({ name: 'rt', ...allAttrs });
+        dataFilter.allowAttributes({ name: 'rp', ...allAttrs });
+
+        // After GHS registers the model nodes, extend nesting rules
+        // Uses afterInit to ensure GHS has already set up the model
+        this.editor.plugins.get('GeneralHtmlSupport');
+    }
+
+    afterInit() {
+        const schema = this.editor.model.schema;
+
+        // Extend ruby to allow rt, rp, span, and text inside it
+        if (schema.isRegistered('htmlRuby')) {
+            schema.extend('htmlRuby', {
+                allowChildren: ['htmlRt', 'htmlRp', '$text'],
+            });
+        }
+
+        // Allow htmlSpan (from GHS) inside htmlRuby
+        if (schema.isRegistered('htmlSpan')) {
+            schema.extend('htmlSpan', {
+                allowIn: ['htmlRuby'],
+            });
+        }
+
+        // Allow rt/rp inside ruby
+        if (schema.isRegistered('htmlRt')) {
+            schema.extend('htmlRt', {
+                allowIn: ['htmlRuby'],
+            });
+        }
+
+        if (schema.isRegistered('htmlRp')) {
+            schema.extend('htmlRp', {
+                allowIn: ['htmlRuby'],
+            });
+        }
+    }
+}
+
+class RubyToolbarPlugin extends Plugin {
+    static get pluginName() {
+        return 'RubyToolbarPlugin' as const;
+    }
+
+    init() {
+        const editor = this.editor;
+
+        editor.ui.componentFactory.add('rubyText', locale => {
+            const button = new ButtonView(locale);
+
+            button.set({
+                label: 'Ruby',
+                tooltip: true,
+                withText: true,
+            });
+
+            // Enable/disable based on whether text is selected
+            this.listenTo(editor.model.document.selection, 'change', () => {
+                const selection = editor.model.document.selection;
+                button.isEnabled = !selection.isCollapsed;
+            });
+
+            button.on('execute', () => {
+                this._insertRuby();
+            });
+
+            return button;
+        });
+    }
+
+    private _insertRuby() {
+        const editor = this.editor;
+        const selection = editor.model.document.selection;
+
+        if (selection.isCollapsed) return;
+
+        const range = selection.getFirstRange()!;
+        let selectedText = '';
+        for (const item of range.getItems()) {
+            if (item.is('$text') || item.is('$textProxy')) {
+                selectedText += item.data;
+            }
+        }
+
+        if (!selectedText) return;
+
+        const rubyAnnotation = window.prompt('Enter ruby annotation:', '');
+        if (rubyAnnotation === null || !rubyAnnotation.trim()) return;
+
+        // Step 1: insert unique marker at exact selection position
+        const marker = `RUBYMARKER${Date.now()}`;
+
+        editor.model.change(writer => {
+            writer.remove(range);
+            const position = editor.model.document.selection.getFirstPosition()!;
+            writer.insertText(marker, position);
+        });
+
+        // Step 2: get HTML with marker
+        const currentHtml = editor.getData();
+
+        // Step 3: replace marker — note marker will be plain text in the HTML
+        // The marker replaces selectedText, so we just wrap it
+        const rubyHtml =
+            `<span>
+                <span>${selectedText}</span>
+                <rp>(</rp>
+                <rt>${rubyAnnotation}</rt>
+                <rp>)</rp>
+            </span>`;
+
+        // Replace the marker text in the HTML string directly
+        const newHtml = currentHtml.replace(marker, rubyHtml);
+
+        // Step 4: setData with the clean ruby HTML
+        editor.setData(newHtml);
+    }
+}
+
 class ExportPdfPlugin extends Plugin {
     static get pluginName() {
         return 'ExportPdf';
@@ -383,6 +561,7 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
                 'italic',
                 'underline',
                 'strikethrough',
+                'rubyText',
                 // 'subscript',
                 // 'superscript',
                 // 'code',
@@ -390,6 +569,7 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
                 '|',
                 'insertImage',
                 'specialCharacters',
+                'ruby',
                 'horizontalLine',
                 'pageBreak',
                 'link',
@@ -433,6 +613,7 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
             FontFamily,
             FontSize,
             FullPage,
+            RubySupport,
             GeneralHtmlSupport,
             Heading,
             Highlight,
@@ -493,7 +674,7 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
         ],
         balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
         extraPlugins: [
-            ExportPdfPlugin, createMediaPropertiesPlugin(t), ...extraPlugins
+            RubyToolbarPlugin, ExportPdfPlugin, createMediaPropertiesPlugin(t), ...extraPlugins
         ],
         mediaEmbed: {
             previewsInData: true,
