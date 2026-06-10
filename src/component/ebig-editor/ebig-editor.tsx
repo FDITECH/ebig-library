@@ -274,7 +274,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         if (selection && selection.rangeCount > 0 && !selection.isCollapsed) {
             savedRange.current = selection.getRangeAt(0);
             const rect = savedRange.current.getBoundingClientRect();
-            rubyTextOffsetRef.current = { top: rect.bottom + 2, left: rect.left };
+            rubyTextOffsetRef.current = { top: rect.bottom + 2 };
             setShowRubyPrompt(true);
         }
     };
