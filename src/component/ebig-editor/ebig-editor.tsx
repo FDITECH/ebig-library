@@ -23,8 +23,8 @@ interface Props {
     disabled?: boolean;
     helperText?: string;
     helperTextColor?: string;
-    /** default: ["emoji", "bold", "italic", "underline", "hyperlink"] */
-    customToolbar?: ReactNode | Array<ReactNode | "emoji" | "bold" | "italic" | "underline" | "hyperlink">;
+    /** default: ["emoji", "bold", "italic", "underline", "hyperlink", "rubytext"] */
+    customToolbar?: ReactNode | Array<ReactNode | "emoji" | "bold" | "italic" | "underline" | "hyperlink" | "rubytext">;
     simpleStyle?: boolean;
     readOnly?: boolean;
 }
@@ -43,9 +43,11 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
     const popupRef = useRef<any>(null)
     const emojiOffsetRef = useRef<CSSProperties>(null)
     const insertLinkOffsetRef = useRef<CSSProperties>(null)
+    const rubyTextOffsetRef = useRef<CSSProperties>(null)
     const [isOpenEmoji, setIsOpenEmoji] = useState<{ height?: number, emojiStyle?: EmojiStyle, searchDisabled?: boolean, emojiPickerClassName?: string }>()
     const [showLinkPrompt, setShowLinkPrompt] = useState(false);
     const [showLinkDetails, setShowLinkDetails] = useState<HTMLAnchorElement | null>(null);
+    const [showRubyPrompt, setShowRubyPrompt] = useState(false);
 
     const onSaveRange = (ev?: any) => {
         if (ev?.target.innerHTML === "<br>") ev.target.innerHTML = ""
@@ -196,7 +198,22 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
     }, [autoFocus])
 
     useEffect(() => {
-        if (initValue && inputContentRef.current && inputContentRef.current.innerHTML.trim() !== initValue.trim()) inputContentRef.current!.innerHTML = initValue
+        if (initValue && inputContentRef.current && inputContentRef.current.innerHTML.trim() !== initValue.trim()) {
+            const tmp = document.createElement("div")
+            tmp.innerHTML = initValue
+            tmp.querySelectorAll("*").forEach((el: any) => {
+                if (el.style) {
+                    el.style.fontFamily = ""
+                    el.style.fontSize = ""
+                    el.style.lineHeight = ""
+                    el.style.color = ""
+                    el.style.backgroundColor = ""
+                    el.style.font = ""
+                }
+            })
+            tmp.remove()
+            inputContentRef.current!.innerHTML = tmp.innerHTML
+        }
     }, [!initValue?.length])
 
     const [activeStyles, setActiveStyles] = useState({
@@ -250,6 +267,39 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         }
         selectedLink.href = url
         updateActiveStyles();
+    };
+
+    const handleRubyText = () => {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0 && !selection.isCollapsed) {
+            savedRange.current = selection.getRangeAt(0);
+            const rect = savedRange.current.getBoundingClientRect();
+            rubyTextOffsetRef.current = { top: rect.bottom + 2, left: rect.left };
+            setShowRubyPrompt(true);
+        }
+    };
+
+    const applyRubyText = (annotation?: string) => {
+        setShowRubyPrompt(false);
+        if (!annotation?.trim() || !savedRange.current) return;
+
+        const ruby = document.createElement("ruby");
+        const fragment = savedRange.current.cloneContents();
+        ruby.appendChild(fragment);
+        const rt = document.createElement("rt");
+        rt.textContent = annotation.trim();
+        ruby.appendChild(rt);
+
+        savedRange.current.deleteContents();
+        savedRange.current.insertNode(ruby);
+        savedRange.current.setStartAfter(ruby);
+        savedRange.current.collapse(true);
+
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(savedRange.current);
+
+        onChange?.(inputContentRef.current!.innerHTML, inputContentRef.current!);
     };
 
     const updateActiveStyles = useCallback(() => {
@@ -360,6 +410,17 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         />
     }
 
+    const returnRubyText = (k?: string) => {
+        return <Ebigicon
+            key={k}
+            src='outline/text/superscript'
+            className='icon-button size24 light'
+            size={14}
+            onMouseDown={(ev) => { ev.preventDefault() }}
+            onClick={(disabled || readOnly) ? undefined : handleRubyText}
+        />
+    }
+
     return <div
         id={id}
         className={`col ${simpleStyle ? styles["ebig-editor-simple-style"] : styles["ebig-editor-container"]} ${disabled ? styles["disabled"] : ""} ${className ?? "body-3"} ${helperText?.length ? styles['helper-text'] : ""}`}
@@ -403,6 +464,11 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onApply={applyLink}
             style={insertLinkOffsetRef.current as any}
         />}
+        {showRubyPrompt && <PopupRubyTextPrompt
+            onClose={() => { setTimeout(() => applyRubyText(), 150) }}
+            onApply={applyRubyText}
+            style={rubyTextOffsetRef.current as any}
+        />}
         {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 4 }}>
             {Array.isArray(customToolbar) ? customToolbar.map((tb, i) => {
                 switch (tb) {
@@ -416,6 +482,8 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                         return returnUnderline(`${tb}-${i}`)
                     case "hyperlink":
                         return returnHyperlink(`${tb}-${i}`)
+                    case "rubytext":
+                        return returnRubyText(`${tb}-${i}`)
                     default:
                         return tb
                 }
@@ -426,6 +494,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                     {returnItalic()}
                     {returnUnderline()}
                     {returnHyperlink()}
+                    {returnRubyText()}
                 </>}
         </div> : customToolbar)}
         {isOpenEmoji && <PopupEmojiPicker
@@ -473,6 +542,45 @@ const PopupEmojiPicker = ({ height = 400, ...props }: { style: CSSProperties, em
             onEmojiClick={props.onSelect}
             searchDisabled={props.searchDisabled}
             autoFocusSearch={false}
+        />
+    </div>
+}
+
+const PopupRubyTextPrompt = (props: { style: CSSProperties, onClose: () => void, onApply: (vl: string) => void }) => {
+    const divRef = useRef<HTMLDivElement>(null)
+    const { t } = useTranslation()
+    const [value, setValue] = useState("")
+
+    useEffect(() => {
+        if (divRef.current) {
+            const onClickDropDown = (ev: any) => {
+                if (ev.target === divRef.current || !divRef.current!.contains(ev.target)) props.onClose()
+            }
+            window.document.body.addEventListener("mousedown", onClickDropDown)
+            return () => {
+                window.document.body.removeEventListener("mousedown", onClickDropDown)
+            }
+        }
+    }, [divRef.current])
+
+    return <div ref={divRef} className={`row ${styles["dropdown"]} ${styles["link-prompt"]}`} style={props.style}>
+        <TextField
+            autoFocus
+            placeholder="Ruby annotation..."
+            className="body-3 size32"
+            style={{ width: "20rem" }}
+            onChange={(ev) => { setValue(ev.target.value) }}
+            onComplete={(ev) => {
+                if (value.trim()) props.onApply(value)
+                else ev.currentTarget.blur()
+            }}
+        />
+        <Button
+            label={t("apply")}
+            className="label-3 size32 button-primary"
+            style={{ borderRadius: "10rem" }}
+            disabled={!value.trim()}
+            onClick={() => { if (value.trim()) props.onApply(value) }}
         />
     </div>
 }
