@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 /* ── Components ────────────────────────────────────────────── */
@@ -43,6 +43,7 @@ import {
   useTranslation,
   DataController,
   ConfigData,
+  CkEditorUploadAdapter,
 } from './index'
 
 /* ── Styles ────────────────────────────────────────────────── */
@@ -83,6 +84,14 @@ export default function App() {
   const [dropdownVal, setDropdownVal] = useState(undefined)
   const popupRef = useRef(undefined)
   const { t, i18n } = useTranslation()
+
+  const [ckValue, setCkValue] = useState()
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCkValue('<p><span style="font-family:&quot;Time New Roman&quot;,serif;font-size:12.0pt;"><span style="line-height:115%;"><ruby style="ruby-align:distribute-space;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">受付</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">うけつけ</rt><rp>)</rp></ruby><ruby style="ruby-align:distribute-space;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">山田</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">やまだ</rt><rp>)</rp></ruby></span></span><span style="font-family:&quot;UD Digi Kyokasho NK-R&quot;,serif;font-size:15.0pt;"><span lang="JA" dir="ltr">躾とは、ルールを守る習慣を身につけることである。</span></span></p>')
+    }, 200);
+  }, [])
 
   return (
     <div className='col' style={{ width: '100dvw', height: '100dvh', maxWidth: '120rem', margin: '0 auto', padding: '3.2rem 2.4rem', overflow: "auto", scrollbarWidth: "thin" }}>
@@ -532,10 +541,17 @@ export default function App() {
         </Text>
         <div style={{ marginTop: '1.2rem' }}>
           <CustomCkEditor5
-            value='<p><span style="font-family:&quot;Time New Roman&quot;,serif;font-size:12.0pt;"><span style="line-height:115%;"><ruby style="ruby-align:space-around;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">受付</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">うけつけ</rt><rp>)</rp></ruby><ruby style="ruby-align:space-around;"><span style="font-family:&quot;MS Mincho&quot;;" lang="JA">山田</span><rp>(</rp><rt style="font-family:&quot;MS Mincho&quot;;font-size:6.0pt;layout-grid-mode:line;">やまだ</rt><rp>)</rp></ruby></span></span><span style="font-family:&quot;UD Digi Kyokasho NK-R&quot;,serif;font-size:15.0pt;"><span lang="JA" dir="ltr">躾とは、ルールを守る習慣を身につけることである。</span></span></p>'
+            value={ckValue ?? null}
             style={{ width: '100%', height: 300, borderRadius: 8 }}
             onChange={(data) => console.log('CKEditor data:', data)}
+            placeholder='Empty'
+            extraPlugins={[
+              function (editor) {
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => new CkEditorUploadAdapter(loader)
+              }
+            ]}
           />
+          <div dangerouslySetInnerHTML={{ __html: ckValue }} />
         </div>
       </section>
     </div>
