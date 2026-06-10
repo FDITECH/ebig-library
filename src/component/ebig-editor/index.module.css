@@ -29,6 +29,9 @@
 .ebig-editor-input * {
     font-family: inherit;
     color: inherit;
+}
+
+.ebig-editor-input *:not(ruby, rt, rp) {
     font-size: 1em;
 }
 
