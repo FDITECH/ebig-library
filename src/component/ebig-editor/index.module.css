@@ -26,6 +26,10 @@
     overflow: hidden auto;
 }
 
+.ebig-editor-input>p {
+    margin: 0 !important;
+}
+
 .ebig-editor-input * {
     font: inherit;
     font-family: inherit;
