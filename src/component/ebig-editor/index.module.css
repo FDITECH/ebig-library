@@ -27,12 +27,15 @@
 }
 
 .ebig-editor-input * {
+    font: inherit;
     font-family: inherit;
     color: inherit;
+    font-size: 1em;
 }
 
-.ebig-editor-input *:not(ruby, rt, rp) {
-    font-size: 1em;
+.ebig-editor-input rt {
+    font-size: 0.5em !important;
+    line-height: 1 !important;
 }
 
 .ebig-editor-input .emoji {
