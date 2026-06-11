@@ -414,7 +414,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
         [...cols, ...rels].forEach(c => {
             tmpValue[c.Column ?? c.Name] = tmp[c.Column ?? c.Name]
         })
-        return tmpValue
+        return { ...props.data, ...tmpValue }
     }, [cols.length, rels.length, JSON.stringify(methods.watch())])
     const finalFormValues = useDeferredValue(formValues);
 

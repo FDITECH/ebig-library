@@ -452,7 +452,27 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const handleListener = (funcString: string) => {
         if (typeof funcString !== "string") return undefined
         const tmp: any = {}
-        if (funcString.includes("entityData")) tmp.indexItem = JSON.stringify(props.indexItem ?? props.methods?.getValues())
+        if (funcString.includes("entityData")) {
+            const propList: string[] = []
+            const directRegex = /\bentityData\.(\w+)/g
+            const aliasRegex = /\b(?:const|let|var)\s+(\w+)\s*=\s*entityData\b/g
+            const destructRegex = /{([^}]+)}\s*=\s*entityData\b/g
+            let match: RegExpExecArray | null
+            while ((match = aliasRegex.exec(funcString)) !== null) {
+                propList.push(match[1])
+            }
+            while ((match = directRegex.exec(funcString)) !== null) {
+                propList.push(match[1])
+            }
+            while ((match = destructRegex.exec(funcString)) !== null) {
+                propList.push(...match[1].split(',').map((e: string) => e.trim()))
+            }
+            const indexTmp: any = {}
+            propList.filter((p, i, arr) => arr.indexOf(p) === i).forEach(p => {
+                indexTmp[p] = props.indexItem?.[p] ?? props.methods?.getValues(p)
+            })
+            tmp.indexItem = JSON.stringify(indexTmp)
+        }
         if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
             tmp.pathname = location.pathname
             tmp.search = location.search
@@ -561,7 +581,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customActions?.onGetOptions, getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
+    }, [getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
 
     const _options = useMemo(() => {
         if (handleOptions) return Array.isArray(handleOptions.data) ? handleOptions.data : []
