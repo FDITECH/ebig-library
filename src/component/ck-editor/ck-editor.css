@@ -280,7 +280,6 @@
     border-radius: 4px !important;
 }
 
-/* In your global CSS or component styles */
 .ck-editor__editable ruby,
 .ck-content ruby {
     display: ruby !important;

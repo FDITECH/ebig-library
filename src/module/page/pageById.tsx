@@ -429,6 +429,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.loaded:
                             tmpAct.onLoaded = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.error:
+                            tmpAct.onError = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
                         case TriggerType.locationChange:
                             tmpAct.onLocationChange = (ev: any) => handleEvent(triggerActions, ev)
                             break;
@@ -449,7 +452,27 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const handleListener = (funcString: string) => {
         if (typeof funcString !== "string") return undefined
         const tmp: any = {}
-        if (funcString.includes("entityData")) tmp.indexItem = JSON.stringify(props.indexItem ?? props.methods?.getValues())
+        if (funcString.includes("entityData")) {
+            const propList: string[] = []
+            const directRegex = /\bentityData\.(\w+)/g
+            const aliasRegex = /\b(?:const|let|var)\s+(\w+)\s*=\s*entityData\b/g
+            const destructRegex = /{([^}]+)}\s*=\s*entityData\b/g
+            let match: RegExpExecArray | null
+            while ((match = aliasRegex.exec(funcString)) !== null) {
+                propList.push(match[1])
+            }
+            while ((match = directRegex.exec(funcString)) !== null) {
+                propList.push(match[1])
+            }
+            while ((match = destructRegex.exec(funcString)) !== null) {
+                propList.push(...match[1].split(',').map((e: string) => e.trim()))
+            }
+            const indexTmp: any = {}
+            propList.filter((p, i, arr) => arr.indexOf(p) === i).forEach(p => {
+                indexTmp[p] = props.indexItem?.[p] ?? props.methods?.getValues(p)
+            })
+            tmp.indexItem = JSON.stringify(indexTmp)
+        }
         if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
             tmp.pathname = location.pathname
             tmp.search = location.search
@@ -558,7 +581,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customActions?.onGetOptions, getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
+    }, [getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
 
     const _options = useMemo(() => {
         if (handleOptions) return Array.isArray(handleOptions.data) ? handleOptions.data : []
@@ -761,10 +784,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case "Select1":
                     case "SelectMultiple":
                     case ComponentType.selectDropdown:
-                        if (customProps.onGetOptions) {
-                            tmpProps.getOptions = dropdownOnGetOptions
-                            delete tmpProps.onGetOptions
-                        } else tmpProps.getOptions = props.rels?.find(e => e.Column === props.item.NameField)?.getOptions
+                        tmpProps.getOptions = props.rels?.find(e => e.Column === props.item.NameField)?.getOptions
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         if ((props.item.Type === "SelectMultiple" || tmpProps.multiple) && tmpProps.value && !Array.isArray(tmpProps.value)) tmpProps.value = []
                         break;
@@ -781,7 +801,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         break;
                     case ComponentType.datePicker:
-                    case ComponentType.dateTimePicker:
                         if (props.item.NameField?.length) {
                             const propsColDataType = props.cols?.find(e => e.Name === props.item.NameField)?.DataType
                             switch (propsColDataType) {
@@ -1074,12 +1093,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         case "SelectMultiple":
         case ComponentType.selectDropdown:
             if (props.item.Setting?.multiple || props.item.Type === "SelectMultiple") typeProps.multiple = true
-            return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
+            const _getOptions = restOfActions.onGetOptions ? dropdownOnGetOptions : typeProps.getOptions
+            return <FSelectDropdownForm ref={htmlElementRef} {...typeProps} {...restOfActions} getOptions={_getOptions} key={props.item.Id} methods={props.methods} name={props.item.NameField} options={_options} />
         case ComponentType.colorPicker:
             return <FColorPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.numberPicker:
             return <FNumberPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
-        case ComponentType.dateTimePicker:
         case ComponentType.datePicker:
             return <FDateTimePicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.upload:

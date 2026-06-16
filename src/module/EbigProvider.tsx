@@ -179,7 +179,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
             })
             const result = await languageController.getAll()
             if (result.code === 200 && result.data.length) {
-                const languages = await Promise.all(result.data.filter((e: any) => !!e.Json?.length).map((e: any) => BaseDA.get(getValidLink(e.Json), { headers: { "Cache-Control": "no-cache" } })))
+                const languages = await Promise.all(result.data.filter((e: any) => !!e.Json?.length).map((e: any) => BaseDA.get(getValidLink(e.Json), { headers: { "Cache-Control": "private, max-age=86400" } })))
                 languages.forEach((lngData, i) => {
                     if (lngData) i18n.addResourceBundle(result.data[i].Lng, "translation", lngData, true, true)
                 })
@@ -210,12 +210,73 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     </EbigContext.Provider>
 }
 
+const stripNonCode = (code: string): string => {
+    let out = '';
+    let i = 0;
+    const n = code.length;
+    while (i < n) {
+        const ch = code[i];
+        const prev = out[out.length - 1] ?? '';
+
+        // line comment
+        if (ch === '/' && code[i + 1] === '/') {
+            while (i < n && code[i] !== '\n') { out += ' '; i++; }
+            continue;
+        }
+        // block comment
+        if (ch === '/' && code[i + 1] === '*') {
+            out += '  '; i += 2;
+            while (i < n && !(code[i] === '*' && code[i + 1] === '/')) {
+                out += code[i] === '\n' ? '\n' : ' '; i++;
+            }
+            out += '  '; i += 2;
+            continue;
+        }
+        // string literals
+        if (ch === '"' || ch === "'" || ch === '`') {
+            const quote = ch;
+            out += ' '; i++;
+            while (i < n && code[i] !== quote) {
+                if (code[i] === '\\') { out += '  '; i += 2; continue; }
+                out += code[i] === '\n' ? '\n' : ' '; i++;
+            }
+            out += ' '; i++;
+            continue;
+        }
+        // regex literal (heuristic: '/' not preceded by identifier/closing bracket/number)
+        if (ch === '/' && !/[a-zA-Z0-9_$)\]\.]/.test(prev)) {
+            let j = i + 1;
+            let inClass = false;
+            while (j < n) {
+                if (code[j] === '\\') { j += 2; continue; }
+                if (code[j] === '[') inClass = true;
+                else if (code[j] === ']') inClass = false;
+                else if (code[j] === '/' && !inClass) break;
+                else if (code[j] === '\n') break;
+                j++;
+            }
+            if (j < n && code[j] === '/') {
+                // confirmed regex literal
+                out += ' '.repeat(j - i + 1);
+                i = j + 1;
+                continue;
+            }
+            // fallthrough: not actually a regex, treat as normal char
+        }
+        out += ch;
+        i++;
+    }
+    return out;
+};
+
 const extractAllFunctionNames = (code: string) => {
+    const stripped = stripNonCode(code);
+
     const depthAt = (pos: number): number => {
         let depth = 0;
         for (let i = 0; i < pos; i++) {
-            if (code[i] === '{') depth++;
-            else if (code[i] === '}') depth--;
+            if (stripped[i] === '{') depth++;
+            else if (stripped[i] === '}') depth--;
         }
         return depth;
     };
@@ -320,7 +381,7 @@ export const useEbigContext = () => {
     return context;
 }
 
-const href = "https://cdn.ebig.co/library/style/v0.0.81/"
+const href = "https://cdn.ebig.co/library/style/v0.0.90/"
 const appendStyleSheet = () => {
     const tmp = document.createElement("div")
     tmp.innerHTML = `

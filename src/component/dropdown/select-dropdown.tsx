@@ -183,7 +183,12 @@ function useDropListData(getOptions: GetOptionsFn, searchValue: string) {
         setOptions(length ? prev => ({ data: [...prev.data, ...res.data], totalCount: res.totalCount }) : res)
     }, [getOptions, searchValue])
 
-    useEffect(() => { getData() }, [searchValue])
+    useEffect(() => {
+        if (searchValue.length) {
+            const timer = setTimeout(() => getData(), 200)
+            return () => clearTimeout(timer)
+        } else getData()
+    }, [searchValue])
 
     return { options, initTotal: initTotal.current, loadMore: () => getData(options.data.length) }
 }

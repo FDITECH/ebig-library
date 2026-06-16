@@ -48,8 +48,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const [cols, setCols] = useState<Array<{ [p: string]: any }>>([])
     const [rels, setRels] = useState<Array<{ [p: string]: any }>>([])
     const [relativeCols, setRelativeCols] = useState<Array<{ [p: string]: any }>>([])
-    const accountController = new AccountController()
-    const htmlContent = useRef<{ [k: string]: string }>({})
 
     useEffect(() => {
         if (props.id) {
@@ -106,19 +104,8 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                             case FEDataType.UNIQUE:
                             case FEDataType.STRING:
                             case FEDataType.PASSWORD:
-                                methods.setValue(prop, dataItem[prop])
-                                break;
                             case FEDataType.HTML:
-                                if (ConfigData.regexGuid.test(dataItem[prop])) {
-                                    BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${dataItem[prop]}`, { headers: { "Cache-Control": "no-cache" } }).then((result) => {
-                                        if (typeof result === 'string') {
-                                            htmlContent.current[prop] = dataItem[prop]
-                                            methods.setValue(prop, result)
-                                        } else methods.setValue(prop, dataItem[prop])
-                                    })
-                                } else {
-                                    methods.setValue(prop, dataItem[prop])
-                                }
+                                methods.setValue(prop, dataItem[prop])
                                 break;
                             case FEDataType.BOOLEAN:
                                 methods.setValue(prop, dataItem[prop])
@@ -184,19 +171,8 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                     case FEDataType.UNIQUE:
                     case FEDataType.STRING:
                     case FEDataType.PASSWORD:
-                        methods.setValue(_col.Name, _col.Form.DefaultValue)
-                        break;
                     case FEDataType.HTML:
-                        if (ConfigData.regexGuid.test(_col.Form.DefaultValue)) {
-                            BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${_col.Form.DefaultValue}`, { headers: { "Cache-Control": "no-cache" } }).then((result) => {
-                                if (typeof result === 'string') {
-                                    htmlContent.current[_col.Name] = _col.Form.DefaultValue
-                                    methods.setValue(_col.Name, result)
-                                } else methods.setValue(_col.Name, _col.Form.DefaultValue)
-                            })
-                        } else {
-                            methods.setValue(_col.Name, _col.Form.DefaultValue)
-                        }
+                        methods.setValue(_col.Name, _col.Form.DefaultValue)
                         break;
                     case FEDataType.BOOLEAN:
                         methods.setValue(_col.Name, _col.Form.DefaultValue)
@@ -249,60 +225,6 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
             });
             return;
         }
-        // Nếu có lỗi, dừng lại không thực hiện submit
-        for (let _col of cols) {
-            switch (_col.Name) {
-                case "DateCreated":
-                    dataItem[_col.Name] ??= Date.now()
-                    break;
-                default:
-                    if (dataItem[_col.Name] === undefined || dataItem[_col.Name] === null) {
-                        dataItem[_col.Name] = null
-                        continue;
-                    }
-                    // handle other columns value
-                    switch (_col.DataType) {
-                        case FEDataType.STRING:
-                            if (Array.isArray(dataItem[_col.Name])) {
-                                dataItem[_col.Name] = dataItem[_col.Name].join(",")
-                            } else if (typeof dataItem[_col.Name] !== 'string') {
-                                dataItem[_col.Name] = `${dataItem[_col.Name]}`
-                            }
-                            break;
-                        case FEDataType.BOOLEAN:
-                            dataItem[_col.Name] = [true, 1, "true"].includes(dataItem[_col.Name]) ? true : false
-                            break;
-                        case FEDataType.NUMBER:
-                            dataItem[_col.Name] = typeof dataItem[_col.Name] === 'string' ? Number(dataItem[_col.Name]) : dataItem[_col.Name]
-                            break;
-                        case FEDataType.DATE:
-                        case FEDataType.DATETIME:
-                            dataItem[_col.Name] = dataItem[_col.Name].getTime()
-                            break;
-                        case FEDataType.MONEY:
-                            if (!isNaN(Number(`${dataItem[_col.Name]}`.replace(/,/g, ''))))
-                                dataItem[_col.Name] = Number(`${dataItem[_col.Name]}`.replace(/,/g, ''))
-                            else delete dataItem[_col.Name]
-                            break;
-                        case FEDataType.PASSWORD:
-                            if (props.autoBcrypt && dataItem[_col.Name]?.length && dataItem[_col.Name] !== props.data?.[_col.Name]) {
-                                const getHashPassword = await accountController.hashPassword(dataItem[_col.Name])
-                                dataItem[_col.Name] = getHashPassword.data
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-            }
-        }
-        for (let _rel of rels) {
-            if (dataItem[_rel.Column] && Array.isArray(dataItem[_rel.Column]))
-                dataItem[_rel.Column] = dataItem[_rel.Column].join(",")
-        }
-        Object.keys(dataItem).forEach(p => {
-            if (![...cols, ...rels].find(e => e.Name === p || e.Column === p)) delete dataItem[p]
-        })
         props.onSubmit?.(dataItem)
     }
 
@@ -414,7 +336,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
         [...cols, ...rels].forEach(c => {
             tmpValue[c.Column ?? c.Name] = tmp[c.Column ?? c.Name]
         })
-        return tmpValue
+        return { ...props.data, ...tmpValue }
     }, [cols.length, rels.length, JSON.stringify(methods.watch())])
     const finalFormValues = useDeferredValue(formValues);
 
