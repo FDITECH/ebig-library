@@ -20,13 +20,6 @@ import { Button } from "./button/button";
 import { UploadFiles } from "./import-file/upload";
 import { SelectDropdown } from "./dropdown/select-dropdown";
 
-interface DateRangeProps {
-    start?: Date,
-    end?: Date,
-    /** type: 1: daily, 2: weekly, 3: monthly */
-    repeatData?: { type: 1 | 2 | 3, value: Array<string | number> }
-}
-
 interface SimpleFormProps {
     id?: string,
     label?: string,
@@ -179,7 +172,7 @@ interface DateTimePickerFormProps extends SimpleFormProps {
     autoFocus?: boolean,
     suffix?: ReactNode,
     prefix?: ReactNode,
-    onChange?: (ev?: Date | DateRangeProps) => void,
+    onChange?: (ev?: Date) => void,
     onBlur?: React.FocusEventHandler<HTMLTextAreaElement>,
     onFocus?: React.FocusEventHandler<HTMLTextAreaElement>,
 }
@@ -206,11 +199,11 @@ export function DateTimePickerForm(params: DateTimePickerFormProps) {
                     placeholder={params.placeholder ? params.placeholder : params.label ? `${t("choose")} ${params.label.toLowerCase()}` : ''}
                     value={field.value}
                     disabled={params.disabled}
-                    pickerType={params.type}
+                    pickerType={params.type ?? "date"}
                     pickOnly={params.pickOnly}
                     onChange={(date) => {
                         field.onChange(date);
-                        if (params.onChange) params.onChange(date);
+                        if (params.onChange) params.onChange(date as any);
                     }}
                     helperText={_covertErrors && (_covertErrors?.message?.length ? _covertErrors?.message : `${(params.placeholder ? params.placeholder : params.label ? `${t("choose")} ${params.label}` : t('value')).toLowerCase()}`)}
                 />
@@ -501,109 +494,6 @@ export function UploadMultipleFileTypeForm({ style = {}, uploadElementStyle = {}
             </div>;
         }}
     />
-}
-
-interface RangeFormProps extends SimpleFormProps {
-    endName: string,
-    type?: 'number' | "money" | "daterange" | "datetimerange",
-    placeholderStart?: string,
-    placeholderEnd?: string,
-}
-
-/** type: number | date | date-time | money */
-export function RangeForm(params: RangeFormProps) {
-    const { t } = useTranslation()
-
-    return <div className={`input-range-container ${params.className ?? 'col'}`} style={{ gap: '0.8rem', width: '100%', ...(params.style ?? {}) }} >
-        {params.labelElement ?? (params.label ? <div className="row" style={{ gap: '0.4rem', minWidth: "16rem" }}>
-            <Text className={"label-3"}>{params.label}</Text>
-            {params.required ? <Text className="label-4" style={{ color: '#E14337' }}>*</Text> : null}
-        </div> : null)}
-        <div className="row" style={{ gap: '0.8rem', width: '100%', flex: params.className?.includes('row') ? 1 : undefined }}>
-            {
-                params.type === 'number' || params.type === 'money' ? <>
-                    <TextField
-                        style={{ width: '100%', flex: 1, ...(params.type === 'money' ? { height: '4rem', padding: '0 0 0 1.6rem' } : {}) }}
-                        placeholder={params.placeholderStart ?? t('from')}
-                        disabled={params.disabled}
-                        type={params.type === 'number' ? 'number' : 'text'}
-                        name={params.name}
-                        suffix={params.type === 'money' ?
-                            <div className="row" style={{ padding: '0 1.6rem', height: '100%', background: 'var(--neutral-main-background-color,light-dark(#EFEFF0, #313135))', borderLeft: '1px solid var(--neutral-bolder-border-color,light-dark(#D7D7DB, #494950))', borderRadius: '0 0.8rem 0.8rem 0' }} >
-                                <Text className="button-text-3" style={{ color: 'var(--neutral-text-subtitle-color,light-dark(#61616B, #A2A2AA))' }}>VND</Text>
-                            </div> : undefined}
-                        onFocus={params.type === 'money' ? (ev) => {
-                            ev.target.value = ev.target.value.replaceAll(',', '')
-                            ev.target.type = "number"
-                        } : undefined}
-                        register={params.methods.register(params.name, {
-                            onBlur: (ev) => {
-                                const newValue = parseFloat(ev.target.value)
-                                ev.target.type = "text"
-                                if (!isNaN(newValue)) {
-                                    if (params.methods.getValues(params.endName)?.length) {
-                                        const endValue = parseFloat(params.methods.getValues(params.endName).replace(/,/g, ''))
-                                        if (endValue < newValue) {
-                                            params.methods.setError(params.name, { message: 'From value must be less than To value' })
-                                        }
-                                    }
-                                    if (params.type === 'money') ev.target.value = Util.formatCurrency(newValue)
-                                } else {
-                                    ev.target.value = ""
-                                }
-                            },
-                        }) as any}
-                        helperText={(convertErrors(params.methods.formState.errors, params.name) || convertErrors(params.methods.formState.errors, params.endName)) && (convertErrors(params.methods.formState.errors, params.name)?.message?.length ? convertErrors(params.methods.formState.errors, params.name)?.message : `Please input ${params.label?.toLowerCase() ?? 'value'}`)}
-                    />
-                    <Ebigicon src={"fill/arrows/arrow-right"} size={"1.6rem"} />
-                    <TextField
-                        style={{ width: '100%', flex: 1, ...(params.type === 'money' ? { height: '4rem', padding: '0 0 0 1.6rem' } : {}) }}
-                        placeholder={params.placeholderEnd ?? t('to')}
-                        disabled={params.disabled}
-                        type={params.type === 'number' ? 'number' : 'text'}
-                        name={params.endName}
-                        suffix={params.type === 'money' ?
-                            <div className="row" style={{ padding: '0 1.6rem', height: '100%', background: 'var(--neutral-main-background-color,light-dark(#EFEFF0, #313135))', borderLeft: '1px solid var(--neutral-bolder-border-color,light-dark(#D7D7DB, #494950))', borderRadius: '0 0.8rem 0.8rem 0' }} >
-                                <Text className="button-text-3" style={{ color: 'var(--neutral-text-subtitle-color,light-dark(#61616B, #A2A2AA))' }}>VND</Text>
-                            </div> : undefined}
-                        onFocus={params.type === 'money' ? (ev) => {
-                            ev.target.value = ev.target.value.replace(/,/g, '')
-                            ev.target.type = "number"
-                        } : undefined}
-                        register={params.methods.register(params.endName, {
-                            onBlur: (ev) => {
-                                const newValue = parseFloat(ev.target.value)
-                                ev.target.type = "text"
-                                if (!isNaN(newValue)) {
-                                    if (params.methods.getValues(params.name)?.length) {
-                                        const startValue = parseFloat(params.methods.getValues(params.name).replace(/,/g, ''))
-                                        if (startValue > newValue) {
-                                            params.methods.setError(params.name, { message: 'From value must be less than To value' })
-                                        }
-                                    }
-                                    if (params.type === 'money') ev.target.value = Util.formatCurrency(newValue)
-                                } else {
-                                    ev.target.value = ""
-                                }
-                            },
-                        }) as any}
-                    />
-                </> : <DateTimePicker
-                    style={{ width: '100%', flex: params.className?.includes('row') ? 1 : undefined }}
-                    className="body-3"
-                    placeholder={params.placeholder ? params.placeholder : params.label ? `${t("choose")} ${params.label.toLowerCase()}` : ''}
-                    value={params.methods.watch(params.name)}
-                    endValue={params.methods.watch(params.endName)}
-                    disabled={params.disabled}
-                    pickerType={params.type}
-                    onChange={(date: any) => {
-                        params.methods.setValue(params.name, date?.start)
-                        params.methods.setValue(params.endName, date?.end)
-                    }}
-                />
-            }
-        </div>
-    </div>
 }
 
 interface GroupCheckboxFormFrops extends SimpleFormProps {

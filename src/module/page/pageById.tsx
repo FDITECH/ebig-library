@@ -801,7 +801,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                         break;
                     case ComponentType.datePicker:
-                    case ComponentType.dateTimePicker:
                         if (props.item.NameField?.length) {
                             const propsColDataType = props.cols?.find(e => e.Name === props.item.NameField)?.DataType
                             switch (propsColDataType) {
@@ -1100,7 +1099,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             return <FColorPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.numberPicker:
             return <FNumberPicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
-        case ComponentType.dateTimePicker:
         case ComponentType.datePicker:
             return <FDateTimePicker ref={htmlElementRef} {...typeProps} {...restOfActions} methods={props.methods} name={props.item.NameField} />
         case ComponentType.upload:

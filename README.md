@@ -684,7 +684,6 @@ import {
   ColorPickerForm,
   GroupCheckboxForm,
   GroupRadioButtonForm,
-  RangeForm,             // Slider
   CKEditorForm,
   EbigEditorForm,
   InputPasswordForm,

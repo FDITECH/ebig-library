@@ -26,8 +26,12 @@ interface ValueProps {
 
 interface DateTimePickerProps {
     id?: string,
-    value?: Date | number,
-    endValue?: Date | number,
+    value?: Date | number | {
+        start?: Date | number,
+        end?: Date | number,
+        /** type: 1: daily, 2: weekly, 3: monthly */
+        repeatData?: { type: 1 | 2 | 3, value: Array<string | number> }
+    },
     min?: Date,
     max?: Date,
     pickOnly?: boolean,
@@ -40,7 +44,6 @@ interface DateTimePickerProps {
     pickerType?: "auto" | "date" | "datetime" | "daterange" | "datetimerange",
     enableRepeat?: boolean,
     /** type: 1: daily, 2: weekly, 3: monthly */
-    repeatValue?: { type: 1 | 2 | 3, value: Array<"everyday" | "last" | number> },
     prefix?: ReactNode,
     suffix?: ReactNode,
     onChange?: (ev?: Date | ValueProps) => void,
@@ -82,17 +85,31 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
         switch (pickerType) {
             case "date":
             case "datetime":
-                setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
+                const initValue = typeof props.value === "number" ? new Date(props.value) : props.value instanceof Date ? props.value : undefined
+                setValue(initValue)
+                break;
+            case "daterange":
+            case "datetimerange":
+                if (!props.value || typeof props.value === "number" || props.value instanceof Date) {
+                    const tmp = typeof props.value === "number" ? new Date(props.value) : props.value
+                    setValue({ start: tmp, end: tmp })
+                } else {
+                    const initStart = typeof props.value.start === "number" ? new Date(props.value.start) : props.value.start
+                    const initEnd = typeof props.value.end === "number" ? new Date(props.value.end) : props.value.end
+                    setValue({ start: initStart, end: initEnd })
+                }
                 break;
             case "auto":
-                if (props.endValue) setValue({ start: typeof props.value === "number" ? new Date(props.value) : props.value, end: typeof props.endValue === "number" ? new Date(props.endValue) : props.endValue, repeatData: props.repeatValue })
-                else setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
-                break;
             default:
-                setValue((!props.value || !props.endValue) ? undefined : { start: typeof props.value === "number" ? new Date(props.value) : props.value, end: typeof props.endValue === "number" ? new Date(props.endValue) : props.endValue })
+                if (!props.value || typeof props.value === "number" || props.value instanceof Date) setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
+                else {
+                    const initStart = typeof props.value.start === "number" ? new Date(props.value.start) : props.value.start
+                    const initEnd = typeof props.value.end === "number" ? new Date(props.value.end) : props.value.end
+                    setValue({ start: initStart, end: initEnd, repeatData: props.enableRepeat ? props.value.repeatData : undefined })
+                }
                 break;
         }
-    }, [props.value, props.endValue, props.repeatValue, pickerType])
+    }, [props.value, props.enableRepeat, pickerType])
 
     const showCalendar = () => {
         if (isOpen) return null;
