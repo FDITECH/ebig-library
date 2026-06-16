@@ -304,7 +304,6 @@ export default function App() {
             style={{ width: '28rem' }}
           />
           <DateTimePicker
-            pickerType="datetime"
             value={dateVal}
             style={{ width: '28rem' }}
           />

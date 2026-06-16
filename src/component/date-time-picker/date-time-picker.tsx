@@ -387,7 +387,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                     label="Start date"
                     prefix={<Ebigicon src="outline/user-interface/e-add" size={14} />}
                     className='col12 label-3 size32 border'
-                    style={{ "--gutter": "1.2rem" } as any}
+                    style={{ "--gutter": "1.2rem", height: "3.2rem" } as any}
                     onClick={() => {
                         const tmp = methods.watch('date-end') ? new Date(methods.watch('date-end')?.getTime()) : new Date()
                         tmp.setHours(1, 0, 1)
@@ -453,7 +453,7 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                         label="Start time"
                         prefix={<Ebigicon src="outline/user-interface/e-add" size={14} />}
                         className='col12 label-3 size32 border'
-                        style={{ "--gutter": "1.2rem" } as any}
+                        style={{ "--gutter": "1.2rem", height: "3.2rem" } as any}
                         onClick={() => {
                             const tmp = endValue ? new Date(endValue?.getTime()) : new Date()
                             tmp.setHours(1, 0, 1)
@@ -681,7 +681,8 @@ const PopupDateTimePicker = ({ value, style, endValue, repeatValue, onApply, pic
                     <Button
                         label={t("apply")}
                         disabled={!appliable}
-                        className={`label-3 button-primary`}
+                        className={`label-3 button-primary size32`}
+                        style={{ height: "3.2rem" }}
                         onClick={() => {
                             let dateStartValue = methods.getValues("date-start")
                             switch (pickerType) {
