@@ -46,7 +46,7 @@ export async function loadCdnTranslations(cdnBase: string, languages: string[] =
     await Promise.allSettled(
         languages.map(async (lng) => {
             try {
-                const res = await fetch(`${cdnBase}/library/language/v0.0.99/${lng}.json`);
+                const res = await fetch(`${cdnBase}/library/language/v0.1.0/${lng}.json`);
                 if (res.ok) {
                     const data = await res.json();
                     i18n.addResourceBundle(lng, 'translation', data, true, true);

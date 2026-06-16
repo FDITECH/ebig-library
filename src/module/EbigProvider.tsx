@@ -381,7 +381,7 @@ export const useEbigContext = () => {
     return context;
 }
 
-const href = "https://cdn.ebig.co/library/style/v0.0.99/"
+const href = "https://cdn.ebig.co/library/style/v0.1.0/"
 const appendStyleSheet = () => {
     const tmp = document.createElement("div")
     tmp.innerHTML = `
