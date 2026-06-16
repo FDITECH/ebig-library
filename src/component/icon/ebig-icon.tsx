@@ -32,7 +32,7 @@ function delay(t: number) {
 const fetchIcons: { [key: string]: number } = {}
 export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link, className, style = {}, size, color, alt, onClick, tooltip, onMouseDown, onDoubleClick, simpleStyle, title }, ref) => {
     const divRef = useRef<HTMLDivElement>(null)
-    const timoutRef = useRef<NodeJS.Timeout>(null)
+    const timoutRef = useRef<any>(null)
     const [svgData, setSvgData] = useState<string>()
     const [showTooltip, setShowTooltip] = useState<boolean>(false)
     const cdnSrc = "https://cdn.ebig.co/icon-library/"

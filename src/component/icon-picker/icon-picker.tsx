@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, MouseEventHandler, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { CSSProperties, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { IconLibrary } from "./iconLibrary";
 import { Ebigicon } from "../icon/ebig-icon";
 

@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useMemo, useRef } from 'react';
+import React, { CSSProperties, useMemo, useRef } from 'react';
 import styles from './radio-button.module.css';
 
 interface RadioButtonProps {

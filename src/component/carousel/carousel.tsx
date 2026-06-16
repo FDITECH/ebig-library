@@ -1,11 +1,11 @@
 import React, { CSSProperties, ReactNode } from 'react';
-import AwesomeSlider from "react-awesome-slider";
-import "react-awesome-slider/dist/styles.css";
+import AwesomeSlider from "@rcaferati/react-awesome-slider";
+import '@rcaferati/react-awesome-slider/styles.css';
 import './carousel.css'
-import "react-awesome-slider/dist/custom-animations/scale-out-animation.css";
-import "react-awesome-slider/dist/custom-animations/fold-out-animation.css";
-import "react-awesome-slider/dist/custom-animations/cube-animation.css";
-import "react-awesome-slider/dist/custom-animations/fall-animation.css";
+import "@rcaferati/react-awesome-slider/dist/custom-animations/scale-out-animation.css";
+import "@rcaferati/react-awesome-slider/dist/custom-animations/fold-out-animation.css";
+import "@rcaferati/react-awesome-slider/dist/custom-animations/cube-animation.css";
+import "@rcaferati/react-awesome-slider/dist/custom-animations/fall-animation.css";
 import { Ebigicon } from '../icon/ebig-icon';
 
 interface CarouselProps {

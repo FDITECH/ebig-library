@@ -90,7 +90,8 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                 break;
             case "daterange":
             case "datetimerange":
-                if (!props.value || typeof props.value === "number" || props.value instanceof Date) {
+                if (!props.value) setValue(undefined)
+                else if (typeof props.value === "number" || props.value instanceof Date) {
                     const tmp = typeof props.value === "number" ? new Date(props.value) : props.value
                     setValue({ start: tmp, end: tmp })
                 } else {
@@ -101,7 +102,8 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                 break;
             case "auto":
             default:
-                if (!props.value || typeof props.value === "number" || props.value instanceof Date) setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
+                if (!props.value) setValue(undefined)
+                else if (typeof props.value === "number" || props.value instanceof Date) setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
                 else {
                     const initStart = typeof props.value.start === "number" ? new Date(props.value.start) : props.value.start
                     const initEnd = typeof props.value.end === "number" ? new Date(props.value.end) : props.value.end

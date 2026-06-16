@@ -1,7 +1,7 @@
 import { CSSProperties, forwardRef, ReactNode, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, getValidLink, globalTableCache, RenderLayerElement } from "../page/pageById"
-import { AccountController, BaseDA, DataController, OptionsItem, randomGID, SettingDataController, urlToFileType, Util } from "../../index"
+import { BaseDA, DataController, OptionsItem, randomGID, SettingDataController, urlToFileType, Util } from "../../index"
 import { ComponentType, FEDataType } from "../da"
 import { validateForm } from "./config"
 import { TableController } from "../../controller/setting"
