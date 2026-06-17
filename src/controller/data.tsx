@@ -214,13 +214,14 @@ export class AccountController {
     }
 
     async logout() {
-        const res = await BaseDA.get(ConfigData.url + 'data/logout')
+        const res = await BaseDA.get(ConfigData.url + 'data/logout', { withCredentials: true })
         return res
     }
 
     async getInfor() {
         const res = await BaseDA.get(ConfigData.url + 'data/getInfo', {
             headers: { module: this.module, pid: ConfigData.pid },
+            withCredentials: true
         })
         return res
     }
@@ -228,6 +229,7 @@ export class AccountController {
     async checkPassword(body: { phone?: string, password?: string, email?: string, username?: string }) {
         const res = await BaseDA.post(ConfigData.url + 'data/checkPassword', {
             headers: { module: this.module, pid: ConfigData.pid },
+            withCredentials: true,
             body: body
         })
         return res

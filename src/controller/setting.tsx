@@ -86,6 +86,7 @@ export class EbigController {
 export class IntegrationController {
     async sendEmail(props: { templateId?: string, templateParams: { to: string, [p: string]: any } | Array<{ to: string, [p: string]: any }> }) {
         const res = await BaseDA.post(ConfigData.url + 'intergration/sendEmail', {
+            withCredentials: true,
             body: props
         })
         return res
