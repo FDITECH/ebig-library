@@ -13,6 +13,8 @@ interface IconPickerProps {
         message: string;
         position?: "top" | "bottom" | "left" | "right";
     };
+    simpleStyle?: boolean;
+    title?: string
 }
 
 interface IconPickerRef {
@@ -70,9 +72,19 @@ export const IconPicker = forwardRef<IconPickerRef, IconPickerProps>((props, ref
     }), [isOpen, value])
 
     return <>
-        <Ebigicon ref={r => {
-            if (r?.element) divRef.current = r.element as any
-        }} src={(value ?? "outline/user-interface/setup-tools") as any} style={props.style} size={props.size} className={props.className} color={props.color} tooltip={props.tooltip} onClick={() => onOpenIconLib()} />
+        <Ebigicon
+            ref={r => {
+                if (r?.element) divRef.current = r.element as any
+            }} simpleStyle={props.simpleStyle}
+            src={(value ?? "outline/user-interface/setup-tools") as any}
+            style={props.style}
+            size={props.size}
+            className={props.className}
+            color={props.color}
+            tooltip={props.tooltip}
+            onClick={() => onOpenIconLib()}
+            title={props.title}
+        />
         {isOpen && <IconLibrary
             onSelect={(src) => {
                 setValue(`${src.type}/${src.category.replace(" ", "-")}/${src.name}`)

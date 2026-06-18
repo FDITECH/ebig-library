@@ -12,7 +12,7 @@ import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
 import { BaseDA, CkEditorUploadAdapter, ConfigData, imgFileTypes } from "../../controller/config"
 import { FCheckbox, FColorPicker, FDateTimePicker, FGroupCheckbox, FGroupRadioButton, FInputPassword, FNumberPicker, FRadioButton, FSelectDropdownForm, FSwitch, FTextArea, FTextField, FUploadMultipleFileType } from "./component-form"
-import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController, EbigEditor } from "../../index"
+import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController, EbigEditor, IconPicker } from "../../index"
 
 interface Props {
     methods?: UseFormReturn
@@ -1045,9 +1045,17 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             if (props.item.NameField) return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} percent={dataValue} />
             return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.icon:
-            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle />
-            else if (props.item.NameField) return null
-            else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
+            if (restOfActions.onChange) {
+                if (dataValue) return <IconPicker ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle onChange={(ev) => {
+                    if (props.item.NameField) props.methods!.setValue(props.item.NameField, ev)
+                    restOfActions.onChange?.(ev)
+                }} />
+                else return <IconPicker ref={htmlElementRef} {...typeProps} {...restOfActions} />
+            } else {
+                if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle />
+                else if (props.item.NameField) return null
+                else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
+            }
         case ComponentType.chart:
             return <ChartById {...typeProps} {...restOfActions} id={typeProps.chartId} ref={pageAllRefs[findId]} />
         case "form":
