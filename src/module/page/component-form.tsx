@@ -285,7 +285,7 @@ export const FSelectDropdownForm = forwardRef<any, FDropdownSelectProps>(({ meth
             return <SelectDropdown
                 ref={ref}
                 {...customprops}
-                value={props.multiple ? tmp?.split(",") : tmp}
+                value={props.multiple ? (Array.isArray(tmp) ? tmp : tmp?.split(",")) : tmp}
                 onChange={(ev: any) => {
                     const value = props.multiple ? ev : ev?.id;
                     field.onChange(value);
