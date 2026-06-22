@@ -3665,6 +3665,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/social-media/telegram" |
     "color/social-media/tiktok" |
     "color/social-media/twitch" |
+    "color/social-media/zalo" |
     "fill/social-media/discord" |
     "fill/social-media/devto" |
     "fill/social-media/google" |
@@ -8892,6 +8893,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/development/bullet-list-70" |
     "color/development/button-2" |
     "color/development/canvas" |
+    "color/development/css" |
     "color/development/cards" |
     "color/development/clone" |
     "color/development/code-editor" |
@@ -8999,6 +9001,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/development/invert-process" |
     "color/development/js-console" |
     "color/development/json-logo" |
+    "color/development/javascript" |
     "color/development/ladybug" |
     "color/development/layers-2" |
     "color/development/layers" |
