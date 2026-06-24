@@ -9636,6 +9636,8 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "outline/editing/quote" |
     "outline/editing/reduce-2" |
     "outline/editing/rename" |
+    "outline/editing/replace-all" |
+    "outline/editing/replace-letter" |
     "outline/editing/scribble" |
     "outline/editing/signature" |
     "outline/editing/signature-2" |
