@@ -750,6 +750,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case ComponentType.textArea:
                     case ComponentType.textField:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.defaultValue)) tmpProps.defaultValue = replaceThisVariables(tmpProps.defaultValue)
+                        else if (props.item.NameField?.length) {
+                            const propsColDataType = props.cols?.find(e => e.Name === props.item.NameField)?.DataType
+                            if (propsColDataType === FEDataType.PASSWORD) tmpProps.IsPassword = true
+                        }
                         break;
                     case ComponentType.ebigEditor:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.initValue)) tmpProps.initValue = replaceThisVariables(tmpProps.initValue)
@@ -769,9 +773,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                 case FEDataType.DATETIME:
                                     tmpProps.pickerType = "datetime"
                                     tmpProps.pickOnly = true
-                                    break;
-                                case FEDataType.PASSWORD:
-                                    tmpProps.IsPassword = true
                                     break;
                                 default:
                                     break;

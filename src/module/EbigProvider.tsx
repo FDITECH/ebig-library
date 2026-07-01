@@ -113,7 +113,7 @@ const appendDesignTokens = (list: Array<{ [p: string]: any }>) => {
 
 interface EbigContextProps {
     i18n: i18n,
-    theme: "light" | "dark",
+    theme: "light" | "dark" | "auto",
     setTheme: (theme: "light" | "dark") => void,
     projectData?: { [k: string]: any },
     userData?: { [k: string]: any },
@@ -135,7 +135,7 @@ export const EbigProvider = ({ loadResources = true, ...props }: Props) => {
     if (props.onInvalidToken) ConfigData.onInvalidToken = props.onInvalidToken
     const { i18n } = useTranslation()
     const [loadedResources, setLoadedResources] = useState(false)
-    const [theme, setTheme] = useState<"light" | "dark">("light")
+    const [theme, setTheme] = useState<"light" | "dark" | "auto">("light")
     const [userData, setUserData] = useState<{ [k: string]: any } | undefined>(undefined)
     const [projectData, setProjectData] = useState<ProjectItem | undefined>(undefined)
     const [globalData, setGlobalData] = useState<{ [k: string]: any } | undefined>(undefined)
