@@ -908,7 +908,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 } else if (typeof dataValue === "object") typeProps.html = dataValue?.["__html"] ?? ""
                 else typeProps.value = dataValue
             }
-            return <CustomText {...typeProps} {...restOfActions} />
+            return <CustomText ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.img:
             if (!typeProps.src?.length) typeProps.src = handleErrorImgSrc
             if (props.item.NameField && !!dataValue?.length) {
