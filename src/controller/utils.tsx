@@ -5,8 +5,6 @@ export class Util {
         return new Date(stringDate).getTime() / 1000;
     }
 
-    static dateDefault = new Date('01/01/2021').getTime();
-
     static stringToFile = (content: string, fileName: string, type = "text/plain") => {
         const blob = new Blob([content], { type });
         return new File([blob], fileName, { type });
@@ -26,15 +24,6 @@ export class Util {
             return 0;
         }
     };
-
-    static getStringDateNow() {
-        const currentDate = new Date();
-        const day = currentDate.getDate().toString().padStart(2, "0");
-        const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-        const year = currentDate.getFullYear();
-
-        return `${day} -${month} -${year} `;
-    }
 
     /** Currency formatter with symbol and locale support */
     static formatCurrency(amount: number | string, currency: 'VND' | 'USD' | 'JPY' | 'CNY' | 'INR' = 'VND', options?: { decimals?: number, symbol?: boolean }): string {
@@ -123,7 +112,6 @@ export class Util {
         return formatedDate;
     }
 
-
     /** date: dd/mm/yyyy | yyyy/mm/dd | dd/mm | mm/yyyy
         time: hh:mm:ss | hh:mm */
     static dateToString(x = new Date(), y = "dd/mm/yyyy") {
@@ -173,8 +161,6 @@ export class Util {
             return dateConvert;
         }
     }
-
-    dateDefault = new Date("2022-1-1");
 
     /**
      * action with localStorage

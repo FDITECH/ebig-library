@@ -1,12 +1,12 @@
-import { CSSProperties, forwardRef, HTMLAttributes, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
-import { useForm, UseFormReturn } from "react-hook-form"
+import { createContext, CSSProperties, forwardRef, HTMLAttributes, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { useForm, useFormContext, UseFormReturn } from "react-hook-form"
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
 import { handleErrorImgSrc, LayoutElement, regexResponsiveClassCol } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
 import { FormById } from "../form/formById"
-import { CardById } from "../card/cardById"
+import { CardById, useCardContext } from "../card/cardById"
 import { ChartById } from "../chart/chartById"
-import { ViewById } from "../view/viewById"
+import { useViewContext, ViewById } from "../view/viewById"
 import { SimpleButton } from "../../component/button/button"
 import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
@@ -121,7 +121,7 @@ export const RenderLayerElement = (props: RenderLayerElementProps) => {
 export const getValidLink = (link: string) => {
     if (!link) return ""
     if (link.startsWith("http")) return link
-    if (ConfigData.regexGuid.test(link)) return ConfigData.imgUrlId + link
+    if (ConfigData.regexGuid.test(link) || !link.startsWith("/")) return ConfigData.imgUrlId + link
     else return ConfigData.fileUrl + link
 }
 
@@ -231,6 +231,10 @@ interface ElementUIProps extends RenderLayerElementProps {
 
 const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables, defferWatch, showHTMLPopup, ...props }: ElementUIProps) => {
     const ebigContextData = useEbigContext()
+    const pageContextData = usePageContext()
+    const formContextData = useFormContext()
+    const viewContextData = useViewContext()
+    const cardContextData = useCardContext()
     const location = useLocation()
     const navigate = useNavigate()
     const params = useParams()
@@ -261,6 +265,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return _props
     }, [props.item, props.propsData, props.indexItem, watchForCustomProps, JSON.stringify(props.style), props.className])
     const customProps = useDeferredValue(memeCustomProps)
+    const funcParamNames = ["Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext", "usePageContext", "useFormContext", "useViewContext", "useCardContext"]
+    const funcParams = [Util, AccountController, DataController, randomGID, ToastMessage, BaseDA.uploadFiles, BaseDA.getFilesInfor, BaseDA.post, BaseDA.get, showDialog, showHTMLPopup, ComponentStatus, props.methods, () => params, () => navigate, location, () => ebigContextData, () => pageContextData, () => formContextData, () => viewContextData, () => cardContextData]
     const customActions = useMemo(() => {
         const _propsActions = props.item.Setting?.action
         if (_propsActions?.length && Array.isArray(_propsActions)) {
@@ -303,7 +309,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     onSubmit: async () => {
                                         if (actItem.Caculate) {
                                             await (new AsyncFunction(
-                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
+                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "event", ...funcParamNames,
                                                 `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                             ))(
                                                 props.indexItem ?? props.methods?.getValues(),
@@ -311,23 +317,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                                 props.tbName,
                                                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                                 props.item.NameField,
-                                                Util,
-                                                AccountController,
-                                                DataController,
-                                                randomGID,
-                                                ToastMessage,
-                                                BaseDA.uploadFiles,
-                                                BaseDA.getFilesInfor,
-                                                BaseDA.post,
-                                                BaseDA.get,
-                                                showDialog,
-                                                showHTMLPopup,
-                                                ComponentStatus,
                                                 event,
-                                                props.methods,
-                                                () => params,
-                                                () => navigate,
-                                                () => ebigContextData
+                                                ...funcParams
                                             )
                                         }
                                     }
@@ -336,7 +327,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             case ActionType.custom:
                                 if (actItem.Caculate) {
                                     const asyncFuncResponse = await (new AsyncFunction(
-                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "event", ...funcParamNames,
                                         `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                     ))(
                                         props.indexItem ?? props.methods?.getValues(),
@@ -344,24 +335,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                         props.tbName,
                                         props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                         props.item.NameField,
-                                        Util,
-                                        AccountController,
-                                        DataController,
-                                        randomGID,
-                                        ToastMessage,
-                                        BaseDA.uploadFiles,
-                                        BaseDA.getFilesInfor,
-                                        BaseDA.post,
-                                        BaseDA.get,
-                                        showDialog,
-                                        showHTMLPopup,
-                                        ComponentStatus,
                                         event,
-                                        props.methods,
-                                        () => params,
-                                        () => navigate,
-                                        location,
-                                        () => ebigContextData
+                                        ...funcParams,
                                     )
                                     if (asyncFuncResponse === false) return;
                                 }
@@ -539,31 +514,15 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
-                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                "entityData", "entityIndex", "tableName", "tableTitle", "event", ...funcParamNames,
                 `${customActions.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
                 props.index,
                 props.tbName,
                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
-                Util,
-                AccountController,
-                DataController,
-                randomGID,
-                ToastMessage,
-                BaseDA.uploadFiles,
-                BaseDA.getFilesInfor,
-                BaseDA.post,
-                BaseDA.get,
-                showDialog,
-                showHTMLPopup,
-                ComponentStatus,
                 event,
-                props.methods,
-                () => params,
-                () => navigate,
-                location,
-                () => ebigContextData
+                ...funcParams
             )
             return asyncFuncResponse
         }
@@ -869,30 +828,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.card:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                            "entityData", "entityIndex", "tableName", "tableTitle", ...funcParamNames,
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
                             props.index,
                             props.tbName,
                             props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
-                            Util,
-                            AccountController,
-                            DataController,
-                            randomGID,
-                            ToastMessage,
-                            BaseDA.uploadFiles,
-                            BaseDA.getFilesInfor,
-                            BaseDA.post,
-                            BaseDA.get,
-                            showDialog,
-                            showHTMLPopup,
-                            ComponentStatus,
-                            props.methods,
-                            () => params,
-                            () => navigate,
-                            location,
-                            () => ebigContextData
+                            ...funcParams
                         )
                         return asyncFuncResponse
                     }
@@ -1174,7 +1117,7 @@ const FileName = ({ file, index, ...props }: { type?: "div" | "p" | "span" | "h1
     </>
 }
 
-const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6", html?: string, maxLine?: number, className?: string, style?: CSSProperties, value?: string, [k: string]: any }>(({ type = "div", ...props }, ref) => {
+const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "header" | "section" | "aside", html?: string, maxLine?: number, className?: string, style?: CSSProperties, value?: string, [k: string]: any }>(({ type = "div", ...props }, ref) => {
     const [convertContentHtml, setConvertContentHtml] = useState<string>("")
 
     useEffect(() => {
@@ -1230,6 +1173,15 @@ const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" |
             case "h6":
                 if (props.html) return <h6 ref={ref} {...customProps} />
                 else return <h6 ref={ref} {...customProps}>{props.value}</h6>
+            case "header":
+                if (props.html) return <header ref={ref} {...customProps} />
+                else return <header ref={ref} {...customProps}>{props.value}</header>
+            case "section":
+                if (props.html) return <section ref={ref} {...customProps} />
+                else return <section ref={ref} {...customProps}>{props.value}</section>
+            case "aside":
+                if (props.html) return <aside ref={ref} {...customProps} />
+                else return <aside ref={ref} {...customProps}>{props.value}</aside>
             default:
                 const { onMouseOver, ...tmpProps } = customProps
                 return <Text ref={ref} {...tmpProps} onHover={onMouseOver}>{props.value}</Text>
@@ -1259,6 +1211,9 @@ interface PageByIdProps extends Props {
     children?: ReactNode;
 }
 
+interface PagePropsContext { }
+
+const PageContext = createContext<PagePropsContext | undefined>(undefined)
 export const globalTableCache = new Map()
 const cacheLayout = new Map()
 export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
@@ -1344,23 +1299,31 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
         return childrenData
     }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
-    if (pageItem) {
-        if (props.onlyLayout) {
-            return !!layout.length && <RenderPageView
-                key={pageItem.LayoutId}
-                layers={layout}
-                {...props}
-                childrenData={propsChildren}
-                methods={props.methods ?? methods}
-            />
-        } else if (props.onlyBody) {
-            return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
-        } else {
-            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
-            </RenderPageView> : null
+    return <PageContext.Provider value={{}}>
+        {pageItem &&
+            (props.onlyLayout ?
+                (!!layout.length && <RenderPageView
+                    key={pageItem.LayoutId}
+                    layers={layout}
+                    {...props}
+                    childrenData={propsChildren}
+                    methods={props.methods ?? methods}
+                />)
+                : props.onlyBody ?
+                    (!loading && <RenderPageView
+                        key={pageItem.Id}
+                        layers={layers}
+                        {...props}
+                        childrenData={childrenData}
+                        methods={props.methods ?? methods}
+                    />)
+                    : (pageItem && !!layout.length &&
+                        <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
+                            {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
+                        </RenderPageView>)
+            )
         }
-    } else return null
+    </PageContext.Provider>
 }
 
 interface PageByUrlProps extends Props {
@@ -1474,21 +1437,34 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
         return childrenData
     }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
-    if (pageItem) {
-        if (props.onlyLayout) {
-            return !!layout.length && <RenderPageView
-                key={pageItem.LayoutId}
-                layers={layout}
-                {...props}
-                childrenData={propsChildren}
-                methods={props.methods ?? methods}
-            />
-        } else if (props.onlyBody) {
-            return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
-        } else {
-            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
-            </RenderPageView> : null
+    return <PageContext.Provider value={{}}>
+        {pageItem &&
+            (props.onlyLayout ?
+                (!!layout.length && <RenderPageView
+                    key={pageItem.LayoutId}
+                    layers={layout}
+                    {...props}
+                    childrenData={propsChildren}
+                    methods={props.methods ?? methods}
+                />)
+                : props.onlyBody ?
+                    (!loading && <RenderPageView
+                        key={pageItem.Id}
+                        layers={layers}
+                        {...props}
+                        childrenData={childrenData}
+                        methods={props.methods ?? methods}
+                    />)
+                    : (pageItem && !!layout.length &&
+                        <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
+                            {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
+                        </RenderPageView>)
+            )
         }
-    } else return null
+    </PageContext.Provider>
+}
+
+const usePageContext = () => {
+    const context = useContext(PageContext)
+    return context
 }

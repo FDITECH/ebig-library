@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode, useDeferredValue, useEffect, useMemo, useState } from "react"
+import { createContext, CSSProperties, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { DataController, SettingDataController } from "../../controller/data"
@@ -24,6 +24,14 @@ interface Props {
     onLoaded?: (ev: { data: { [p: string]: any } }) => void,
 }
 
+interface ViewContextProps {
+    tbName: string,
+    data: { [p: string]: any } | undefined,
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>
+}
+
+const ViewContext = createContext<ViewContextProps | undefined>(undefined)
 const globalViewCache = new Map()
 export const ViewById = (props: Props) => {
     const methods = useForm({ shouldFocusError: false })
@@ -167,14 +175,16 @@ export const ViewById = (props: Props) => {
         }
     }, [indexItem, layers, keyNames.length])
 
-    return viewItem ? <RenderView
-        key={viewItem.Id}
-        {...props}
-        layers={layers}
-        indexItem={indexItem}
-        extendData={extendData}
-        tbName={viewItem.TbName}
-    /> : null
+    return <ViewContext.Provider value={{ tbName: viewItem?.TbName, data: indexItem, getData: getInitData, setData: setIndexItem }}>
+        {viewItem ? <RenderView
+            key={viewItem.Id}
+            {...props}
+            layers={layers}
+            indexItem={indexItem}
+            extendData={extendData}
+            tbName={viewItem.TbName}
+        /> : null}
+    </ViewContext.Provider>
 }
 
 interface RenderViewProps extends Props {
@@ -226,4 +236,9 @@ const RenderView = (props: RenderViewProps) => {
             tbName={props.tbName}
         />
     })
+}
+
+export const useViewContext = () => {
+    const context = useContext(ViewContext);
+    return context;
 }

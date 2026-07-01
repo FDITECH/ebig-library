@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useDeferredValue, useEffect, useImperativeHandle, useMemo, useState } from "react"
+import { createContext, CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useState } from "react"
 import { DataController, SettingDataController } from "../../controller/data"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { TableController } from "../../controller/setting"
@@ -53,6 +53,14 @@ interface CardRef {
     relativeData?: { [p: string]: Array<{ [p: string]: any }> }
 }
 
+interface CardContextProps {
+    tbName: string,
+    data: { data: Array<{ [p: string]: any }>, totalCount?: number },
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ data: Array<{ [p: string]: any }>, totalCount?: number }>>
+}
+
+const CardContext = createContext<CardContextProps | undefined>(undefined)
 const globalCardCache = new Map()
 export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLink, emptyMessage, ...props }, ref) => {
     const methods = useForm({ shouldFocusError: false })
@@ -134,7 +142,6 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
             methods.setValue("_cols", usingCols)
         }
     }
-
 
     const getData = async (page?: number) => {
         const dataController = new DataController(cardItem!.TbName)
@@ -234,22 +241,24 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
         relativeData: getRelativeData
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
-    return cardItem ? data.totalCount === 0 ?
-        (emptyElement ?? (emptyLink && <EmptyPage
-            imgUrl={emptyLink}
-            imgStyle={{ maxWidth: "16.4rem" }}
-            style={props.style}
-            title={emptyMessage ?? t("noDataFound")}
-        />)) : <StateCard
-            key={cardItem.Id}
-            {...props}
-            methods={stateMethods}
-            data={data.data}
-            cardItem={cardItem}
-            extendData={finalExtendData}
-            layers={layers}
-        />
-        : null
+    return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData }}>
+        {cardItem ? data.totalCount === 0 ?
+            (emptyElement ?? (emptyLink && <EmptyPage
+                imgUrl={emptyLink}
+                imgStyle={{ maxWidth: "16.4rem" }}
+                style={props.style}
+                title={emptyMessage ?? t("noDataFound")}
+            />)) : <StateCard
+                key={cardItem.Id}
+                {...props}
+                methods={stateMethods}
+                data={data.data}
+                cardItem={cardItem}
+                extendData={finalExtendData}
+                layers={layers}
+            />
+            : null}
+    </CardContext.Provider>
 })
 
 const StateCard = ({ data, cardItem, layers, extendData, methods, ...props }: { methods: UseFormReturn, data: { [k: string]: any }[], cardItem: { [k: string]: any }, layers: { [k: string]: any }[], extendData: { [k: string]: any }, }) => {
@@ -315,4 +324,9 @@ const RenderCard = (props: RenderCardProps) => {
             tbName={props.cardItem.TbName}
         />
     })
+}
+
+export const useCardContext = () => {
+    const context = useContext(CardContext);
+    return context;
 }
