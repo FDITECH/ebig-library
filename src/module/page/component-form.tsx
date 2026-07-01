@@ -45,7 +45,12 @@ export const FInputPassword = forwardRef<any, FTextFieldProps>((props, ref) => {
         autoComplete="off"
         type={isShowPass ? "text" : "password"}
         suffix={<>
-            <Ebigicon src={`outline/user-interface/${isShowPass ? "view" : "hide"}`} size={"inherit"} onClick={() => setIsShowPass(!isShowPass)} />
+            <Ebigicon
+                src={`outline/user-interface/${isShowPass ? "hide" : "view"}`}
+                size={"inherit"}
+                title={(isShowPass ? t("hide") : t("view")) + " " + t("password").toLowerCase()}
+                onClick={() => setIsShowPass(!isShowPass)}
+            />
             {props.suffix}
         </>}
         register={props.name?.length ? (props.methods!.register(props.name, { required: props.required }) as any) : undefined}

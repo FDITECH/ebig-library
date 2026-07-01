@@ -74,6 +74,8 @@
     "or": "Or",
     "username": "Username",
     "password": "Password",
+    "view": "View",
+    "hide": "Hide",
     "dontHaveAccount": "Don't have an account?",
     "forgotPassword": "Forgot your password?",
     "login": "Log in",
