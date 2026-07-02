@@ -1212,8 +1212,11 @@ interface PageByIdProps extends Props {
     children?: ReactNode;
 }
 
-interface PagePropsContext { }
+interface PagePropsContext {
+    methods: UseFormReturn,
+}
 
+const LayoutContext = createContext<PagePropsContext | undefined>(undefined)
 const PageContext = createContext<PagePropsContext | undefined>(undefined)
 export const globalTableCache = new Map()
 const cacheLayout = new Map()
@@ -1300,31 +1303,36 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
         return childrenData
     }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
-    return <PageContext.Provider value={{}}>
-        {pageItem &&
-            (props.onlyLayout ?
-                (!!layout.length && <RenderPageView
+    return pageItem &&
+        (props.onlyLayout ?
+            (!!layout.length && <LayoutContext.Provider value={{ methods }}>
+                <RenderPageView
                     key={pageItem.LayoutId}
                     layers={layout}
                     {...props}
                     childrenData={propsChildren}
                     methods={props.methods ?? methods}
-                />)
-                : props.onlyBody ?
-                    (!loading && <RenderPageView
+                />
+            </LayoutContext.Provider>)
+            : props.onlyBody ?
+                (!loading && <PageContext.Provider value={{ methods }}>
+                    <RenderPageView
                         key={pageItem.Id}
                         layers={layers}
                         {...props}
                         childrenData={childrenData}
                         methods={props.methods ?? methods}
-                    />)
-                    : (pageItem && !!layout.length &&
+                    />
+                </PageContext.Provider>)
+                : (pageItem && !!layout.length &&
+                    <LayoutContext.Provider value={{ methods }}>
                         <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                            {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
-                        </RenderPageView>)
-            )
-        }
-    </PageContext.Provider>
+                            {!loading && <PageContext.Provider value={{ methods }}>
+                                <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
+                            </PageContext.Provider>}
+                        </RenderPageView>
+                    </LayoutContext.Provider>)
+        )
 }
 
 interface PageByUrlProps extends Props {
@@ -1438,31 +1446,36 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
         return childrenData
     }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
-    return <PageContext.Provider value={{}}>
-        {pageItem &&
-            (props.onlyLayout ?
-                (!!layout.length && <RenderPageView
+    return pageItem &&
+        (props.onlyLayout ?
+            (!!layout.length && <LayoutContext.Provider value={{ methods }}>
+                <RenderPageView
                     key={pageItem.LayoutId}
                     layers={layout}
                     {...props}
                     childrenData={propsChildren}
                     methods={props.methods ?? methods}
-                />)
-                : props.onlyBody ?
-                    (!loading && <RenderPageView
+                />
+            </LayoutContext.Provider>)
+            : props.onlyBody ?
+                (!loading && <PageContext.Provider value={{ methods }}>
+                    <RenderPageView
                         key={pageItem.Id}
                         layers={layers}
                         {...props}
                         childrenData={childrenData}
                         methods={props.methods ?? methods}
-                    />)
-                    : (pageItem && !!layout.length &&
+                    />
+                </PageContext.Provider>)
+                : (pageItem && !!layout.length &&
+                    <LayoutContext.Provider value={{ methods }}>
                         <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                            {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
-                        </RenderPageView>)
-            )
-        }
-    </PageContext.Provider>
+                            {!loading && <PageContext.Provider value={{ methods }}>
+                                <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
+                            </PageContext.Provider>}
+                        </RenderPageView>
+                    </LayoutContext.Provider>)
+        )
 }
 
 const usePageContext = () => {

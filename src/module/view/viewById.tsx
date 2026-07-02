@@ -1,5 +1,5 @@
 import { createContext, CSSProperties, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { DataController, SettingDataController } from "../../controller/data"
 import { TableController } from "../../controller/setting"
@@ -28,7 +28,8 @@ interface ViewContextProps {
     tbName: string,
     data: { [p: string]: any } | undefined,
     getData: () => Promise<void>,
-    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
+    methods: UseFormReturn
 }
 
 const ViewContext = createContext<ViewContextProps | undefined>(undefined)
@@ -175,23 +176,25 @@ export const ViewById = (props: Props) => {
         }
     }, [indexItem, layers, keyNames.length])
 
-    return <ViewContext.Provider value={{ tbName: viewItem?.TbName, data: indexItem, getData: getInitData, setData: setIndexItem }}>
-        {viewItem ? <RenderView
-            key={viewItem.Id}
-            {...props}
-            layers={layers}
-            indexItem={indexItem}
-            extendData={extendData}
-            tbName={viewItem.TbName}
-        /> : null}
-    </ViewContext.Provider>
+    return viewItem ? <RenderView
+        key={viewItem.Id}
+        {...props}
+        layers={layers}
+        indexItem={indexItem}
+        extendData={extendData}
+        tbName={viewItem.TbName}
+        getData={getInitData}
+        setData={setIndexItem}
+    /> : null
 }
 
 interface RenderViewProps extends Props {
     layers: Array<{ [p: string]: any }>,
     indexItem?: { [p: string]: any },
     extendData: { [p: string]: any },
-    tbName?: string
+    tbName?: string,
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
 }
 
 const RenderView = (props: RenderViewProps) => {
@@ -217,25 +220,27 @@ const RenderView = (props: RenderViewProps) => {
         if (props.onChange) props.onChange({ data: props.indexItem, state: finalStateData })
     }, [finalStateData, props.indexItem])
 
-    return props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
-        return <RenderLayerElement
-            key={e.Id}
-            item={e}
-            list={props.layers}
-            style={props.style}
-            className={props.className}
-            type={"view"}
-            cols={cols}
-            rels={rels}
-            methods={methods}
-            indexItem={props.indexItem}
-            propsData={props.propsData}
-            childrenData={props.childrenData}
-            itemData={props.itemData}
-            options={extendData}
-            tbName={props.tbName}
-        />
-    })
+    return <ViewContext.Provider value={{ tbName: props.tbName!, data: props.indexItem, getData: props.getData, setData: props.setData, methods }}>
+        {props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
+            return <RenderLayerElement
+                key={e.Id}
+                item={e}
+                list={props.layers}
+                style={props.style}
+                className={props.className}
+                type={"view"}
+                cols={cols}
+                rels={rels}
+                methods={methods}
+                indexItem={props.indexItem}
+                propsData={props.propsData}
+                childrenData={props.childrenData}
+                itemData={props.itemData}
+                options={extendData}
+                tbName={props.tbName}
+            />
+        })}
+    </ViewContext.Provider>
 }
 
 export const useViewContext = () => {

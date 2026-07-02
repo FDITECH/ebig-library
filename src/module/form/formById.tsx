@@ -38,7 +38,8 @@ interface FormContextProps {
     initialData: { [p: string]: any } | undefined,
     data: { [p: string]: any } | undefined,
     getData: () => Promise<void>,
-    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
+    methods: UseFormReturn<FieldValues, any, FieldValues>
 }
 
 const FormContext = createContext<FormContextProps | undefined>(undefined)
@@ -363,7 +364,7 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const finalOptions = useMemo(() => methodOptions.watch(), [JSON.stringify(methodOptions.watch())])
     const opts = useDeferredValue(finalOptions)
 
-    return <FormContext.Provider value={{ tbName: formItem?.TbName, data: finalFormValues, getData: getInitData, setData: methods.reset, initialData: props.data }}>
+    return <FormContext.Provider value={{ tbName: formItem?.TbName, data: finalFormValues, getData: getInitData, setData: methods.reset, initialData: props.data, methods }}>
         {formItem && !!cols.length && finalFormValues && layers.filter((e: any) => !e.ParentId).map((e: any) => {
             return <RenderLayerElement
                 key={e.Id}

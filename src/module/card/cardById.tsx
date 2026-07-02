@@ -55,6 +55,7 @@ interface CardRef {
 
 interface CardContextProps {
     tbName: string,
+    methods: UseFormReturn,
     data: { data: Array<{ [p: string]: any }>, totalCount?: number },
     getData: () => Promise<void>,
     setData: React.Dispatch<React.SetStateAction<{ data: Array<{ [p: string]: any }>, totalCount?: number }>>
@@ -241,7 +242,7 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
         relativeData: getRelativeData
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
-    return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData }}>
+    return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData, methods: stateMethods }}>
         {cardItem ? data.totalCount === 0 ?
             (emptyElement ?? (emptyLink && <EmptyPage
                 imgUrl={emptyLink}
