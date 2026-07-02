@@ -40,10 +40,10 @@ export { BaseDA, ConfigData, imgFileTypes, CkEditorUploadAdapter } from './contr
 export * from './controller/utils'
 export * from './controller/data'
 export { TableController, IntegrationController, EbigController } from './controller/setting'
-export { CardById } from './module/card/cardById'
+export { CardById, useCardContext } from './module/card/cardById'
 export { ChartById, ChartByType } from './module/chart/chartById'
-export { FormById } from './module/form/formById'
-export { ViewById } from './module/view/viewById'
+export { FormById, useFormContext } from './module/form/formById'
+export { ViewById, useViewContext } from './module/view/viewById'
 export { PageById, PageByUrl } from './module/page/pageById'
 
 export { useTranslation } from './language/i18n';

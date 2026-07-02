@@ -1,4 +1,4 @@
-import { createContext, CSSProperties, forwardRef, ReactNode, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { createContext, CSSProperties, forwardRef, ReactNode, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, getValidLink, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { BaseDA, DataController, OptionsItem, randomGID, SettingDataController, urlToFileType, Util } from "../../index"
@@ -387,3 +387,8 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
         })}
     </FormContext.Provider>
 })
+
+export const useFormContext = () => {
+    const context = useContext(FormContext);
+    return context;
+}

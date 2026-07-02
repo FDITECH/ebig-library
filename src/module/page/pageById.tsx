@@ -1,9 +1,9 @@
 import { createContext, CSSProperties, forwardRef, HTMLAttributes, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
-import { useForm, useFormContext, UseFormReturn } from "react-hook-form"
+import { useForm, UseFormReturn } from "react-hook-form"
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
 import { handleErrorImgSrc, LayoutElement, regexResponsiveClassCol } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
-import { FormById } from "../form/formById"
+import { FormById, useFormContext } from "../form/formById"
 import { CardById, useCardContext } from "../card/cardById"
 import { ChartById } from "../chart/chartById"
 import { useViewContext, ViewById } from "../view/viewById"
@@ -231,6 +231,7 @@ interface ElementUIProps extends RenderLayerElementProps {
 
 const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables, defferWatch, showHTMLPopup, ...props }: ElementUIProps) => {
     const ebigContextData = useEbigContext()
+    const layoutContextData = useLayoutContext()
     const pageContextData = usePageContext()
     const formContextData = useFormContext()
     const viewContextData = useViewContext()
@@ -265,8 +266,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return _props
     }, [props.item, props.propsData, props.indexItem, watchForCustomProps, JSON.stringify(props.style), props.className])
     const customProps = useDeferredValue(memeCustomProps)
-    const funcParamNames = ["Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext", "usePageContext", "useFormContext", "useViewContext", "useCardContext"]
-    const funcParams = [Util, AccountController, DataController, randomGID, ToastMessage, BaseDA.uploadFiles, BaseDA.getFilesInfor, BaseDA.post, BaseDA.get, showDialog, showHTMLPopup, ComponentStatus, props.methods, () => params, () => navigate, location, () => ebigContextData, () => pageContextData, () => formContextData, () => viewContextData, () => cardContextData]
+    const funcParamNames = ["Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext", "useLayoutContext", "usePageContext", "useFormContext", "useViewContext", "useCardContext"]
+    const funcParams = [Util, AccountController, DataController, randomGID, ToastMessage, BaseDA.uploadFiles, BaseDA.getFilesInfor, BaseDA.post, BaseDA.get, showDialog, showHTMLPopup, ComponentStatus, props.methods, () => params, () => navigate, location, () => ebigContextData, () => layoutContextData, () => pageContextData, () => formContextData, () => viewContextData, () => cardContextData]
     const customActions = useMemo(() => {
         const _propsActions = props.item.Setting?.action
         if (_propsActions?.length && Array.isArray(_propsActions)) {
@@ -1480,5 +1481,10 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
 
 const usePageContext = () => {
     const context = useContext(PageContext)
+    return context
+}
+
+const useLayoutContext = () => {
+    const context = useContext(LayoutContext)
     return context
 }
