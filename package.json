@@ -2,7 +2,7 @@
   "name": "ebig-library",
   "private": false,
   "description": "A modern UI component library for React by eBig",
-  "version": "0.1.11",
+  "version": "0.1.13",
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
@@ -27,7 +27,7 @@
     "react-hook-form": "^7.71.2",
     "react-i18next": "^16.5.4",
     "react-paginate": "^8.3.0",
-    "react-router-dom": "^7.13.1",
+    "react-router-dom": "^7.18.1",
     "react-toastify": "^11.0.5",
     "validate.js": "^0.13.1",
     "vite-tsconfig-paths": "^6.1.1"

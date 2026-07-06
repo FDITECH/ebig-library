@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react"
-import { BrowserRouter, Routes, useLocation, useNavigate, useParams } from "react-router-dom"
+import { BrowserRouter, Routes, useLocation, useNavigate, useParams } from "react-router"
 import { BaseDA, ConfigData, refreshTokenHeaders } from "../controller/config"
 import { TableController, EbigController } from "../controller/setting"
 import { Dialog, showDialog } from "../component/dialog/dialog"

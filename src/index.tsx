@@ -39,7 +39,7 @@ export { OfflineBanner, useOnlineStatus } from './component/offline-banner/offli
 export { BaseDA, ConfigData, imgFileTypes, CkEditorUploadAdapter } from './controller/config'
 export * from './controller/utils'
 export * from './controller/data'
-export { TableController, IntegrationController, EbigController } from './controller/setting'
+export { TableController, EbigController } from './controller/setting'
 export { CardById, useCardContext } from './module/card/cardById'
 export { ChartById, ChartByType } from './module/chart/chartById'
 export { FormById, useFormContext } from './module/form/formById'
@@ -47,7 +47,7 @@ export { ViewById, useViewContext } from './module/view/viewById'
 export { PageById, PageByUrl } from './module/page/pageById'
 
 export { useTranslation } from './language/i18n';
-export { Route, useNavigate, useParams, useLocation, useSearchParams, Navigate, NavLink, Outlet } from 'react-router-dom'
+export { Route, useNavigate, useParams, useLocation, useSearchParams, Navigate, NavLink, Outlet } from 'react-router'
 
 import { EbigProvider, useEbigContext, initializeProject } from './module/EbigProvider'
 export { useEbigContext, initializeProject }

@@ -55,7 +55,6 @@ A modern, lightweight React + TypeScript UI component library by **eBig** — 35
   - [AccountController](#accountcontroller)
   - [EbigController](#ebigcontroller)
   - [TableController](#tablecontroller)
-  - [IntegrationController](#integrationcontroller)
   - [BaseDA](#baseda)
 - [Backend-Driven Modules](#backend-driven-modules)
 - [Design Tokens & Theming](#design-tokens--theming)
@@ -840,18 +839,6 @@ const tables = await ctrl.getAll()
 await ctrl.add([{ Name: 'Orders' }])
 await ctrl.edit([{ Id: 'xxx', Name: 'OrdersV2' }])
 await ctrl.delete(['xxx'])
-```
-
-### IntegrationController
-
-```tsx
-import { IntegrationController } from 'ebig-library'
-
-const integration = new IntegrationController()
-await integration.sendEmail({
-  templateId: 'welcome-email',
-  templateParams: { to: 'user@example.com', name: 'Alice' }
-})
 ```
 
 ### BaseDA

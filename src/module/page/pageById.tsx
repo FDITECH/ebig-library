@@ -1,6 +1,6 @@
 import { createContext, CSSProperties, forwardRef, HTMLAttributes, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
-import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
+import { NavLink, useLocation, useNavigate, useParams } from "react-router"
 import { handleErrorImgSrc, LayoutElement, regexResponsiveClassCol } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
 import { FormById, useFormContext } from "../form/formById"
