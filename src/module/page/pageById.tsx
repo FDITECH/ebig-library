@@ -709,6 +709,11 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             case ComponentType.text:
                 if (regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
                 break;
+            case ComponentType.progressCircle:
+            case ComponentType.progressBar:
+                if (regexGetVariables.test(tmpProps.percent)) tmpProps.percent = replaceThisVariables(tmpProps.percent)
+                if (regexGetVariables.test(tmpProps.title)) tmpProps.title = replaceThisVariables(tmpProps.title)
+                break;
             case ComponentType.img:
             case ComponentType.video:
             case ComponentType.audio:

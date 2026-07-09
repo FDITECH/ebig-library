@@ -26,7 +26,6 @@ export { Button, SimpleButton } from './component/button/button'
 export { Tag } from './component/tag/tag'
 export { Ebigicon, showTooltipElement } from './component/icon/ebig-icon'
 export { NumberPicker } from './component/number-picker/number-picker'
-export { InputOtp } from './component/input-otp/input-otp'
 export { CustomCkEditor5 } from './component/ck-editor/ckeditor'
 export { Slider } from './component/slider/slider'
 export { ColorPicker } from './component/color-picker/color-picker'
@@ -45,7 +44,6 @@ export { FormById, useFormContext } from './module/form/formById'
 export { ViewById, useViewContext } from './module/view/viewById'
 export { PageById, PageByUrl } from './module/page/pageById'
 
-export { useTranslation } from './language/i18n';
 export { Route, useNavigate, useParams, useLocation, useSearchParams, Navigate, NavLink, Outlet } from 'react-router'
 
 import { EbigProvider, useEbigContext, initializeProject } from './module/EbigProvider'

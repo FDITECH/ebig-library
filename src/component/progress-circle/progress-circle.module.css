@@ -1,0 +1,18 @@
+.progress-circle {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--neutral-text-title-color, light-dark(#18181B, #F4F4F5))
+}
+
+.progress-circle>text {
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    fill: currentColor;
+    text-anchor: middle;
+    font-family: inherit;
+    letter-spacing: inherit;
+    text-decoration: inherit;
+    font-style: inherit;
+    line-height: inherit;
+}
