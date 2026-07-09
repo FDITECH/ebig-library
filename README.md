@@ -38,7 +38,6 @@ A modern, lightweight React + TypeScript UI component library by **eBig** — 35
   - [ProgressBar](#progressbar)
   - [ProgressCircle](#progresscircle)
   - [Calendar](#calendar)
-  - [Carousel](#carousel)
   - [VideoPlayer / AudioPlayer / IframePlayer](#videoplayer--audioplayer--iframeplayer)
   - [ImportFile / UploadFiles](#importfile--uploadfiles)
   - [CustomCkEditor5](#customckeditor5)
@@ -516,19 +515,6 @@ import { ProgressCircle } from 'ebig-library'
 import { Calendar } from 'ebig-library'
 
 <Calendar value={date} onChange={(val) => setDate(val)} />
-```
-
----
-
-### Carousel
-
-```tsx
-import { Carousel } from 'ebig-library'
-
-<Carousel>
-  <img src="/slide1.jpg" alt="Slide 1" />
-  <img src="/slide2.jpg" alt="Slide 2" />
-</Carousel>
 ```
 
 ---
