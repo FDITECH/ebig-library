@@ -2874,6 +2874,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "fill/development/shape-triangle" |
     "fill/development/shapes" |
     "fill/development/sharpener" |
+    "fill/development/shield" |
     "fill/development/sidebar" |
     "fill/development/size-large" |
     "fill/development/size-medium" |
