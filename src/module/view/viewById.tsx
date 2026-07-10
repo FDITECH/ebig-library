@@ -51,8 +51,19 @@ export const ViewById = (props: Props) => {
     useEffect(() => {
         if (props.id) {
             if (globalViewCache.has(props.id)) {
-                setViewItem(globalViewCache.get(props.id))
+                let cachedView = globalViewCache.get(props.id)
+                if (cachedView === "loading") {
+                    const interval = setInterval(() => {
+                        cachedView = globalViewCache.get(props.id)
+                        if (cachedView !== "loading") {
+                            setViewItem(cachedView)
+                            clearInterval(interval)
+                        }
+                    }, 150)
+                    return () => clearInterval(interval)
+                } else setViewItem(cachedView)
             } else {
+                globalViewCache.set(props.id, "loading")
                 const controller = new SettingDataController("view")
                 controller.getByIds([props.id]).then(async (res) => {
                     if (res.code === 200 && res.data[0]) {
@@ -60,12 +71,14 @@ export const ViewById = (props: Props) => {
                         if (_viewItem.Props && typeof _viewItem.Props === "string") _viewItem.Props = JSON.parse(_viewItem.Props)
                         setViewItem(_viewItem)
                         globalViewCache.set(props.id, _viewItem)
+                        return;
                     } else if (props.onGetViewError) props.onGetViewError(res)
+                    globalViewCache.delete(props.id)
                 })
             }
         }
         return () => {
-            if (globalViewCache.size > 20) globalViewCache.clear()
+            if (globalViewCache.size > 30) globalViewCache.clear()
             props.onUnMount?.()
         }
     }, [props.id])

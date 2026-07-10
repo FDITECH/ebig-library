@@ -77,8 +77,19 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
     useEffect(() => {
         if (props.id) {
             if (globalCardCache.has(props.id)) {
-                setCardItem(globalCardCache.get(props.id))
+                let cachedCard = globalCardCache.get(props.id)
+                if (cachedCard === "loading") {
+                    const interval = setInterval(() => {
+                        cachedCard = globalCardCache.get(props.id)
+                        if (cachedCard !== "loading") {
+                            setCardItem(cachedCard)
+                            clearInterval(interval)
+                        }
+                    }, 150)
+                    return () => clearInterval(interval)
+                } else setCardItem(cachedCard)
             } else {
+                globalCardCache.set(props.id, "loading")
                 const _settingDataController = new SettingDataController("card")
                 _settingDataController.getByIds([props.id]).then(async (res) => {
                     if (res.code === 200 && res.data[0]) {
@@ -86,12 +97,14 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
                         if (_cardItem.Props && typeof _cardItem.Props === "string") _cardItem.Props = JSON.parse(_cardItem.Props)
                         setCardItem(_cardItem)
                         globalCardCache.set(props.id, _cardItem)
+                        return;
                     } else if (props.onGetCardError) props.onGetCardError(res)
+                    globalCardCache.delete(props.id)
                 })
             }
         }
         return () => {
-            if (globalCardCache.size > 20) globalCardCache.clear()
+            if (globalCardCache.size > 30) globalCardCache.clear()
             props.onUnMount?.()
         }
     }, [props.id])

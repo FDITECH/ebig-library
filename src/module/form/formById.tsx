@@ -62,8 +62,19 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     useEffect(() => {
         if (props.id) {
             if (globalFormCache.has(props.id)) {
-                setFormItem(globalFormCache.get(props.id))
+                let cachedForm = globalFormCache.get(props.id)
+                if (cachedForm === "loading") {
+                    const interval = setInterval(() => {
+                        cachedForm = globalFormCache.get(props.id)
+                        if (cachedForm !== "loading") {
+                            setFormItem(cachedForm)
+                            clearInterval(interval)
+                        }
+                    }, 150)
+                    return () => clearInterval(interval)
+                } else setFormItem(cachedForm)
             } else {
+                globalFormCache.set(props.id, "loading")
                 const controller = new SettingDataController("form")
                 controller.getByIds([props.id]).then(async (res) => {
                     if (res.code === 200 && res.data[0]) {
@@ -72,7 +83,9 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                         if (!Array.isArray(_formItem.Props)) _formItem.Props = []
                         setFormItem(_formItem)
                         globalFormCache.set(props.id, _formItem)
+                        return;
                     } else if (props.onGetFormError) props.onGetFormError(res)
+                    globalFormCache.delete(props.id)
                 })
             }
         }
