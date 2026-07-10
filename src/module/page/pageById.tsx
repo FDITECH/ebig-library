@@ -705,6 +705,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     const url = `${replaceThisVariables(tmpProps.to)}`
                     tmpProps.to = url
                 }
+                if (typeof tmpProps.replace === "string" && regexGetVariables.test(tmpProps.replace)) {
+                    const url = `${replaceThisVariables(tmpProps.replace)}`
+                    tmpProps.replace = url
+                }
                 break;
             case ComponentType.text:
                 if (regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)

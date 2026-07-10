@@ -29,9 +29,6 @@ interface Props {
      * */
     data?: { data: Array<{ [p: string]: any }>, totalCount?: number },
     controller?: "all" | { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } } } | { ids: string, maxLength?: number | "none" },
-    emptyLink?: string,
-    emptyMessage?: string,
-    emptyElement?: ReactNode,
 }
 
 interface CardProps extends Props {
@@ -63,7 +60,7 @@ interface CardContextProps {
 
 const CardContext = createContext<CardContextProps | undefined>(undefined)
 const globalCardCache = new Map()
-export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLink, emptyMessage, ...props }, ref) => {
+export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
     const methods = useForm({ shouldFocusError: false })
     const [cardItem, setCardItem] = useState<{ [p: string]: any }>()
     const layers = useMemo(() => (cardItem?.Props ?? []).sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [cardItem])
@@ -256,22 +253,15 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
     return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData, methods: stateMethods }}>
-        {cardItem ? data.totalCount === 0 ?
-            (emptyElement ?? (emptyLink && <EmptyPage
-                imgUrl={emptyLink}
-                imgStyle={{ maxWidth: "16.4rem" }}
-                style={props.style}
-                title={emptyMessage ?? t("noDataFound")}
-            />)) : <StateCard
-                key={cardItem.Id}
-                {...props}
-                methods={stateMethods}
-                data={data.data}
-                cardItem={cardItem}
-                extendData={finalExtendData}
-                layers={layers}
-            />
-            : null}
+        {cardItem && <StateCard
+            key={cardItem.Id}
+            {...props}
+            methods={stateMethods}
+            data={data.data}
+            cardItem={cardItem}
+            extendData={finalExtendData}
+            layers={layers}
+        />}
     </CardContext.Provider>
 })
 
