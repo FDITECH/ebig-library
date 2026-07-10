@@ -40,6 +40,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ contr
 
     if (src || sources) {
         return <video
+            key={src}
+            id={props.id}
             ref={videoRef as any}
             controls={controls}
             controlsList={controls ? controlsList : undefined}

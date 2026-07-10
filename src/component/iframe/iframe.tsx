@@ -31,6 +31,8 @@ export const IframePlayer = forwardRef<IframePlayerRef, IframePlayerProps>(({ sr
 
     if (src) {
         return <iframe
+            id={props.id}
+            key={src}
             ref={iframeRef as any}
             srcDoc={src.startsWith("http") ? src : undefined}
             src={src.startsWith("http") ? undefined : (src + "#view=FitH&toolbar=0&navpanes=0&scrollbar=0")}
