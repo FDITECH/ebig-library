@@ -429,25 +429,30 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         if (typeof funcString !== "string") return undefined
         const tmp: any = {}
         if (funcString.includes("entityData")) {
-            const propList: string[] = []
-            const directRegex = /\bentityData\.(\w+)/g
-            const aliasRegex = /\b(?:const|let|var)\s+(\w+)\s*=\s*entityData\b/g
-            const destructRegex = /{([^}]+)}\s*=\s*entityData\b/g
-            let match: RegExpExecArray | null
-            while ((match = aliasRegex.exec(funcString)) !== null) {
-                propList.push(match[1])
+            const spreadRegex = /\{[^{}]*\.\.\.entityData[^{}]*\}/m;
+            if (spreadRegex.test(funcString)) {
+                tmp.indexItem = JSON.stringify(props.indexItem ?? {})
+            } else {
+                const propList: string[] = []
+                const directRegex = /\bentityData\.(\w+)/g
+                const aliasRegex = /\b(?:const|let|var)\s+(\w+)\s*=\s*entityData\b/g
+                const destructRegex = /{([^}]+)}\s*=\s*entityData\b/g
+                let match: RegExpExecArray | null
+                while ((match = aliasRegex.exec(funcString)) !== null) {
+                    propList.push(match[1])
+                }
+                while ((match = directRegex.exec(funcString)) !== null) {
+                    propList.push(match[1])
+                }
+                while ((match = destructRegex.exec(funcString)) !== null) {
+                    propList.push(...match[1].split(',').map((e: string) => e.trim()))
+                }
+                const indexTmp: any = {}
+                propList.filter((p, i, arr) => arr.indexOf(p) === i).forEach(p => {
+                    indexTmp[p] = props.indexItem?.[p] ?? props.methods?.getValues(p)
+                })
+                tmp.indexItem = JSON.stringify(indexTmp)
             }
-            while ((match = directRegex.exec(funcString)) !== null) {
-                propList.push(match[1])
-            }
-            while ((match = destructRegex.exec(funcString)) !== null) {
-                propList.push(...match[1].split(',').map((e: string) => e.trim()))
-            }
-            const indexTmp: any = {}
-            propList.filter((p, i, arr) => arr.indexOf(p) === i).forEach(p => {
-                indexTmp[p] = props.indexItem?.[p] ?? props.methods?.getValues(p)
-            })
-            tmp.indexItem = JSON.stringify(indexTmp)
         }
         if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
             tmp.pathname = location.pathname
