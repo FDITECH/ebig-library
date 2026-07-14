@@ -124,10 +124,11 @@ interface FRadioButtonProps {
     offColor?: string;
     className?: string;
     methods: UseFormReturn<FieldValues, any, undefined>;
+    onClick?: React.MouseEventHandler<HTMLLabelElement>;
 }
 
 export const FRadioButton = forwardRef<any, FRadioButtonProps>(({ labelPosition = "right", ...props }, ref) => {
-    return <label ref={ref} id={props.id} className={`row ${styles["f-radio-button"]} ${props.className ?? ""}`} style={props.style}>
+    return <label ref={ref} id={props.id} className={`row ${styles["f-radio-button"]} ${props.className ?? ""}`} style={props.style} onClick={props.onClick}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}
@@ -177,10 +178,11 @@ interface FCheckboxProps {
 interface FCheckbox1Props extends FCheckboxProps {
     value?: boolean;
     onChange?: (value: boolean, target: HTMLInputElement) => void;
+    onClick?: React.MouseEventHandler<HTMLLabelElement>
 }
 
 export const FCheckbox = forwardRef<any, FCheckbox1Props>(({ labelPosition = "right", shape = "rectangle", ...props }, ref) => {
-    return <label ref={ref} id={props.id} className={`row ${styles["f-checkbox"]} ${props.className ?? ""}`} style={props.style}>
+    return <label ref={ref} id={props.id} className={`row ${styles["f-checkbox"]} ${props.className ?? ""}`} style={props.style} onClick={props.onClick}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}

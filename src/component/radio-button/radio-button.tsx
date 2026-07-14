@@ -13,6 +13,7 @@ interface RadioButtonProps {
     activeColor?: string,
     offColor?: string,
     className?: string,
+    onClick?: React.MouseEventHandler<HTMLLabelElement>
 }
 
 
@@ -37,7 +38,7 @@ export const RadioButton = (props: RadioButtonProps) => {
         return tmp
     }, [props.style, props.offColor, props.activeColor, props.size])
 
-    return <label id={props.id} className={`row ${styles['radio-btn-container']} ${props.className ?? ''}`} style={convertStyle} >
+    return <label id={props.id} className={`row ${styles['radio-btn-container']} ${props.className ?? ''}`} style={convertStyle} onClick={props.onClick}>
         <input
             ref={inputRef}
             type="radio"
