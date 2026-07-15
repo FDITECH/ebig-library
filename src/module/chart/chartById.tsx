@@ -9,6 +9,7 @@ interface Props {
     className?: string;
     title?: string;
     style?: CSSProperties;
+    data?: { [p: string]: any }[] | { value: number, name: string };
 }
 
 interface ChartRef {
@@ -39,7 +40,10 @@ const ChartById = forwardRef<ChartRef, Props>(({ id, style, className, ...props 
     }, [id])
 
     useEffect(() => {
-        if (settingData.GetData?.length) {
+        if (props.data) {
+            if (chartItem?.Type === "text" && typeof props.data === "object" && !Array.isArray(props.data)) setTextValue(props.data as any)
+            else if (Array.isArray(props.data)) setDatasets(props.data)
+        } else if (settingData.GetData?.length) {
             try {
                 (new AsyncFunction(
                     "entityData", "tableName", "Util", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "ComponentStatus", "useEbigContext",

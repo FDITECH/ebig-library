@@ -842,6 +842,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.form:
                 case ComponentType.view:
                 case ComponentType.card:
+                case ComponentType.chart:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
                             "entityData", "entityIndex", "tableName", "tableTitle", ...funcParamNames,
@@ -1016,6 +1017,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
             }
         case ComponentType.chart:
+            if (customProps.data) typeProps.data = handleFormCardViewData
             return <ChartById {...typeProps} {...restOfActions} id={typeProps.chartId} ref={pageAllRefs[findId]} />
         case "form":
         case ComponentType.form:
