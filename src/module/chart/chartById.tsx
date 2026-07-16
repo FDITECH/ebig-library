@@ -74,7 +74,7 @@ const ChartById = forwardRef<ChartRef, Props>(({ id, style, className, ...props 
                 console.error("Error in Chart code: ", error)
             }
         }
-    }, [settingData.GetData, ebigContextData, chartItem?.TbName])
+    }, [settingData.GetData, ebigContextData, chartItem?.TbName, props.data, chartItem?.Type])
 
     useImperativeHandle(ref, () => ({
         chartInfor: chartItem,
