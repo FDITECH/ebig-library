@@ -465,6 +465,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             tmp.globalData = JSON.stringify(ebigContextData.globalData)
             tmp.userData = JSON.stringify(ebigContextData.userData)
         }
+        if (funcString.includes("useViewContext")) {
+            tmp.viewContext = JSON.stringify({ data: viewContextData?.data, watch: viewContextData?.methods?.watch() })
+        }
+        if (funcString.includes("useCardContext")) {
+            tmp.cardContext = JSON.stringify({ data: cardContextData?.data, watch: cardContextData?.methods?.watch() })
+        }
         if (funcString.includes("methods.watch")) {
             const _tmpWatch = JSON.parse(defferWatch ?? "{}")
             // regex string to find what variables methods watch by pattern: methods.watch(variablename)
@@ -510,12 +516,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return tmp
     }
 
+    const defaultListener = [location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem, JSON.stringify(params), JSON.stringify(location.state), viewContextData?.data, JSON.stringify(viewContextData?.methods?.watch()), cardContextData?.data, JSON.stringify(cardContextData?.methods?.watch())]
+
     // handle get options of select dropdown component
     const [handleOptions, setHandleOptions] = useState<any>(null)
     const getOptionsLisener = useMemo(() => {
         if (!customActions?.onGetOptions) return null;
         return handleListener(customActions.onGetOptions)
-    }, [customActions?.onGetOptions, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+    }, [customActions?.onGetOptions,])
 
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
@@ -546,7 +554,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
+    }, [getOptionsLisener?.pathname, ...defaultListener])
 
     const _options = useMemo(() => {
         if (handleOptions) return Array.isArray(handleOptions.data) ? handleOptions.data : []
@@ -812,7 +820,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 break;
         }
         return tmpProps
-    }, [JSON.stringify(customProps), props.indexItem, JSON.stringify(dataValue), defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData.globalData, ebigContextData.userData, ebigContextData.i18n.language])
+    }, [JSON.stringify(customProps), ...defaultListener])
 
     const htmlElementRef = useRef<any | any[]>(null)
 
@@ -833,7 +841,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const getDataLisener = useMemo(() => {
         if (!customProps.data) return null;
         return handleListener(customProps.data)
-    }, [customProps.data, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+    }, [customProps.data, ...defaultListener])
 
     const [handleFormCardViewData, setHandleFormCardViewData] = useState<any>(null)
     useEffect(() => {
@@ -1231,6 +1239,7 @@ interface PageByIdProps extends Props {
 
 interface PagePropsContext {
     methods: UseFormReturn,
+    staticProps: { [p: string]: any }
 }
 
 const LayoutContext = createContext<PagePropsContext | undefined>(undefined)
@@ -1255,6 +1264,7 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
             return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
         } else return undefined
     }, [layout, layers.length, pageItem?.LayoutId])
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1322,7 +1332,7 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
 
     return pageItem &&
         (props.onlyLayout ?
-            (!!layout.length && <LayoutContext.Provider value={{ methods }}>
+            (!!layout.length && <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
                 <RenderPageView
                     key={pageItem.LayoutId}
                     layers={layout}
@@ -1332,7 +1342,7 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
                 />
             </LayoutContext.Provider>)
             : props.onlyBody ?
-                (!loading && <PageContext.Provider value={{ methods }}>
+                (!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
                     <RenderPageView
                         key={pageItem.Id}
                         layers={layers}
@@ -1342,9 +1352,9 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
                     />
                 </PageContext.Provider>)
                 : (pageItem && !!layout.length &&
-                    <LayoutContext.Provider value={{ methods }}>
+                    <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
                         <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                            {!loading && <PageContext.Provider value={{ methods }}>
+                            {!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
                                 <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
                             </PageContext.Provider>}
                         </RenderPageView>
@@ -1393,6 +1403,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
             return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
         } else return undefined
     }, [layout, layers.length, pageItem?.LayoutId])
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1465,7 +1476,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
 
     return pageItem &&
         (props.onlyLayout ?
-            (!!layout.length && <LayoutContext.Provider value={{ methods }}>
+            (!!layout.length && <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
                 <RenderPageView
                     key={pageItem.LayoutId}
                     layers={layout}
@@ -1475,7 +1486,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
                 />
             </LayoutContext.Provider>)
             : props.onlyBody ?
-                (!loading && <PageContext.Provider value={{ methods }}>
+                (!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
                     <RenderPageView
                         key={pageItem.Id}
                         layers={layers}
@@ -1485,9 +1496,9 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
                     />
                 </PageContext.Provider>)
                 : (pageItem && !!layout.length &&
-                    <LayoutContext.Provider value={{ methods }}>
+                    <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
                         <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                            {!loading && <PageContext.Provider value={{ methods }}>
+                            {!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
                                 <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
                             </PageContext.Provider>}
                         </RenderPageView>

@@ -1,12 +1,10 @@
-import { createContext, CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useState } from "react"
+import { createContext, CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { DataController, SettingDataController } from "../../controller/data"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { TableController } from "../../controller/setting"
-import { EmptyPage } from "../../component/empty-page"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { regexGetVariableByThis } from "./config"
 import { ComponentType, FEDataType } from "../da"
-import { useTranslation } from "react-i18next"
 import { BaseDA, ConfigData } from "../../controller/config"
 
 interface Props {
@@ -55,7 +53,8 @@ interface CardContextProps {
     methods: UseFormReturn,
     data: { data: Array<{ [p: string]: any }>, totalCount?: number },
     getData: () => Promise<void>,
-    setData: React.Dispatch<React.SetStateAction<{ data: Array<{ [p: string]: any }>, totalCount?: number }>>
+    setData: React.Dispatch<React.SetStateAction<{ data: Array<{ [p: string]: any }>, totalCount?: number }>>,
+    staticProps: { [p: string]: any }
 }
 
 const CardContext = createContext<CardContextProps | undefined>(undefined)
@@ -69,7 +68,7 @@ export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
     const keyNames = useMemo<Array<string>>(() => layers.filter((e: any) => e.NameField?.length).map((e: any) => e.NameField), [layers.length])
     const [controller, setController] = useState<any>()
     const [data, setData] = useState<{ data: Array<{ [p: string]: any }>, totalCount?: number }>({ data: [], totalCount: undefined })
-    const { t } = useTranslation()
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (props.id) {
@@ -252,7 +251,7 @@ export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
         relativeData: getRelativeData
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
-    return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData, methods: stateMethods }}>
+    return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData, methods: stateMethods, staticProps: staticProps.current }}>
         {cardItem && <StateCard
             key={cardItem.Id}
             {...props}

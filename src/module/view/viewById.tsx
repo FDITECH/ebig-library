@@ -1,4 +1,4 @@
-import { createContext, CSSProperties, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useState } from "react"
+import { createContext, CSSProperties, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { DataController, SettingDataController } from "../../controller/data"
@@ -29,7 +29,8 @@ interface ViewContextProps {
     data: { [p: string]: any } | undefined,
     getData: () => Promise<void>,
     setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
-    methods: UseFormReturn
+    methods: UseFormReturn,
+    staticProps: { [p: string]: any }
 }
 
 const ViewContext = createContext<ViewContextProps | undefined>(undefined)
@@ -215,6 +216,7 @@ const RenderView = (props: RenderViewProps) => {
     const [rels, setRels] = useState<Array<{ [p: string]: any }>>([])
     const [cols, setCols] = useState<Array<{ [p: string]: any }>>([])
     const [extendData, setExtendData] = useState<{ [p: string]: any }>({})
+    const staticProps = useRef({})
 
     useEffect(() => {
         const tmp: { [p: string]: any } = {}
@@ -233,7 +235,7 @@ const RenderView = (props: RenderViewProps) => {
         if (props.onChange) props.onChange({ data: props.indexItem, state: finalStateData })
     }, [finalStateData, props.indexItem])
 
-    return <ViewContext.Provider value={{ tbName: props.tbName!, data: props.indexItem, getData: props.getData, setData: props.setData, methods }}>
+    return <ViewContext.Provider value={{ tbName: props.tbName!, data: props.indexItem, getData: props.getData, setData: props.setData, methods, staticProps: staticProps.current }}>
         {props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
             return <RenderLayerElement
                 key={e.Id}
