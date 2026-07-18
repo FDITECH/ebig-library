@@ -5,6 +5,7 @@ interface IframePlayerProps {
     id?: string;
     /** nodownload nofullscreen noremoteplayback */
     src: string;
+    srcDoc: string;
     style?: CSSProperties;
     className?: string;
     width?: number;
@@ -22,7 +23,7 @@ interface IframePlayerRef {
     element: HTMLIFrameElement | HTMLDivElement;
 }
 
-export const IframePlayer = forwardRef<IframePlayerRef, IframePlayerProps>(({ src, className = "", placeholder = "", width, height, allow, allowFullScreen, allowTransparency, referrerPolicy, name, ...props }, ref) => {
+export const IframePlayer = forwardRef<IframePlayerRef, IframePlayerProps>(({ src, srcDoc, className = "", placeholder = "", width, height, allow, allowFullScreen, allowTransparency, referrerPolicy, name, ...props }, ref) => {
     const iframeRef = useRef<HTMLIFrameElement | HTMLDivElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -34,8 +35,8 @@ export const IframePlayer = forwardRef<IframePlayerRef, IframePlayerProps>(({ sr
             id={props.id}
             key={src}
             ref={iframeRef as any}
-            srcDoc={src.startsWith("http") ? src : undefined}
-            src={src.startsWith("http") ? undefined : (src + "#view=FitH&toolbar=0&navpanes=0&scrollbar=0")}
+            srcDoc={srcDoc}
+            src={src}
             className={`${styles["iframe-player"]} ${className}`}
             width={width}
             height={height}
