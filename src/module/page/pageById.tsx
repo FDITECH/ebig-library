@@ -366,6 +366,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.click:
                             tmpAct.onClick = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.auxClick:
+                            tmpAct.onAuxClick = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
                         case TriggerType.rightClick:
                             tmpAct.onContextMenu = (ev: any) => handleEvent(triggerActions, ev)
                             break;
@@ -386,6 +389,24 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             break;
                         case TriggerType.mouseup:
                             tmpAct.onMouseUp = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerDown:
+                            tmpAct.onPointerDown = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerUp:
+                            tmpAct.onPointerUp = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerEnter:
+                            tmpAct.onPointerEnter = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerLeave:
+                            tmpAct.onPointerLeave = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerMove:
+                            tmpAct.onPointerMove = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerOut:
+                            tmpAct.onPointerOut = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.focus:
                             tmpAct.onFocus = (ev: any) => handleEvent(triggerActions, ev)

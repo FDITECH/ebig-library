@@ -700,5 +700,5 @@ textarea::placeholder {
 
 ._ebig-main-layout_axts4_37>div:not(._ebig-header-layout_axts4_37, ._ebig-sidebar-layout_axts4_37),
 ._ebig-main-layout_axts4_37>div:not(._ebig-header-layout_axts4_37, ._ebig-sidebar-layout_axts4_37)>* {
-    animation: loading-change-view 0.8s ease-in-out;
+    animation: loading-change-view 0.5s ease-in-out;
 }
