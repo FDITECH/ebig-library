@@ -1170,8 +1170,7 @@ const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" |
     useEffect(() => {
         if (props.html && ConfigData.regexGuid.test(props.html)) {
             BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${props.html}`).then((result: any) => {
-                if (typeof result === 'string') setConvertContentHtml(result)
-                else setConvertContentHtml(props.html!)
+                setConvertContentHtml(`${result}`)
             })
         } else if (props.html) setConvertContentHtml(props.html)
     }, [props.html])
