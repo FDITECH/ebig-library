@@ -163,5 +163,8 @@
     "database": "Cơ sở dữ liệu",
     "autoplay": "Tự phát",
     "loop": "Lặp lại",
-    "muted": "Tắt tiếng"
+    "muted": "Tắt tiếng",
+    "portrait": "Dọc",
+    "landscape": "Ngang",
+    "freeBlock": "Khối tự do"
 }

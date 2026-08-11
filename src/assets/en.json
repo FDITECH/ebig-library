@@ -163,5 +163,8 @@
     "database": "Database",
     "autoplay": "Autoplay",
     "loop": "Loop",
-    "muted": "Muted"
+    "muted": "Muted",
+    "portrait": "Portrait",
+    "landscape": "Landscape",
+    "freeBlock": "Free Block"
 }
