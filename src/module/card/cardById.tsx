@@ -1,12 +1,10 @@
-import { CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useDeferredValue, useEffect, useImperativeHandle, useMemo, useState } from "react"
+import { createContext, CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { DataController, SettingDataController } from "../../controller/data"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { TableController } from "../../controller/setting"
-import { EmptyPage } from "../../component/empty-page"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { regexGetVariableByThis } from "./config"
 import { ComponentType, FEDataType } from "../da"
-import { useTranslation } from "react-i18next"
 import { BaseDA, ConfigData } from "../../controller/config"
 
 interface Props {
@@ -29,9 +27,6 @@ interface Props {
      * */
     data?: { data: Array<{ [p: string]: any }>, totalCount?: number },
     controller?: "all" | { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } } } | { ids: string, maxLength?: number | "none" },
-    emptyLink?: string,
-    emptyMessage?: string,
-    emptyElement?: ReactNode,
 }
 
 interface CardProps extends Props {
@@ -53,8 +48,18 @@ interface CardRef {
     relativeData?: { [p: string]: Array<{ [p: string]: any }> }
 }
 
+interface CardContextProps {
+    tbName: string,
+    methods: UseFormReturn,
+    data: { data: Array<{ [p: string]: any }>, totalCount?: number },
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ data: Array<{ [p: string]: any }>, totalCount?: number }>>,
+    staticProps: { [p: string]: any }
+}
+
+const CardContext = createContext<CardContextProps | undefined>(undefined)
 const globalCardCache = new Map()
-export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLink, emptyMessage, ...props }, ref) => {
+export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
     const methods = useForm({ shouldFocusError: false })
     const [cardItem, setCardItem] = useState<{ [p: string]: any }>()
     const layers = useMemo(() => (cardItem?.Props ?? []).sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [cardItem])
@@ -63,13 +68,24 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
     const keyNames = useMemo<Array<string>>(() => layers.filter((e: any) => e.NameField?.length).map((e: any) => e.NameField), [layers.length])
     const [controller, setController] = useState<any>()
     const [data, setData] = useState<{ data: Array<{ [p: string]: any }>, totalCount?: number }>({ data: [], totalCount: undefined })
-    const { t } = useTranslation()
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (props.id) {
             if (globalCardCache.has(props.id)) {
-                setCardItem(globalCardCache.get(props.id))
+                let cachedCard = globalCardCache.get(props.id)
+                if (cachedCard === "loading") {
+                    const interval = setInterval(() => {
+                        cachedCard = globalCardCache.get(props.id)
+                        if (cachedCard !== "loading") {
+                            setCardItem(cachedCard)
+                            clearInterval(interval)
+                        }
+                    }, 150)
+                    return () => clearInterval(interval)
+                } else setCardItem(cachedCard)
             } else {
+                globalCardCache.set(props.id, "loading")
                 const _settingDataController = new SettingDataController("card")
                 _settingDataController.getByIds([props.id]).then(async (res) => {
                     if (res.code === 200 && res.data[0]) {
@@ -77,12 +93,14 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
                         if (_cardItem.Props && typeof _cardItem.Props === "string") _cardItem.Props = JSON.parse(_cardItem.Props)
                         setCardItem(_cardItem)
                         globalCardCache.set(props.id, _cardItem)
+                        return;
                     } else if (props.onGetCardError) props.onGetCardError(res)
+                    globalCardCache.delete(props.id)
                 })
             }
         }
         return () => {
-            if (globalCardCache.size > 20) globalCardCache.clear()
+            if (globalCardCache.size > 30) globalCardCache.clear()
             props.onUnMount?.()
         }
     }, [props.id])
@@ -134,7 +152,6 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
             methods.setValue("_cols", usingCols)
         }
     }
-
 
     const getData = async (page?: number) => {
         const dataController = new DataController(cardItem!.TbName)
@@ -234,13 +251,8 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
         relativeData: getRelativeData
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
-    return cardItem ? data.totalCount === 0 ?
-        (emptyElement ?? (emptyLink && <EmptyPage
-            imgUrl={emptyLink}
-            imgStyle={{ maxWidth: "16.4rem" }}
-            style={props.style}
-            title={emptyMessage ?? t("noDataFound")}
-        />)) : <StateCard
+    return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData, methods: stateMethods, staticProps: staticProps.current }}>
+        {cardItem && <StateCard
             key={cardItem.Id}
             {...props}
             methods={stateMethods}
@@ -248,8 +260,8 @@ export const CardById = forwardRef<CardRef, CardProps>(({ emptyElement, emptyLin
             cardItem={cardItem}
             extendData={finalExtendData}
             layers={layers}
-        />
-        : null
+        />}
+    </CardContext.Provider>
 })
 
 const StateCard = ({ data, cardItem, layers, extendData, methods, ...props }: { methods: UseFormReturn, data: { [k: string]: any }[], cardItem: { [k: string]: any }, layers: { [k: string]: any }[], extendData: { [k: string]: any }, }) => {
@@ -315,4 +327,9 @@ const RenderCard = (props: RenderCardProps) => {
             tbName={props.cardItem.TbName}
         />
     })
+}
+
+export const useCardContext = () => {
+    const context = useContext(CardContext);
+    return context;
 }

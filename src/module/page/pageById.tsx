@@ -1,18 +1,18 @@
-import { CSSProperties, forwardRef, HTMLAttributes, ReactNode, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, CSSProperties, forwardRef, HTMLAttributes, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
-import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom"
+import { NavLink, useLocation, useNavigate, useParams } from "react-router"
 import { handleErrorImgSrc, LayoutElement, regexResponsiveClassCol } from "./config"
 import { ActionType, ComponentType, FEDataType, TriggerType, ValidateType } from "../da"
-import { FormById } from "../form/formById"
-import { CardById } from "../card/cardById"
+import { FormById, useFormContext } from "../form/formById"
+import { CardById, useCardContext } from "../card/cardById"
 import { ChartById } from "../chart/chartById"
-import { ViewById } from "../view/viewById"
+import { useViewContext, ViewById } from "../view/viewById"
 import { SimpleButton } from "../../component/button/button"
 import { randomGID, Util } from "../../controller/utils"
 import { regexGetVariableByThis, regexGetVariables, replaceVariables } from "../card/config"
 import { BaseDA, CkEditorUploadAdapter, ConfigData, imgFileTypes } from "../../controller/config"
 import { FCheckbox, FColorPicker, FDateTimePicker, FGroupCheckbox, FGroupRadioButton, FInputPassword, FNumberPicker, FRadioButton, FSelectDropdownForm, FSwitch, FTextArea, FTextField, FUploadMultipleFileType } from "./component-form"
-import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController, EbigEditor } from "../../index"
+import { Ebigicon, Text, Rating, CustomCkEditor5, ProgressCircle, ProgressBar, VideoPlayer, IframePlayer, ComponentStatus, useEbigContext, Pagination, AudioPlayer, ToastMessage, TableController, DataController, showDialog, showPopup, Popup, AccountController, EbigEditor, IconPicker } from "../../index"
 
 interface Props {
     methods?: UseFormReturn
@@ -121,7 +121,7 @@ export const RenderLayerElement = (props: RenderLayerElementProps) => {
 export const getValidLink = (link: string) => {
     if (!link) return ""
     if (link.startsWith("http")) return link
-    if (ConfigData.regexGuid.test(link)) return ConfigData.imgUrlId + link
+    if (ConfigData.regexGuid.test(link) || !link.startsWith("/")) return ConfigData.imgUrlId + link
     else return ConfigData.fileUrl + link
 }
 
@@ -231,6 +231,11 @@ interface ElementUIProps extends RenderLayerElementProps {
 
 const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables, defferWatch, showHTMLPopup, ...props }: ElementUIProps) => {
     const ebigContextData = useEbigContext()
+    const layoutContextData = useLayoutContext()
+    const pageContextData = usePageContext()
+    const formContextData = useFormContext()
+    const viewContextData = useViewContext()
+    const cardContextData = useCardContext()
     const location = useLocation()
     const navigate = useNavigate()
     const params = useParams()
@@ -261,6 +266,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return _props
     }, [props.item, props.propsData, props.indexItem, watchForCustomProps, JSON.stringify(props.style), props.className])
     const customProps = useDeferredValue(memeCustomProps)
+    const funcParamNames = ["Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext", "useLayoutContext", "usePageContext", "useFormContext", "useViewContext", "useCardContext"]
+    const funcParams = [Util, AccountController, DataController, randomGID, ToastMessage, BaseDA.uploadFiles, BaseDA.getFilesInfor, BaseDA.post, BaseDA.get, showDialog, showHTMLPopup, ComponentStatus, props.methods, () => params, () => navigate, location, () => ebigContextData, () => layoutContextData, () => pageContextData, () => formContextData, () => viewContextData, () => cardContextData]
     const customActions = useMemo(() => {
         const _propsActions = props.item.Setting?.action
         if (_propsActions?.length && Array.isArray(_propsActions)) {
@@ -303,7 +310,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     onSubmit: async () => {
                                         if (actItem.Caculate) {
                                             await (new AsyncFunction(
-                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "useEbigContext",
+                                                "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "event", ...funcParamNames,
                                                 `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                             ))(
                                                 props.indexItem ?? props.methods?.getValues(),
@@ -311,23 +318,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                                 props.tbName,
                                                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                                 props.item.NameField,
-                                                Util,
-                                                AccountController,
-                                                DataController,
-                                                randomGID,
-                                                ToastMessage,
-                                                BaseDA.uploadFiles,
-                                                BaseDA.getFilesInfor,
-                                                BaseDA.post,
-                                                BaseDA.get,
-                                                showDialog,
-                                                showHTMLPopup,
-                                                ComponentStatus,
                                                 event,
-                                                props.methods,
-                                                () => params,
-                                                () => navigate,
-                                                () => ebigContextData
+                                                ...funcParams
                                             )
                                         }
                                     }
@@ -336,7 +328,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             case ActionType.custom:
                                 if (actItem.Caculate) {
                                     const asyncFuncResponse = await (new AsyncFunction(
-                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                                        "entityData", "entityIndex", "tableName", "tableTitle", "nameField", "event", ...funcParamNames,
                                         `${actItem.Caculate}` // This string can now safely contain the 'await' keyword
                                     ))(
                                         props.indexItem ?? props.methods?.getValues(),
@@ -344,24 +336,8 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                         props.tbName,
                                         props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
                                         props.item.NameField,
-                                        Util,
-                                        AccountController,
-                                        DataController,
-                                        randomGID,
-                                        ToastMessage,
-                                        BaseDA.uploadFiles,
-                                        BaseDA.getFilesInfor,
-                                        BaseDA.post,
-                                        BaseDA.get,
-                                        showDialog,
-                                        showHTMLPopup,
-                                        ComponentStatus,
                                         event,
-                                        props.methods,
-                                        () => params,
-                                        () => navigate,
-                                        location,
-                                        () => ebigContextData
+                                        ...funcParams,
                                     )
                                     if (asyncFuncResponse === false) return;
                                 }
@@ -390,6 +366,9 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.click:
                             tmpAct.onClick = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.auxClick:
+                            tmpAct.onAuxClick = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
                         case TriggerType.rightClick:
                             tmpAct.onContextMenu = (ev: any) => handleEvent(triggerActions, ev)
                             break;
@@ -410,6 +389,24 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                             break;
                         case TriggerType.mouseup:
                             tmpAct.onMouseUp = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerDown:
+                            tmpAct.onPointerDown = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerUp:
+                            tmpAct.onPointerUp = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerEnter:
+                            tmpAct.onPointerEnter = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerLeave:
+                            tmpAct.onPointerLeave = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerMove:
+                            tmpAct.onPointerMove = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pointerOut:
+                            tmpAct.onPointerOut = (ev: any) => handleEvent(triggerActions, ev)
                             break;
                         case TriggerType.focus:
                             tmpAct.onFocus = (ev: any) => handleEvent(triggerActions, ev)
@@ -453,25 +450,30 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         if (typeof funcString !== "string") return undefined
         const tmp: any = {}
         if (funcString.includes("entityData")) {
-            const propList: string[] = []
-            const directRegex = /\bentityData\.(\w+)/g
-            const aliasRegex = /\b(?:const|let|var)\s+(\w+)\s*=\s*entityData\b/g
-            const destructRegex = /{([^}]+)}\s*=\s*entityData\b/g
-            let match: RegExpExecArray | null
-            while ((match = aliasRegex.exec(funcString)) !== null) {
-                propList.push(match[1])
+            const spreadRegex = /\{[^{}]*\.\.\.entityData[^{}]*\}/m;
+            if (spreadRegex.test(funcString)) {
+                tmp.indexItem = JSON.stringify(props.indexItem ?? {})
+            } else {
+                const propList: string[] = []
+                const directRegex = /\bentityData\.(\w+)/g
+                const aliasRegex = /\b(?:const|let|var)\s+(\w+)\s*=\s*entityData\b/g
+                const destructRegex = /{([^}]+)}\s*=\s*entityData\b/g
+                let match: RegExpExecArray | null
+                while ((match = aliasRegex.exec(funcString)) !== null) {
+                    propList.push(match[1])
+                }
+                while ((match = directRegex.exec(funcString)) !== null) {
+                    propList.push(match[1])
+                }
+                while ((match = destructRegex.exec(funcString)) !== null) {
+                    propList.push(...match[1].split(',').map((e: string) => e.trim()))
+                }
+                const indexTmp: any = {}
+                propList.filter((p, i, arr) => arr.indexOf(p) === i).forEach(p => {
+                    indexTmp[p] = props.indexItem?.[p] ?? props.methods?.getValues(p)
+                })
+                tmp.indexItem = JSON.stringify(indexTmp)
             }
-            while ((match = directRegex.exec(funcString)) !== null) {
-                propList.push(match[1])
-            }
-            while ((match = destructRegex.exec(funcString)) !== null) {
-                propList.push(...match[1].split(',').map((e: string) => e.trim()))
-            }
-            const indexTmp: any = {}
-            propList.filter((p, i, arr) => arr.indexOf(p) === i).forEach(p => {
-                indexTmp[p] = props.indexItem?.[p] ?? props.methods?.getValues(p)
-            })
-            tmp.indexItem = JSON.stringify(indexTmp)
         }
         if (funcString.includes("location") || funcString.includes("useLocation") || funcString.includes("useParams")) {
             tmp.pathname = location.pathname
@@ -483,6 +485,12 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             tmp.language = ebigContextData.i18n.language
             tmp.globalData = JSON.stringify(ebigContextData.globalData)
             tmp.userData = JSON.stringify(ebigContextData.userData)
+        }
+        if (funcString.includes("useViewContext")) {
+            tmp.viewContext = JSON.stringify({ data: viewContextData?.data, watch: viewContextData?.methods?.watch() })
+        }
+        if (funcString.includes("useCardContext")) {
+            tmp.cardContext = JSON.stringify({ data: cardContextData?.data, watch: cardContextData?.methods?.watch() })
         }
         if (funcString.includes("methods.watch")) {
             const _tmpWatch = JSON.parse(defferWatch ?? "{}")
@@ -529,41 +537,27 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
         return tmp
     }
 
+    const defaultListener = [location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem, JSON.stringify(params), JSON.stringify(location.state), viewContextData?.data, JSON.stringify(viewContextData?.methods?.watch()), cardContextData?.data, JSON.stringify(cardContextData?.methods?.watch())]
+
     // handle get options of select dropdown component
     const [handleOptions, setHandleOptions] = useState<any>(null)
     const getOptionsLisener = useMemo(() => {
         if (!customActions?.onGetOptions) return null;
         return handleListener(customActions.onGetOptions)
-    }, [customActions?.onGetOptions, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+    }, [customActions?.onGetOptions,])
 
     const dropdownOnGetOptions = async (event?: any) => {
         const getDataFunc = async () => {
             let asyncFuncResponse = await (new AsyncFunction(
-                "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "event", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                "entityData", "entityIndex", "tableName", "tableTitle", "event", ...funcParamNames,
                 `${customActions.onGetOptions}` // This string can now safely contain the 'await' keyword
             ))(
                 props.indexItem ?? props.methods?.getValues(),
                 props.index,
                 props.tbName,
                 props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
-                Util,
-                AccountController,
-                DataController,
-                randomGID,
-                ToastMessage,
-                BaseDA.uploadFiles,
-                BaseDA.getFilesInfor,
-                BaseDA.post,
-                BaseDA.get,
-                showDialog,
-                showHTMLPopup,
-                ComponentStatus,
                 event,
-                props.methods,
-                () => params,
-                () => navigate,
-                location,
-                () => ebigContextData
+                ...funcParams
             )
             return asyncFuncResponse
         }
@@ -581,7 +575,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [getOptionsLisener?.pathname, getOptionsLisener?.search, getOptionsLisener?.params, getOptionsLisener?.state, getOptionsLisener?.language, getOptionsLisener?.globalData, getOptionsLisener?.userData, getOptionsLisener?.watch, getOptionsLisener?.indexItem])
+    }, [getOptionsLisener?.pathname, ...defaultListener])
 
     const _options = useMemo(() => {
         if (handleOptions) return Array.isArray(handleOptions.data) ? handleOptions.data : []
@@ -745,9 +739,18 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     const url = `${replaceThisVariables(tmpProps.to)}`
                     tmpProps.to = url
                 }
+                if (typeof tmpProps.replace === "string" && regexGetVariables.test(tmpProps.replace)) {
+                    const url = `${replaceThisVariables(tmpProps.replace)}`
+                    tmpProps.replace = url
+                }
                 break;
             case ComponentType.text:
                 if (regexGetVariables.test(tmpProps.value)) tmpProps.value = replaceThisVariables(tmpProps.value)
+                break;
+            case ComponentType.progressCircle:
+            case ComponentType.progressBar:
+                if (regexGetVariables.test(tmpProps.percent)) tmpProps.percent = replaceThisVariables(tmpProps.percent)
+                if (regexGetVariables.test(tmpProps.title)) tmpProps.title = replaceThisVariables(tmpProps.title)
                 break;
             case ComponentType.img:
             case ComponentType.video:
@@ -791,6 +794,10 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     case ComponentType.textArea:
                     case ComponentType.textField:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.defaultValue)) tmpProps.defaultValue = replaceThisVariables(tmpProps.defaultValue)
+                        else if (props.item.NameField?.length) {
+                            const propsColDataType = props.cols?.find(e => e.Name === props.item.NameField)?.DataType
+                            if (propsColDataType === FEDataType.PASSWORD) tmpProps.IsPassword = true
+                        }
                         break;
                     case ComponentType.ebigEditor:
                         if (!props.item.NameField?.length && regexGetVariables.test(tmpProps.initValue)) tmpProps.initValue = replaceThisVariables(tmpProps.initValue)
@@ -810,9 +817,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                 case FEDataType.DATETIME:
                                     tmpProps.pickerType = "datetime"
                                     tmpProps.pickOnly = true
-                                    break;
-                                case FEDataType.PASSWORD:
-                                    tmpProps.IsPassword = true
                                     break;
                                 default:
                                     break;
@@ -837,7 +841,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 break;
         }
         return tmpProps
-    }, [JSON.stringify(customProps), props.indexItem, JSON.stringify(dataValue), defferWatch, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state), ebigContextData.globalData, ebigContextData.userData, ebigContextData.i18n.language])
+    }, [JSON.stringify(customProps), ...defaultListener])
 
     const htmlElementRef = useRef<any | any[]>(null)
 
@@ -858,7 +862,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const getDataLisener = useMemo(() => {
         if (!customProps.data) return null;
         return handleListener(customProps.data)
-    }, [customProps.data, location, ebigContextData.i18n.language, ebigContextData.globalData, ebigContextData.userData, defferWatch, props.indexItem])
+    }, [customProps.data, ...defaultListener])
 
     const [handleFormCardViewData, setHandleFormCardViewData] = useState<any>(null)
     useEffect(() => {
@@ -867,32 +871,17 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.form:
                 case ComponentType.view:
                 case ComponentType.card:
+                case ComponentType.chart:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", "Util", "AccountController", "DataController", "randomGID", "ToastMessage", "uploadFiles", "getFilesInfor", "post", "get", "showDialog", "showPopup", "ComponentStatus", "methods", "useParams", "useNavigate", "location", "useEbigContext",
+                            "entityData", "entityIndex", "tableName", "tableTitle", ...funcParamNames,
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
                             props.index,
                             props.tbName,
                             props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
-                            Util,
-                            AccountController,
-                            DataController,
-                            randomGID,
-                            ToastMessage,
-                            BaseDA.uploadFiles,
-                            BaseDA.getFilesInfor,
-                            BaseDA.post,
-                            BaseDA.get,
-                            showDialog,
-                            showHTMLPopup,
-                            ComponentStatus,
-                            props.methods,
-                            () => params,
-                            () => navigate,
-                            location,
-                            () => ebigContextData
+                            ...funcParams
                         )
                         return asyncFuncResponse
                     }
@@ -964,7 +953,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 } else if (typeof dataValue === "object") typeProps.html = dataValue?.["__html"] ?? ""
                 else typeProps.value = dataValue
             }
-            return <CustomText {...typeProps} {...restOfActions} />
+            return <CustomText ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.img:
             if (!typeProps.src?.length) typeProps.src = handleErrorImgSrc
             if (props.item.NameField && !!dataValue?.length) {
@@ -1045,10 +1034,19 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             if (props.item.NameField) return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} percent={dataValue} />
             return <ProgressCircle ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.icon:
-            if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle />
-            else if (props.item.NameField) return null
-            else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
+            if (restOfActions.onChange) {
+                if (dataValue) return <IconPicker ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle onChange={(ev) => {
+                    if (props.item.NameField) props.methods!.setValue(props.item.NameField, ev)
+                    restOfActions.onChange?.(ev)
+                }} />
+                else return <IconPicker ref={htmlElementRef} {...typeProps} {...restOfActions} />
+            } else {
+                if (dataValue) return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} src={dataValue} simpleStyle />
+                else if (props.item.NameField) return null
+                else return <Ebigicon ref={htmlElementRef} {...typeProps} {...restOfActions} />
+            }
         case ComponentType.chart:
+            if (customProps.data) typeProps.data = handleFormCardViewData
             return <ChartById {...typeProps} {...restOfActions} id={typeProps.chartId} ref={pageAllRefs[findId]} />
         case "form":
         case ComponentType.form:
@@ -1166,14 +1164,13 @@ const FileName = ({ file, index, ...props }: { type?: "div" | "p" | "span" | "h1
     </>
 }
 
-const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6", html?: string, maxLine?: number, className?: string, style?: CSSProperties, value?: string, [k: string]: any }>(({ type = "div", ...props }, ref) => {
+const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "header" | "section" | "aside", html?: string, maxLine?: number, className?: string, style?: CSSProperties, value?: string, [k: string]: any }>(({ type = "div", ...props }, ref) => {
     const [convertContentHtml, setConvertContentHtml] = useState<string>("")
 
     useEffect(() => {
         if (props.html && ConfigData.regexGuid.test(props.html)) {
             BaseDA.get(`${ConfigData.ebigCdn}/${ConfigData.pid}/${props.html}`).then((result: any) => {
-                if (typeof result === 'string') setConvertContentHtml(result)
-                else setConvertContentHtml(props.html!)
+                setConvertContentHtml(`${result}`)
             })
         } else if (props.html) setConvertContentHtml(props.html)
     }, [props.html])
@@ -1222,6 +1219,15 @@ const CustomText = forwardRef<any, { type?: "div" | "p" | "span" | "h1" | "h2" |
             case "h6":
                 if (props.html) return <h6 ref={ref} {...customProps} />
                 else return <h6 ref={ref} {...customProps}>{props.value}</h6>
+            case "header":
+                if (props.html) return <header ref={ref} {...customProps} />
+                else return <header ref={ref} {...customProps}>{props.value}</header>
+            case "section":
+                if (props.html) return <section ref={ref} {...customProps} />
+                else return <section ref={ref} {...customProps}>{props.value}</section>
+            case "aside":
+                if (props.html) return <aside ref={ref} {...customProps} />
+                else return <aside ref={ref} {...customProps}>{props.value}</aside>
             default:
                 const { onMouseOver, ...tmpProps } = customProps
                 return <Text ref={ref} {...tmpProps} onHover={onMouseOver}>{props.value}</Text>
@@ -1251,6 +1257,13 @@ interface PageByIdProps extends Props {
     children?: ReactNode;
 }
 
+interface PagePropsContext {
+    methods: UseFormReturn,
+    staticProps: { [p: string]: any }
+}
+
+const LayoutContext = createContext<PagePropsContext | undefined>(undefined)
+const PageContext = createContext<PagePropsContext | undefined>(undefined)
 export const globalTableCache = new Map()
 const cacheLayout = new Map()
 export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
@@ -1271,6 +1284,7 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
             return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
         } else return undefined
     }, [layout, layers.length, pageItem?.LayoutId])
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1336,23 +1350,36 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
         return childrenData
     }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
-    if (pageItem) {
-        if (props.onlyLayout) {
-            return !!layout.length && <RenderPageView
-                key={pageItem.LayoutId}
-                layers={layout}
-                {...props}
-                childrenData={propsChildren}
-                methods={props.methods ?? methods}
-            />
-        } else if (props.onlyBody) {
-            return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
-        } else {
-            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
-            </RenderPageView> : null
-        }
-    } else return null
+    return pageItem &&
+        (props.onlyLayout ?
+            (!!layout.length && <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                <RenderPageView
+                    key={pageItem.LayoutId}
+                    layers={layout}
+                    {...props}
+                    childrenData={propsChildren}
+                    methods={props.methods ?? methods}
+                />
+            </LayoutContext.Provider>)
+            : props.onlyBody ?
+                (!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                    <RenderPageView
+                        key={pageItem.Id}
+                        layers={layers}
+                        {...props}
+                        childrenData={childrenData}
+                        methods={props.methods ?? methods}
+                    />
+                </PageContext.Provider>)
+                : (pageItem && !!layout.length &&
+                    <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                        <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
+                            {!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                                <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
+                            </PageContext.Provider>}
+                        </RenderPageView>
+                    </LayoutContext.Provider>)
+        )
 }
 
 interface PageByUrlProps extends Props {
@@ -1396,6 +1423,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
             return layoutFromCache?.find((e: any) => e.Setting?.className?.includes(LayoutElement.body))
         } else return undefined
     }, [layout, layers.length, pageItem?.LayoutId])
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (!loading) setLoading(true)
@@ -1466,21 +1494,44 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
         return childrenData
     }, [childrenData, props.children, layoutBody, props.onlyLayout])
 
-    if (pageItem) {
-        if (props.onlyLayout) {
-            return !!layout.length && <RenderPageView
-                key={pageItem.LayoutId}
-                layers={layout}
-                {...props}
-                childrenData={propsChildren}
-                methods={props.methods ?? methods}
-            />
-        } else if (props.onlyBody) {
-            return !loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} />
-        } else {
-            return pageItem && !!layout.length ? <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
-            </RenderPageView> : null
-        }
-    } else return null
+    return pageItem &&
+        (props.onlyLayout ?
+            (!!layout.length && <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                <RenderPageView
+                    key={pageItem.LayoutId}
+                    layers={layout}
+                    {...props}
+                    childrenData={propsChildren}
+                    methods={props.methods ?? methods}
+                />
+            </LayoutContext.Provider>)
+            : props.onlyBody ?
+                (!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                    <RenderPageView
+                        key={pageItem.Id}
+                        layers={layers}
+                        {...props}
+                        childrenData={childrenData}
+                        methods={props.methods ?? methods}
+                    />
+                </PageContext.Provider>)
+                : (pageItem && !!layout.length &&
+                    <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                        <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
+                            {!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                                <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
+                            </PageContext.Provider>}
+                        </RenderPageView>
+                    </LayoutContext.Provider>)
+        )
+}
+
+const usePageContext = () => {
+    const context = useContext(PageContext)
+    return context
+}
+
+const useLayoutContext = () => {
+    const context = useContext(LayoutContext)
+    return context
 }

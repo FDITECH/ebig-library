@@ -1,5 +1,4 @@
-import { CSSProperties, forwardRef, useImperativeHandle, useMemo } from 'react';
-import { useRef } from 'react';
+import { CSSProperties, forwardRef, MutableRefObject, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
     ClassicEditor,
@@ -134,10 +133,46 @@ interface Props {
     handleExportPdf?: (editor: ClassicEditor) => void,
 }
 
+type PageSize = 'A4' | 'A3';
+type PageOrientation = 'portrait' | 'landscape';
+interface PageConfig { size: PageSize; orientation: PageOrientation; }
+
+const PAGE_DIMENSIONS: Record<PageSize, Record<PageOrientation, { width: number; height: number; widthMm: number; heightMm: number }>> = {
+    A4: {
+        portrait: { width: 794, height: 1123, widthMm: 210, heightMm: 297 },
+        landscape: { width: 1123, height: 794, widthMm: 297, heightMm: 210 },
+    },
+    A3: {
+        portrait: { width: 1123, height: 1587, widthMm: 297, heightMm: 420 },
+        landscape: { width: 1587, height: 1123, widthMm: 420, heightMm: 297 },
+    },
+};
+
+function applyPageDimensions(editor: any, config: PageConfig) {
+    const { width, height } = PAGE_DIMENSIONS[config.size][config.orientation];
+    const domRoot = (editor as any).editing.view.getDomRoot() as HTMLElement | undefined;
+    if (!domRoot) return;
+    domRoot.style.width = `${width}px`;
+    domRoot.style.minHeight = `${height}px`;
+    domRoot.style.margin = '0 auto';
+    domRoot.style.position = 'relative';
+    domRoot.style.boxSizing = 'border-box';
+}
+
 class ExportPdfCommand extends Command {
+    private _pageConfigRef: MutableRefObject<PageConfig>;
+
+    constructor(editor: any, pageConfigRef: MutableRefObject<PageConfig>) {
+        super(editor);
+        this._pageConfigRef = pageConfigRef;
+    }
+
     execute() {
         const editor = this.editor;
         const content = editor.getData();
+        const { size, orientation } = this._pageConfigRef.current;
+        const { widthMm, heightMm } = PAGE_DIMENSIONS[size][orientation];
+        const printSize = `${size}${orientation === 'landscape' ? ' landscape' : ''}`;
 
         const printWindow = window.open("", "_blank", "width=800,height=900");
         if (!printWindow) return;
@@ -178,12 +213,12 @@ class ExportPdfCommand extends Command {
                         padding: 0.4em;
                         border: 1px solid hsl(0, 0%, 75%);
                     }
-                            
+
                     figure.table table>thead>tr>th {
                         font-weight: 700;
                         background: #0000000d;
                     }
-                        
+
                     ruby {
                         display: ruby !important;
                         ruby-position: over !important;
@@ -196,35 +231,28 @@ class ExportPdfCommand extends Command {
                         line-height: 1 !important;
                     }
 
-                    rp {
-                        display: none !important;
-                    }
+                    rp { display: none !important; }
 
                     span:has(>ruby) {
                         display: ruby !important;
                         ruby-position: over !important;
                     }
 
-                    .a4-page {
-                        width: 210mm;
-                        min-height: 297mm;
+                    .page-content {
+                        width: ${widthMm}mm;
+                        min-height: ${heightMm}mm;
                         padding: 20mm;
                         box-sizing: border-box;
+                        position: relative;
                     }
 
-                    img {
-                        max-width: 100%;
-                        height: auto;
-                    }
+                    img { max-width: 100%; height: auto; }
 
-                    @page {
-                        size: A4;
-                        margin: 15mm;
-                    }
+                    @page { size: ${printSize}; margin: 15mm; }
                 </style>
             </head>
             <body>
-                <div class="a4-page">
+                <div class="page-content">
                     ${content}
                 </div>
             </body>
@@ -239,7 +267,6 @@ class ExportPdfCommand extends Command {
     }
 
     refresh() {
-        // This ensures the button is clickable
         this.isEnabled = true;
     }
 }
@@ -421,34 +448,179 @@ class RubySupport extends Plugin {
     }
 }
 
-class ExportPdfPlugin extends Plugin {
-    static get pluginName() {
-        return 'ExportPdf';
-    }
+function createExportPdfPlugin(pageConfigRef: MutableRefObject<PageConfig>) {
+    return class ExportPdfPlugin extends Plugin {
+        static get pluginName() { return 'ExportPdf' as const; }
 
-    init() {
-        const editor = this.editor;
-
-        // CORRECT: Instantiate the class. 
-        // The Command class parent automatically handles .destroy() logic.
-        editor.commands.add('exportPdf', new ExportPdfCommand(editor));
-
-        editor.ui.componentFactory.add('exportPdf', (locale) => {
-            const view = new ButtonView(locale);
-
-            view.set({
-                label: 'Export PDF',
-                icon: IconExportPdf,
-                tooltip: true
+        init() {
+            const editor = this.editor;
+            editor.commands.add('exportPdf', new ExportPdfCommand(editor, pageConfigRef));
+            editor.ui.componentFactory.add('exportPdf', (locale) => {
+                const view = new ButtonView(locale);
+                view.set({ label: 'Export PDF', icon: IconExportPdf, tooltip: true });
+                view.on('execute', () => { editor.execute('exportPdf'); });
+                return view;
             });
+        }
+    };
+}
 
-            view.on('execute', () => {
-                editor.execute('exportPdf');
-            });
+function createPageSetupPlugin(
+    t: (key: string) => string,
+    pageConfigRef: MutableRefObject<PageConfig>,
+    setPageConfig: (cfg: PageConfig) => void
+) {
+    let a4Btn: ButtonView | null = null;
+    let a3Btn: ButtonView | null = null;
+    let orientBtn: ButtonView | null = null;
 
-            return view;
+    const updateButtons = (cfg: PageConfig) => {
+        if (a4Btn) a4Btn.set({ isOn: cfg.size === 'A4' });
+        if (a3Btn) a3Btn.set({ isOn: cfg.size === 'A3' });
+        if (orientBtn) orientBtn.set({
+            isOn: cfg.orientation === 'landscape',
+            label: cfg.orientation === 'landscape' ? `⇕ ${t('portrait')}` : `⇔ ${t('landscape')}`,
         });
-    }
+    };
+
+    return class PageSetupPlugin extends Plugin {
+        static get pluginName() { return 'PageSetup' as const; }
+
+        init() {
+            const editor = this.editor;
+
+            editor.ui.componentFactory.add('pageA4', (locale) => {
+                a4Btn = new ButtonView(locale);
+                a4Btn.set({ label: 'A4', withText: true, tooltip: 'A4', isToggleable: true, isOn: pageConfigRef.current.size === 'A4' });
+                a4Btn.on('execute', () => {
+                    const cfg: PageConfig = { ...pageConfigRef.current, size: 'A4' };
+                    pageConfigRef.current = cfg;
+                    setPageConfig(cfg);
+                    applyPageDimensions(editor, cfg);
+                    updateButtons(cfg);
+                });
+                return a4Btn;
+            });
+
+            editor.ui.componentFactory.add('pageA3', (locale) => {
+                a3Btn = new ButtonView(locale);
+                a3Btn.set({ label: 'A3', withText: true, tooltip: 'A3', isToggleable: true, isOn: pageConfigRef.current.size === 'A3' });
+                a3Btn.on('execute', () => {
+                    const cfg: PageConfig = { ...pageConfigRef.current, size: 'A3' };
+                    pageConfigRef.current = cfg;
+                    setPageConfig(cfg);
+                    applyPageDimensions(editor, cfg);
+                    updateButtons(cfg);
+                });
+                return a3Btn;
+            });
+
+            editor.ui.componentFactory.add('pageOrientation', (locale) => {
+                orientBtn = new ButtonView(locale);
+                const isLandscape = pageConfigRef.current.orientation === 'landscape';
+                orientBtn.set({
+                    label: isLandscape ? `⇕ ${t('portrait')}` : `⇔ ${t('landscape')}`,
+                    withText: true,
+                    tooltip: true,
+                    isToggleable: true,
+                    isOn: isLandscape,
+                });
+                orientBtn.on('execute', () => {
+                    const newOrientation: PageOrientation = pageConfigRef.current.orientation === 'portrait' ? 'landscape' : 'portrait';
+                    const cfg: PageConfig = { ...pageConfigRef.current, orientation: newOrientation };
+                    pageConfigRef.current = cfg;
+                    setPageConfig(cfg);
+                    applyPageDimensions(editor, cfg);
+                    updateButtons(cfg);
+                });
+                return orientBtn;
+            });
+        }
+    };
+}
+
+function createFreePositionPlugin(t: (key: string) => string) {
+    return class FreePositionPlugin extends Plugin {
+        static get pluginName() { return 'FreePosition' as const; }
+
+        init() {
+            const editor = this.editor;
+
+            editor.ui.componentFactory.add('insertFreeBlock', (locale) => {
+                const btn = new ButtonView(locale);
+                btn.set({ label: t('freeBlock') || 'Free Block', withText: true, tooltip: true });
+                btn.on('execute', () => {
+                    const html = `<div data-free-position="true" style="position:absolute;left:20px;top:20px;width:200px;min-height:40px;padding:8px;border:1px dashed #287CF0;">Text</div>`;
+                    const viewFragment = editor.data.processor.toView(html);
+                    const modelFragment = editor.data.toModel(viewFragment, '$root');
+                    editor.model.change(() => { editor.model.insertContent(modelFragment); });
+                });
+                return btn;
+            });
+        }
+
+        afterInit() {
+            const editor = this.editor;
+            let dragging = false;
+            let dragEl: HTMLElement | null = null;
+            let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+            const domRoot = (editor as any).editing.view.getDomRoot() as HTMLElement | null;
+            if (!domRoot) return;
+
+            domRoot.addEventListener('mousedown', (e: MouseEvent) => {
+                const block = (e.target as HTMLElement).closest('[data-free-position="true"]') as HTMLElement | null;
+                if (!block) return;
+                e.preventDefault();
+                e.stopPropagation();
+                dragging = true;
+                dragEl = block;
+                block.classList.add('free-position-block--dragging');
+                startX = e.clientX;
+                startY = e.clientY;
+                startLeft = parseInt(block.style.left || '0', 10);
+                startTop = parseInt(block.style.top || '0', 10);
+            }, true);
+
+            const onMouseMove = (e: MouseEvent) => {
+                if (!dragging || !dragEl) return;
+                dragEl.style.left = `${Math.max(0, startLeft + (e.clientX - startX))}px`;
+                dragEl.style.top = `${Math.max(0, startTop + (e.clientY - startY))}px`;
+            };
+
+            const onMouseUp = () => {
+                if (!dragging || !dragEl) return;
+                dragging = false;
+                dragEl.classList.remove('free-position-block--dragging');
+                const left = dragEl.style.left;
+                const top = dragEl.style.top;
+                const targetEl = dragEl;
+                dragEl = null;
+
+                const viewEl = (editor as any).editing.view.domConverter.domToView(targetEl);
+                if (viewEl) {
+                    const modelEl = (editor as any).editing.mapper.toModelElement(viewEl);
+                    if (modelEl) {
+                        editor.model.change((writer: any) => {
+                            const attrs: any = modelEl.getAttribute('htmlAttributes') || {};
+                            writer.setAttribute('htmlAttributes', {
+                                ...attrs,
+                                styles: { ...(attrs.styles || {}), left, top },
+                            }, modelEl);
+                        });
+                    }
+                }
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+
+            this.listenTo(editor, 'destroy', () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            });
+        }
+    };
 }
 
 interface CustomRef {
@@ -459,13 +631,25 @@ interface CustomRef {
 export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: "100%", height: 400, maxHeight: 600, borderRadius: 8 }, extraPlugins = [], ...props }, ref) => {
     const editorContainerRef = useRef<HTMLDivElement | null>(null);
     const editorRef = useRef<ClassicEditor | null>(null);
-    const { t, i18n } = useTranslation()
+    const { t, i18n } = useTranslation();
+    const [pageConfig, setPageConfig] = useState<PageConfig>({ size: 'A4', orientation: 'portrait' });
+    const pageConfigRef = useRef<PageConfig>(pageConfig);
+    pageConfigRef.current = pageConfig;
+
+    useEffect(() => {
+        if (editorRef.current) applyPageDimensions(editorRef.current, pageConfig);
+    }, [pageConfig]);
 
     const editorConfig: any = useMemo(() => ({
         toolbar: {
             items: [
                 'exportPdf',
                 'fullscreen',
+                'pageA4',
+                'pageA3',
+                'pageOrientation',
+                'insertFreeBlock',
+                '|',
                 'heading',
                 '|',
                 // 'sourceEditing',
@@ -593,7 +777,11 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
         ],
         balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
         extraPlugins: [
-            ExportPdfPlugin, createMediaPropertiesPlugin(t), ...extraPlugins
+            createExportPdfPlugin(pageConfigRef),
+            createMediaPropertiesPlugin(t),
+            createPageSetupPlugin(t, pageConfigRef, setPageConfig),
+            createFreePositionPlugin(t),
+            ...extraPlugins
         ],
         mediaEmbed: {
             previewsInData: true,
@@ -976,7 +1164,10 @@ export const CustomCkEditor5 = forwardRef<CustomRef, Props>(({ style = { width: 
                 ref={(r: any) => {
                     if (r) editorRef.current = r.editor
                 }}
-                onReady={props.onReady}
+                onReady={(editor) => {
+                    applyPageDimensions(editor, pageConfigRef.current);
+                    props.onReady?.(editor);
+                }}
                 onAfterDestroy={props.onAfterDestroy}
                 onFocus={props.onFocus}
                 onChange={props.onChange}

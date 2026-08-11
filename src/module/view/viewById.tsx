@@ -1,5 +1,5 @@
-import { CSSProperties, ReactNode, useDeferredValue, useEffect, useMemo, useState } from "react"
-import { useForm } from "react-hook-form"
+import { createContext, CSSProperties, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { DataController, SettingDataController } from "../../controller/data"
 import { TableController } from "../../controller/setting"
@@ -24,6 +24,16 @@ interface Props {
     onLoaded?: (ev: { data: { [p: string]: any } }) => void,
 }
 
+interface ViewContextProps {
+    tbName: string,
+    data: { [p: string]: any } | undefined,
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
+    methods: UseFormReturn,
+    staticProps: { [p: string]: any }
+}
+
+const ViewContext = createContext<ViewContextProps | undefined>(undefined)
 const globalViewCache = new Map()
 export const ViewById = (props: Props) => {
     const methods = useForm({ shouldFocusError: false })
@@ -42,8 +52,19 @@ export const ViewById = (props: Props) => {
     useEffect(() => {
         if (props.id) {
             if (globalViewCache.has(props.id)) {
-                setViewItem(globalViewCache.get(props.id))
+                let cachedView = globalViewCache.get(props.id)
+                if (cachedView === "loading") {
+                    const interval = setInterval(() => {
+                        cachedView = globalViewCache.get(props.id)
+                        if (cachedView !== "loading") {
+                            setViewItem(cachedView)
+                            clearInterval(interval)
+                        }
+                    }, 150)
+                    return () => clearInterval(interval)
+                } else setViewItem(cachedView)
             } else {
+                globalViewCache.set(props.id, "loading")
                 const controller = new SettingDataController("view")
                 controller.getByIds([props.id]).then(async (res) => {
                     if (res.code === 200 && res.data[0]) {
@@ -51,12 +72,14 @@ export const ViewById = (props: Props) => {
                         if (_viewItem.Props && typeof _viewItem.Props === "string") _viewItem.Props = JSON.parse(_viewItem.Props)
                         setViewItem(_viewItem)
                         globalViewCache.set(props.id, _viewItem)
+                        return;
                     } else if (props.onGetViewError) props.onGetViewError(res)
+                    globalViewCache.delete(props.id)
                 })
             }
         }
         return () => {
-            if (globalViewCache.size > 20) globalViewCache.clear()
+            if (globalViewCache.size > 30) globalViewCache.clear()
             props.onUnMount?.()
         }
     }, [props.id])
@@ -174,6 +197,8 @@ export const ViewById = (props: Props) => {
         indexItem={indexItem}
         extendData={extendData}
         tbName={viewItem.TbName}
+        getData={getInitData}
+        setData={setIndexItem}
     /> : null
 }
 
@@ -181,7 +206,9 @@ interface RenderViewProps extends Props {
     layers: Array<{ [p: string]: any }>,
     indexItem?: { [p: string]: any },
     extendData: { [p: string]: any },
-    tbName?: string
+    tbName?: string,
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
 }
 
 const RenderView = (props: RenderViewProps) => {
@@ -189,6 +216,7 @@ const RenderView = (props: RenderViewProps) => {
     const [rels, setRels] = useState<Array<{ [p: string]: any }>>([])
     const [cols, setCols] = useState<Array<{ [p: string]: any }>>([])
     const [extendData, setExtendData] = useState<{ [p: string]: any }>({})
+    const staticProps = useRef({})
 
     useEffect(() => {
         const tmp: { [p: string]: any } = {}
@@ -207,23 +235,30 @@ const RenderView = (props: RenderViewProps) => {
         if (props.onChange) props.onChange({ data: props.indexItem, state: finalStateData })
     }, [finalStateData, props.indexItem])
 
-    return props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
-        return <RenderLayerElement
-            key={e.Id}
-            item={e}
-            list={props.layers}
-            style={props.style}
-            className={props.className}
-            type={"view"}
-            cols={cols}
-            rels={rels}
-            methods={methods}
-            indexItem={props.indexItem}
-            propsData={props.propsData}
-            childrenData={props.childrenData}
-            itemData={props.itemData}
-            options={extendData}
-            tbName={props.tbName}
-        />
-    })
+    return <ViewContext.Provider value={{ tbName: props.tbName!, data: props.indexItem, getData: props.getData, setData: props.setData, methods, staticProps: staticProps.current }}>
+        {props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
+            return <RenderLayerElement
+                key={e.Id}
+                item={e}
+                list={props.layers}
+                style={props.style}
+                className={props.className}
+                type={"view"}
+                cols={cols}
+                rels={rels}
+                methods={methods}
+                indexItem={props.indexItem}
+                propsData={props.propsData}
+                childrenData={props.childrenData}
+                itemData={props.itemData}
+                options={extendData}
+                tbName={props.tbName}
+            />
+        })}
+    </ViewContext.Provider>
+}
+
+export const useViewContext = () => {
+    const context = useContext(ViewContext);
+    return context;
 }

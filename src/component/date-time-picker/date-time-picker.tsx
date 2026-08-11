@@ -90,7 +90,8 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                 break;
             case "daterange":
             case "datetimerange":
-                if (!props.value || typeof props.value === "number" || props.value instanceof Date) {
+                if (!props.value) setValue(undefined)
+                else if (typeof props.value === "number" || props.value instanceof Date) {
                     const tmp = typeof props.value === "number" ? new Date(props.value) : props.value
                     setValue({ start: tmp, end: tmp })
                 } else {
@@ -101,7 +102,8 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
                 break;
             case "auto":
             default:
-                if (!props.value || typeof props.value === "number" || props.value instanceof Date) setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
+                if (!props.value) setValue(undefined)
+                else if (typeof props.value === "number" || props.value instanceof Date) setValue(typeof props.value === "number" ? new Date(props.value) : props.value)
                 else {
                     const initStart = typeof props.value.start === "number" ? new Date(props.value.start) : props.value.start
                     const initEnd = typeof props.value.end === "number" ? new Date(props.value.end) : props.value.end
@@ -119,8 +121,8 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
         containerRef.current.after(tmp)
         let tmpRect = tmp.getBoundingClientRect()
         let offset: any = {}
-        if (rect.bottom + 240 >= document.body.offsetHeight) offset.bottom = `calc(100dvh - ${rect.y}px + 2px)`
-        else offset.top = rect.bottom + 2
+        if (rect.bottom + (pickerType === "date" ? 340 : pickerType.includes("date") ? 460 : 480) >= document.body.offsetHeight) offset.bottom = `calc(100dvh - ${rect.y}px + 1px)`
+        else offset.top = rect.bottom + 1
         if (Math.abs(tmpRect.x - rect.x) > 2) {
             tmp.style.left = `${containerRef.current.offsetLeft}px`
             tmpRect = tmp.getBoundingClientRect()
@@ -129,7 +131,7 @@ export function DateTimePicker({ style = {}, pickerType = "auto", ...props }: Da
             } else offset.left = containerRef.current.offsetLeft
         }
         tmp.remove()
-        if (rect.right + 16 >= document.body.offsetWidth) {
+        if ((offset.left + 300) >= document.body.offsetWidth) {
             offset.right = `calc(100dvw - ${rect.right}px)`
             delete offset.left
         }

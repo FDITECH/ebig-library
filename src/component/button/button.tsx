@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom";
 import React, { CSSProperties, forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Text } from '../text/text';
 import styles from './button.module.css'
 import { showTooltipElement } from "../icon/ebig-icon";
 
@@ -33,7 +32,7 @@ interface ButtonProps {
 export const Button = forwardRef<HTMLButtonElement | null, ButtonProps>(({ tooltip, disabled, linkTo, className, type = "button", prefix, suffix, label, target, onClick, onAuxClick, ...props }, ref) => {
     const btnRef = useRef<HTMLButtonElement>(null)
     const [showTooltip, setShowTooltip] = useState<boolean>(false)
-    const timoutRef = useRef<NodeJS.Timeout>(null)
+    const timoutRef = useRef<any>(null)
 
     useEffect(() => {
         if (btnRef.current) {

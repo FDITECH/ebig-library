@@ -32,7 +32,7 @@ function delay(t: number) {
 const fetchIcons: { [key: string]: number } = {}
 export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link, className, style = {}, size, color, alt, onClick, tooltip, onMouseDown, onDoubleClick, simpleStyle, title }, ref) => {
     const divRef = useRef<HTMLDivElement>(null)
-    const timoutRef = useRef<NodeJS.Timeout>(null)
+    const timoutRef = useRef<any>(null)
     const [svgData, setSvgData] = useState<string>()
     const [showTooltip, setShowTooltip] = useState<boolean>(false)
     const cdnSrc = "https://cdn.ebig.co/icon-library/"
@@ -2874,6 +2874,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "fill/development/shape-triangle" |
     "fill/development/shapes" |
     "fill/development/sharpener" |
+    "fill/development/shield" |
     "fill/development/sidebar" |
     "fill/development/size-large" |
     "fill/development/size-medium" |
@@ -3665,6 +3666,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/social-media/telegram" |
     "color/social-media/tiktok" |
     "color/social-media/twitch" |
+    "color/social-media/zalo" |
     "fill/social-media/discord" |
     "fill/social-media/devto" |
     "fill/social-media/google" |
@@ -8892,6 +8894,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/development/bullet-list-70" |
     "color/development/button-2" |
     "color/development/canvas" |
+    "color/development/css" |
     "color/development/cards" |
     "color/development/clone" |
     "color/development/code-editor" |
@@ -8999,6 +9002,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/development/invert-process" |
     "color/development/js-console" |
     "color/development/json-logo" |
+    "color/development/javascript" |
     "color/development/ladybug" |
     "color/development/layers-2" |
     "color/development/layers" |
@@ -9633,6 +9637,8 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "outline/editing/quote" |
     "outline/editing/reduce-2" |
     "outline/editing/rename" |
+    "outline/editing/replace-all" |
+    "outline/editing/replace-letter" |
     "outline/editing/scribble" |
     "outline/editing/signature" |
     "outline/editing/signature-2" |

@@ -38,7 +38,6 @@ A modern, lightweight React + TypeScript UI component library by **eBig** — 35
   - [ProgressBar](#progressbar)
   - [ProgressCircle](#progresscircle)
   - [Calendar](#calendar)
-  - [Carousel](#carousel)
   - [VideoPlayer / AudioPlayer / IframePlayer](#videoplayer--audioplayer--iframeplayer)
   - [ImportFile / UploadFiles](#importfile--uploadfiles)
   - [CustomCkEditor5](#customckeditor5)
@@ -55,7 +54,6 @@ A modern, lightweight React + TypeScript UI component library by **eBig** — 35
   - [AccountController](#accountcontroller)
   - [EbigController](#ebigcontroller)
   - [TableController](#tablecontroller)
-  - [IntegrationController](#integrationcontroller)
   - [BaseDA](#baseda)
 - [Backend-Driven Modules](#backend-driven-modules)
 - [Design Tokens & Theming](#design-tokens--theming)
@@ -521,19 +519,6 @@ import { Calendar } from 'ebig-library'
 
 ---
 
-### Carousel
-
-```tsx
-import { Carousel } from 'ebig-library'
-
-<Carousel>
-  <img src="/slide1.jpg" alt="Slide 1" />
-  <img src="/slide2.jpg" alt="Slide 2" />
-</Carousel>
-```
-
----
-
 ### VideoPlayer / AudioPlayer / IframePlayer
 
 ```tsx
@@ -840,18 +825,6 @@ const tables = await ctrl.getAll()
 await ctrl.add([{ Name: 'Orders' }])
 await ctrl.edit([{ Id: 'xxx', Name: 'OrdersV2' }])
 await ctrl.delete(['xxx'])
-```
-
-### IntegrationController
-
-```tsx
-import { IntegrationController } from 'ebig-library'
-
-const integration = new IntegrationController()
-await integration.sendEmail({
-  templateId: 'welcome-email',
-  templateParams: { to: 'user@example.com', name: 'Alice' }
-})
 ```
 
 ### BaseDA

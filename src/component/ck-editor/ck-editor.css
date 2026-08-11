@@ -303,3 +303,22 @@ span:has(>ruby) {
     display: ruby !important;
     ruby-position: over !important;
 }
+
+/* Free-position drag block */
+.ck-editor__editable [data-free-position="true"] {
+    cursor: grab;
+    outline: 1px dashed transparent;
+    transition: outline-color 0.15s;
+    box-sizing: border-box;
+}
+
+.ck-editor__editable [data-free-position="true"]:hover {
+    outline-color: #287CF0;
+}
+
+.ck-editor__editable [data-free-position="true"].free-position-block--dragging {
+    cursor: grabbing;
+    outline-color: #287CF0;
+    opacity: 0.85;
+    user-select: none;
+}

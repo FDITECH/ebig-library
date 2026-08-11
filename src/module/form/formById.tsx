@@ -1,7 +1,7 @@
-import { CSSProperties, forwardRef, ReactNode, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
+import { createContext, CSSProperties, forwardRef, ReactNode, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, getValidLink, globalTableCache, RenderLayerElement } from "../page/pageById"
-import { AccountController, BaseDA, DataController, OptionsItem, randomGID, SettingDataController, urlToFileType, Util } from "../../index"
+import { BaseDA, DataController, OptionsItem, randomGID, SettingDataController, urlToFileType, Util } from "../../index"
 import { ComponentType, FEDataType } from "../da"
 import { validateForm } from "./config"
 import { TableController } from "../../controller/setting"
@@ -33,6 +33,17 @@ interface FormByIdRef {
     rels: Array<{ [p: string]: any }>,
 }
 
+interface FormContextProps {
+    tbName: string,
+    initialData: { [p: string]: any } | undefined,
+    data: { [p: string]: any } | undefined,
+    getData: () => Promise<void>,
+    setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
+    methods: UseFormReturn<FieldValues, any, FieldValues>,
+    staticProps: { [p: string]: any }
+}
+
+const FormContext = createContext<FormContextProps | undefined>(undefined)
 const globalFormCache = new Map()
 export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const methods = useForm({ shouldFocusError: false })
@@ -48,12 +59,24 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const [cols, setCols] = useState<Array<{ [p: string]: any }>>([])
     const [rels, setRels] = useState<Array<{ [p: string]: any }>>([])
     const [relativeCols, setRelativeCols] = useState<Array<{ [p: string]: any }>>([])
+    const staticProps = useRef({})
 
     useEffect(() => {
         if (props.id) {
             if (globalFormCache.has(props.id)) {
-                setFormItem(globalFormCache.get(props.id))
+                let cachedForm = globalFormCache.get(props.id)
+                if (cachedForm === "loading") {
+                    const interval = setInterval(() => {
+                        cachedForm = globalFormCache.get(props.id)
+                        if (cachedForm !== "loading") {
+                            setFormItem(cachedForm)
+                            clearInterval(interval)
+                        }
+                    }, 150)
+                    return () => clearInterval(interval)
+                } else setFormItem(cachedForm)
             } else {
+                globalFormCache.set(props.id, "loading")
                 const controller = new SettingDataController("form")
                 controller.getByIds([props.id]).then(async (res) => {
                     if (res.code === 200 && res.data[0]) {
@@ -62,7 +85,9 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
                         if (!Array.isArray(_formItem.Props)) _formItem.Props = []
                         setFormItem(_formItem)
                         globalFormCache.set(props.id, _formItem)
+                        return;
                     } else if (props.onGetFormError) props.onGetFormError(res)
+                    globalFormCache.delete(props.id)
                 })
             }
         }
@@ -354,24 +379,31 @@ export const FormById = forwardRef<FormByIdRef, Props>((props, ref) => {
     const finalOptions = useMemo(() => methodOptions.watch(), [JSON.stringify(methodOptions.watch())])
     const opts = useDeferredValue(finalOptions)
 
-    return formItem && !!cols.length && finalFormValues && layers.filter((e: any) => !e.ParentId).map((e: any) => {
-        return <RenderLayerElement
-            key={e.Id}
-            item={e}
-            list={layers}
-            style={props.style}
-            className={props.className}
-            type={"form"}
-            methods={methods}
-            indexItem={finalFormValues}
-            propsData={props.propsData}
-            childrenData={props.childrenData}
-            itemData={props.itemData}
-            cols={mapColOptions}
-            rels={rels.map((_rel => ({ ..._rel, getOptions: async (params: any) => await getOptions({ ...params, _rel }) }))).concat(relativeCols as any)}
-            options={opts}
-            onSubmit={methods.handleSubmit(onSubmit, props.onError)}
-            tbName={formItem.TbName}
-        />
-    })
+    return <FormContext.Provider value={{ tbName: formItem?.TbName, data: finalFormValues, getData: getInitData, setData: methods.reset, initialData: props.data, methods, staticProps: staticProps.current }}>
+        {formItem && !!cols.length && finalFormValues && layers.filter((e: any) => !e.ParentId).map((e: any) => {
+            return <RenderLayerElement
+                key={e.Id}
+                item={e}
+                list={layers}
+                style={props.style}
+                className={props.className}
+                type={"form"}
+                methods={methods}
+                indexItem={finalFormValues}
+                propsData={props.propsData}
+                childrenData={props.childrenData}
+                itemData={props.itemData}
+                cols={mapColOptions}
+                rels={rels.map((_rel => ({ ..._rel, getOptions: async (params: any) => await getOptions({ ...params, _rel }) }))).concat(relativeCols as any)}
+                options={opts}
+                onSubmit={methods.handleSubmit(onSubmit, props.onError)}
+                tbName={formItem.TbName}
+            />
+        })}
+    </FormContext.Provider>
 })
+
+export const useFormContext = () => {
+    const context = useContext(FormContext);
+    return context;
+}

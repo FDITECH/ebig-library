@@ -93,6 +93,13 @@ export enum TriggerType {
     dimiss = "dimiss",
     locationChange = "locationChange",
     getOptions = "getOptions",
+    pointerDown = "pointerdown",
+    pointerUp = "pointerup",
+    pointerEnter = "pointerenter",
+    pointerLeave = "pointerleave",
+    pointerMove = "pointermove",
+    pointerOut = "pointerout",
+    auxClick = "auxClick"
 }
 
 export enum ActionType {

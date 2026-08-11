@@ -45,7 +45,12 @@ export const FInputPassword = forwardRef<any, FTextFieldProps>((props, ref) => {
         autoComplete="off"
         type={isShowPass ? "text" : "password"}
         suffix={<>
-            <Ebigicon src={`outline/user-interface/${isShowPass ? "view" : "hide"}`} size={"inherit"} onClick={() => setIsShowPass(!isShowPass)} />
+            <Ebigicon
+                src={`outline/user-interface/${isShowPass ? "hide" : "view"}`}
+                size={"inherit"}
+                title={(isShowPass ? t("hide") : t("view")) + " " + t("password").toLowerCase()}
+                onClick={() => setIsShowPass(!isShowPass)}
+            />
             {props.suffix}
         </>}
         register={props.name?.length ? (props.methods!.register(props.name, { required: props.required }) as any) : undefined}
@@ -119,10 +124,11 @@ interface FRadioButtonProps {
     offColor?: string;
     className?: string;
     methods: UseFormReturn<FieldValues, any, undefined>;
+    onClick?: React.MouseEventHandler<HTMLLabelElement>;
 }
 
 export const FRadioButton = forwardRef<any, FRadioButtonProps>(({ labelPosition = "right", ...props }, ref) => {
-    return <label ref={ref} id={props.id} className={`row ${styles["f-radio-button"]} ${props.className ?? ""}`} style={props.style}>
+    return <label ref={ref} id={props.id} className={`row ${styles["f-radio-button"]} ${props.className ?? ""}`} style={props.style} onClick={props.onClick}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}
@@ -172,10 +178,11 @@ interface FCheckboxProps {
 interface FCheckbox1Props extends FCheckboxProps {
     value?: boolean;
     onChange?: (value: boolean, target: HTMLInputElement) => void;
+    onClick?: React.MouseEventHandler<HTMLLabelElement>
 }
 
 export const FCheckbox = forwardRef<any, FCheckbox1Props>(({ labelPosition = "right", shape = "rectangle", ...props }, ref) => {
-    return <label ref={ref} id={props.id} className={`row ${styles["f-checkbox"]} ${props.className ?? ""}`} style={props.style}>
+    return <label ref={ref} id={props.id} className={`row ${styles["f-checkbox"]} ${props.className ?? ""}`} style={props.style} onClick={props.onClick}>
         {!!props.label && labelPosition === "left" && <span>{props.label}</span>}
         {props.name ? <Controller
             name={props.name}
@@ -285,7 +292,7 @@ export const FSelectDropdownForm = forwardRef<any, FDropdownSelectProps>(({ meth
             return <SelectDropdown
                 ref={ref}
                 {...customprops}
-                value={props.multiple ? tmp?.split(",") : tmp}
+                value={props.multiple ? (Array.isArray(tmp) ? tmp : tmp?.split(",")) : tmp}
                 onChange={(ev: any) => {
                     const value = props.multiple ? ev : ev?.id;
                     field.onChange(value);

@@ -269,7 +269,7 @@ export const SelectDropdown = forwardRef<SelectDropdownRef, SelectDropdownProps>
 
     // Single state
     const [singleValue, setSingleValue] = useState<string | number | undefined>(undefined)
-    const singleItem = useMemo(() => options.find(e => e.id === singleValue), [options.length, singleValue])
+    const singleItem = useMemo(() => options.find(e => e.id === singleValue), [JSON.stringify(options.map(e => e.id)), singleValue])
 
     // Multi state
     const previewMaxLength = (multiple ? (props as MultipleProps).previewMaxLength : 2) ?? 2

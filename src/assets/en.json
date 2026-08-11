@@ -74,6 +74,8 @@
     "or": "Or",
     "username": "Username",
     "password": "Password",
+    "view": "View",
+    "hide": "Hide",
     "dontHaveAccount": "Don't have an account?",
     "forgotPassword": "Forgot your password?",
     "login": "Log in",
@@ -161,5 +163,8 @@
     "database": "Database",
     "autoplay": "Autoplay",
     "loop": "Loop",
-    "muted": "Muted"
+    "muted": "Muted",
+    "portrait": "Portrait",
+    "landscape": "Landscape",
+    "freeBlock": "Free Block"
 }

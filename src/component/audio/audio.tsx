@@ -38,6 +38,8 @@ export const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ contr
 
     if (src || sources) {
         return <audio
+            id={props.id}
+            key={src}
             ref={audioRef as any}
             controls={controls}
             controlsList={controls ? controlsList : undefined}

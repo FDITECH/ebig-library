@@ -9,9 +9,9 @@ This repository is a React + TypeScript UI component library (library entry: `sr
 | `src/module/EbigProvider.tsx` | Root provider (`EbigProvider`). Sets up routing, toasts, i18n, design tokens. Wraps `BrowserRouter` internally — consumers must NOT add another one. |
 | `src/controller/config.tsx` | `ConfigData` singleton, token-refresh flow, cookie helpers, `BaseDA` (all HTTP calls). |
 | `src/controller/data.tsx` | `DataController`, `SettingDataController`, `AccountController` — all require `ConfigData.pid` and `ConfigData.url` to be set first. |
-| `src/controller/setting.tsx` | `TableController` (settings CRUD), `EbigController` (project-level queries — keep `ebig/` API paths unchanged), `IntegrationController`. |
+| `src/controller/setting.tsx` | `TableController` (settings CRUD), `EbigController` (project-level queries — keep `ebig/` API paths unchanged). |
 | `src/language/i18n.tsx` | Default en/vi i18n bundles; dynamic bundles loaded by `EbigProvider` at runtime. |
-| `vite.config.ts` | Library build: entry `src/index.tsx`, formats `["es","cjs"]`, CSS emitted as `style.css`, externals include `react`, `react-dom`, `react-router-dom`, `ckeditor5`. |
+| `vite.config.ts` | Library build: entry `src/index.tsx`, formats `["es","cjs"]`, CSS emitted as `style.css`, externals include `react`, `react-dom`, `react-router`, `ckeditor5`. |
 | `src/index.tsx` | Single source of truth for public API surface — add/remove exports here. |
 
 ### Branding & naming conventions
