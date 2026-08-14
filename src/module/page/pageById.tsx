@@ -120,9 +120,10 @@ export const RenderLayerElement = (props: RenderLayerElementProps) => {
 
 export const getValidLink = (link: string) => {
     if (!link) return ""
-    if (link.startsWith("http")) return link
-    if (ConfigData.regexGuid.test(link) || !link.startsWith("/")) return ConfigData.imgUrlId + link
-    else return ConfigData.fileUrl + link
+    let tmpLink = link.trim().replaceAll("\\", "/").replaceAll("//", "/")
+    if (tmpLink.startsWith("http")) return tmpLink
+    if (ConfigData.regexGuid.test(tmpLink) || !tmpLink.startsWith("/")) return ConfigData.imgUrlId + tmpLink
+    else return ConfigData.fileUrl + tmpLink
 }
 
 export const AsyncFunction = Object.getPrototypeOf(async function () { }).constructor;
