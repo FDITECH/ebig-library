@@ -24,7 +24,7 @@ interface Props {
     helperText?: string;
     helperTextColor?: string;
     /** default: ["emoji", "bold", "italic", "underline", "hyperlink", "rubytext"] */
-    customToolbar?: ReactNode | Array<ReactNode | "emoji" | "bold" | "italic" | "underline" | "hyperlink" | "rubytext">;
+    customToolbar?: ReactNode | Array<ReactNode | "heading" | "emoji" | "bold" | "italic" | "underline" | "hyperlink" | "rubytext">;
     simpleStyle?: boolean;
     readOnly?: boolean;
 }
@@ -220,10 +220,18 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         bold: false,
         italic: false,
         underline: false,
+        heading: false,
     });
 
     const handleFormat = useCallback((command: "bold" | "italic" | "underline") => {
         document.execCommand(command, false);
+        inputContentRef.current?.focus();
+        updateActiveStyles();
+    }, []);
+
+    const handleHeading = useCallback(() => {
+        const isH3 = document.queryCommandValue('formatBlock') === 'h3';
+        document.execCommand('formatBlock', false, isH3 ? 'div' : 'h3');
         inputContentRef.current?.focus();
         updateActiveStyles();
     }, []);
@@ -307,6 +315,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             bold: document.queryCommandState('bold'),
             italic: document.queryCommandState('italic'),
             underline: document.queryCommandState('underline'),
+            heading: document.queryCommandValue('formatBlock') === 'h3',
         });
     }, []);
 
@@ -361,6 +370,18 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 }
                 showEmoji(offset)
             })} />
+    }
+
+    const returnHeading = (k?: string) => {
+        return <Ebigicon
+            key={k}
+            src='outline/text/heading-1'
+            className="icon-button size24 light"
+            size={18}
+            color={activeStyles.heading ? "var(--primary-main-color)" : undefined}
+            onMouseDown={(ev) => { ev.preventDefault() }}
+            onClick={(disabled || readOnly) ? undefined : handleHeading}
+        />
     }
 
     const returnBold = (k?: string) => {
@@ -472,6 +493,8 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 4 }}>
             {Array.isArray(customToolbar) ? customToolbar.map((tb, i) => {
                 switch (tb) {
+                    case "heading":
+                        return returnHeading(`${tb}-${i}`)
                     case "emoji":
                         return returnEmoji(`${tb}-${i}`)
                     case "bold":
@@ -489,6 +512,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 }
             }) :
                 <>
+                    {returnHeading()}
                     {returnEmoji()}
                     {returnBold()}
                     {returnItalic()}

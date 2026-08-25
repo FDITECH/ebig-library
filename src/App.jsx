@@ -6,7 +6,6 @@ import {
   AudioPlayer,
   Button,
   Calendar,
-  Carousel,
   Checkbox,
   ColorPicker,
   ComponentStatus,
@@ -19,7 +18,6 @@ import {
   IframePlayer,
   ImportFile,
   InfiniteScroll,
-  InputOtp,
   NumberPicker,
   Pagination,
   Popup,
@@ -40,11 +38,11 @@ import {
   ToastMessage,
   UploadFiles,
   VideoPlayer,
-  useTranslation,
   DataController,
   ConfigData,
   CkEditorUploadAdapter,
 } from './index'
+import { useTranslation } from 'react-i18next'
 
 /* ── Styles ────────────────────────────────────────────────── */
 const sectionStyle = {
@@ -288,12 +286,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── InputOtp ──────────────────────────────────── */}
-      <section style={sectionStyle}>
-        <div style={headingStyle}>InputOtp</div>
-        <InputOtp length={6} value={otpVal} onChange={(v) => setOtpVal(v)} />
-      </section>
-
       {/* ── DateTimePicker ────────────────────────────── */}
       <section style={sectionStyle}>
         <div style={headingStyle}>DateTimePicker</div>
@@ -428,27 +420,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── Carousel ──────────────────────────────────── */}
-      <section style={sectionStyle}>
-        <div style={headingStyle}>Carousel</div>
-        <Carousel
-          autoPlay
-          duration={3000}
-          buttons
-          style={{ height: '24rem', width: '100%' }}
-        >
-          <div style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#fff', fontSize: '2.4rem', fontWeight: 700 }}>
-            Slide 1
-          </div>
-          <div style={{ background: 'linear-gradient(135deg, #f093fb, #f5576c)', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#fff', fontSize: '2.4rem', fontWeight: 700 }}>
-            Slide 2
-          </div>
-          <div style={{ background: 'linear-gradient(135deg, #4facfe, #00f2fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#fff', fontSize: '2.4rem', fontWeight: 700 }}>
-            Slide 3
-          </div>
-        </Carousel>
-      </section>
-
       {/* ── SimpleButton ──────────────────────────────── */}
       <section style={sectionStyle}>
         <div style={headingStyle}>SimpleButton</div>
@@ -503,9 +474,7 @@ export default function App() {
       <section style={sectionStyle}>
         <div style={headingStyle}>EbigEditor</div>
         <EbigEditor
-          initValue={ckValue}
           placeholder="Type something with rich-text support…"
-          style={{ width: '100%', minHeight: '12rem', fontSize: 48, lineHeight: "normal" }}
           onChange={(value) => console.log('Editor value:', value)}
         />
       </section>

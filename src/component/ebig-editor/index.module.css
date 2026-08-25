@@ -37,6 +37,26 @@
     font-size: 1em;
 }
 
+.ebig-editor-input b {
+    font-weight: 500;
+}
+
+.ebig-editor-input i {
+    font-style: italic;
+}
+
+.ebig-editor-input h1,
+.ebig-editor-input h2,
+.ebig-editor-input h3,
+.ebig-editor-input h4,
+.ebig-editor-input h5,
+.ebig-editor-input h6 {
+    margin: 0 0 0.46em 0;
+    font-weight: 500;
+    font-size: 1.25em;
+    line-height: 1.333;
+}
+
 .ebig-editor-input rt {
     font-size: 0.5em !important;
     line-height: 1 !important;
