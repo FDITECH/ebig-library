@@ -377,8 +377,9 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/text/heading-1'
             className="icon-button size24 light"
-            size={18}
+            size={16}
             color={activeStyles.heading ? "var(--primary-main-color)" : undefined}
+            style={activeStyles.heading ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : handleHeading}
         />
@@ -391,6 +392,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             className="icon-button size24 light"
             size={14}
             color={activeStyles.bold ? "var(--primary-main-color)" : undefined}
+            style={activeStyles.bold ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("bold") })}
         />
@@ -403,6 +405,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             className="icon-button size24 light"
             size={14}
             color={activeStyles.italic ? "var(--primary-main-color)" : undefined}
+            style={activeStyles.italic ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("italic") })}
         />
@@ -415,6 +418,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             className="icon-button size24 light"
             size={14}
             color={activeStyles.underline ? "var(--primary-main-color)" : undefined}
+            style={activeStyles.underline ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : (() => { handleFormat("underline") })}
         />
