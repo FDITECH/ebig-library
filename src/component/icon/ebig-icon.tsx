@@ -9060,6 +9060,8 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/development/pen-tool" |
     "color/development/photo-album" |
     "color/development/photo-editor" |
+    "color/development/phone-call" |
+    "color/development/phone-call-end" |
     "color/development/pilcrow" |
     "color/development/plug-2" |
     "color/development/position" |
@@ -9108,6 +9110,7 @@ type EbigIconName = "color/accessibility/accessibility-lift" |
     "color/development/style" |
     "color/development/tablet-mobile" |
     "color/development/texture" |
+    "color/development/telephone" |
     "color/development/three-dimensional-object" |
     "color/development/time-machine" |
     "color/development/timeline" |
