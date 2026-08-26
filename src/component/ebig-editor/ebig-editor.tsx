@@ -345,6 +345,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         return <Ebigicon
             key={k}
             src='outline/emoticons/smile' size={16}
+            className="icon-button size24 light"
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : ((ev: any) => {
                 if (isOpenEmoji) return null;
@@ -352,7 +353,6 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 const tmp = document.createElement("div")
                 tmp.style.position = "fixed"
                 ev.currentTarget.after(tmp)
-                let tmpRect = tmp.getBoundingClientRect()
                 let offset: any = { left: rect.x, top: rect.bottom + 1 }
                 if (offset.left + 268 >= document.body.offsetWidth) {
                     delete offset.left
@@ -360,7 +360,11 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 }
                 if (offset.top + 268 >= document.body.offsetHeight) {
                     delete offset.top
-                    offset.bottom = `calc(100dvh - ${rect.bottom}px)`
+                    offset.bottom = `calc(100dvh - ${rect.y + 4}px)`
+                    if (offset.left && document.body.offsetWidth - rect.right - 268 > 0) {
+                        delete offset.left
+                        offset.right = `calc(100dvw - ${rect.left + 4}px)`
+                    }
                 }
                 showEmoji(offset)
             })} />
@@ -488,7 +492,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onApply={applyRubyText}
             style={rubyTextOffsetRef.current as any}
         />}
-        {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 4 }}>
+        {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 2 }}>
             {Array.isArray(customToolbar) ? customToolbar.map((tb, i) => {
                 switch (tb) {
                     case "heading":
@@ -510,8 +514,8 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 }
             }) :
                 <>
-                    {returnHeading()}
                     {returnEmoji()}
+                    {returnHeading()}
                     {returnBold()}
                     {returnItalic()}
                     {returnUnderline()}
