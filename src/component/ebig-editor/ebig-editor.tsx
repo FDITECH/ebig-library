@@ -73,7 +73,18 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                         var emoji: any = document.createElement("a")
                         emoji.href = content;
                         emoji.target = "_blank"
-                        emoji.textContent = content
+                        emoji.textContent = content;
+                        emoji.onmousedown = (ev: any) => {
+                            ev.preventDefault();
+                        }
+                        emoji.onclick = () => {
+                            const rectLink = emoji.getBoundingClientRect();
+                            insertLinkOffsetRef.current = { top: rectLink.bottom + 2 }
+                            setShowLinkDetails(emoji)
+                        }
+                        const rect = savedRange.current.getBoundingClientRect();
+                        insertLinkOffsetRef.current = { top: rect.bottom + 2 }
+                        setShowLinkPrompt(true);
                     } else {
                         emoji = document.createTextNode(content);
                     }
