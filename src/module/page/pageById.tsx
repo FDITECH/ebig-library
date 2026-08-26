@@ -1120,6 +1120,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             />
         case ComponentType.ebigEditor:
             return <EbigEditor
+                ref={htmlElementRef}
                 simpleStyle
                 {...typeProps}
                 {...restOfActions}
