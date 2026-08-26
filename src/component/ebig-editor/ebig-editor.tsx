@@ -345,28 +345,26 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         return <Ebigicon
             key={k}
             src='outline/emoticons/smile' size={16}
+            className="icon-button size24 light"
             onMouseDown={(ev) => { ev.preventDefault() }}
-            onClick={(disabled || readOnly) ? undefined : ((ev) => {
+            onClick={(disabled || readOnly) ? undefined : ((ev: any) => {
                 if (isOpenEmoji) return null;
-                const rect = ev.currentTarget.getBoundingClientRect()
+                const rect = ev.target.closest("div").getBoundingClientRect()
                 const tmp = document.createElement("div")
                 tmp.style.position = "fixed"
                 ev.currentTarget.after(tmp)
-                let tmpRect = tmp.getBoundingClientRect()
-                let offset: any = {}
-                if (rect.bottom + 240 >= document.body.offsetHeight) offset.bottom = `calc(100dvh - ${rect.y}px + 2px)`
-                else offset.top = rect.bottom + 2
-                if (Math.abs(tmpRect.x - rect.x) > 2) {
-                    tmp.style.left = `${ev.currentTarget.offsetLeft}px`
-                    tmpRect = tmp.getBoundingClientRect()
-                    if (Math.abs(tmpRect.x - rect.x) > 2) {
-                        offset.left = rect.x
-                    } else offset.left = ev.currentTarget.offsetLeft
-                }
-                tmp.remove()
-                if (rect.right + 16 >= document.body.offsetWidth) {
-                    offset.right = `calc(100dvw - ${rect.right}px)`
+                let offset: any = { left: rect.x, top: rect.bottom + 1 }
+                if (offset.left + 268 >= document.body.offsetWidth) {
                     delete offset.left
+                    offset.right = `calc(100dvw - ${rect.right}px)`
+                }
+                if (offset.top + 268 >= document.body.offsetHeight) {
+                    delete offset.top
+                    offset.bottom = `calc(100dvh - ${rect.y + 4}px)`
+                    if (offset.left && document.body.offsetWidth - rect.right - 268 > 0) {
+                        delete offset.left
+                        offset.right = `calc(100dvw - ${rect.left + 4}px)`
+                    }
                 }
                 showEmoji(offset)
             })} />
@@ -390,7 +388,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/text/bold'
             className="icon-button size24 light"
-            size={14}
+            size={13}
             color={activeStyles.bold ? "var(--primary-main-color)" : undefined}
             style={activeStyles.bold ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
@@ -428,7 +426,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         return <Ebigicon
             key={k}
             src='outline/user-interface/hyperlink'
-            className='icon-button size32'
+            className='icon-button size24 light'
             size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : handleLink}
@@ -452,7 +450,6 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         style={{ '--helper-text-color': helperTextColor ?? '#e14337', ...style } as CSSProperties}
         helper-text={helperText}
     >
-        <Popup ref={popupRef} />
         <div ref={inputContentRef}
             className={`${styles["ebig-editor-input"]}`}
             suppressContentEditableWarning
@@ -468,6 +465,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onBlur={(disabled || readOnly) ? undefined : (() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) })}
             {...(placeholder ? { placeholder: placeholder } : {})}
         />
+        <Popup ref={popupRef} />
         {showLinkDetails && <PopupLinkDetails
             element={showLinkDetails}
             onClose={() => {
@@ -494,7 +492,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onApply={applyRubyText}
             style={rubyTextOffsetRef.current as any}
         />}
-        {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 4 }}>
+        {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 2 }}>
             {Array.isArray(customToolbar) ? customToolbar.map((tb, i) => {
                 switch (tb) {
                     case "heading":
@@ -516,8 +514,8 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                 }
             }) :
                 <>
-                    {returnHeading()}
                     {returnEmoji()}
+                    {returnHeading()}
                     {returnBold()}
                     {returnItalic()}
                     {returnUnderline()}
@@ -529,6 +527,8 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onClose={() => { setTimeout(() => { setIsOpenEmoji(undefined) }, 150) }}
             style={emojiOffsetRef.current as any}
             {...isOpenEmoji}
+            width={260}
+            height={260}
             onSelect={(em) => {
                 const img = document.createElement("img")
                 img.src = em.imageUrl
@@ -542,7 +542,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
 })
 
 
-const PopupEmojiPicker = ({ height = 400, ...props }: { style: CSSProperties, emojiPickerClassName?: string, searchDisabled?: boolean, height?: number, emojiStyle?: EmojiStyle, onClose: () => void, onSelect: (emoji: EmojiClickData) => void }) => {
+const PopupEmojiPicker = ({ height = 400, width = 300, ...props }: { style: CSSProperties, emojiPickerClassName?: string, searchDisabled?: boolean, height?: number, width?: number, emojiStyle?: EmojiStyle, onClose: () => void, onSelect: (emoji: EmojiClickData) => void }) => {
     const divRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation()
 
@@ -566,6 +566,9 @@ const PopupEmojiPicker = ({ height = 400, ...props }: { style: CSSProperties, em
             skinTonesDisabled
             emojiStyle={props.emojiStyle ?? EmojiStyle.APPLE}
             height={height}
+            width={width}
+            style={{ "--epr-emoji-size": "20px", "--epr-category-navigation-button-size": "22px", "--epr-category-label-height": "32px", "--epr-header-padding": "0.8rem 1.2rem", "--epr-search-input-height": "32px" } as any}
+            previewConfig={{ showPreview: false }}
             searchPlaceHolder={t("search")}
             onEmojiClick={props.onSelect}
             searchDisabled={props.searchDisabled}
