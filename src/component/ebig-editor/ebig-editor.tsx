@@ -77,14 +77,12 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                         emoji.onmousedown = (ev: any) => {
                             ev.preventDefault();
                         }
-                        emoji.onclick = () => {
+                        emoji.onclick = (ev: any) => {
+                            ev.preventDefault();
                             const rectLink = emoji.getBoundingClientRect();
                             insertLinkOffsetRef.current = { top: rectLink.bottom + 2 }
                             setShowLinkDetails(emoji)
                         }
-                        const rect = savedRange.current.getBoundingClientRect();
-                        insertLinkOffsetRef.current = { top: rect.bottom + 2 }
-                        setShowLinkPrompt(true);
                     } else {
                         emoji = document.createTextNode(content);
                     }
