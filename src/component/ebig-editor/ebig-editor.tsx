@@ -73,7 +73,16 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                         var emoji: any = document.createElement("a")
                         emoji.href = content;
                         emoji.target = "_blank"
-                        emoji.textContent = content
+                        emoji.textContent = content;
+                        emoji.onmousedown = (ev: any) => {
+                            ev.preventDefault();
+                        }
+                        emoji.onclick = (ev: any) => {
+                            ev.preventDefault();
+                            const rectLink = emoji.getBoundingClientRect();
+                            insertLinkOffsetRef.current = { top: rectLink.bottom + 2 }
+                            setShowLinkDetails(emoji)
+                        }
                     } else {
                         emoji = document.createTextNode(content);
                     }
@@ -450,6 +459,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         style={{ '--helper-text-color': helperTextColor ?? '#e14337', ...style } as CSSProperties}
         helper-text={helperText}
     >
+        <Popup ref={popupRef} />
         <div ref={inputContentRef}
             className={`${styles["ebig-editor-input"]}`}
             suppressContentEditableWarning
@@ -465,33 +475,6 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onBlur={(disabled || readOnly) ? undefined : (() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) })}
             {...(placeholder ? { placeholder: placeholder } : {})}
         />
-        <Popup ref={popupRef} />
-        {showLinkDetails && <PopupLinkDetails
-            element={showLinkDetails}
-            onClose={() => {
-                setTimeout(applyLinkToATag, 150)
-            }}
-            onRemove={() => {
-                showLinkDetails.replaceWith(...showLinkDetails.childNodes)
-            }}
-            onApply={applyLinkToATag}
-            style={insertLinkOffsetRef.current as any}
-        />}
-        {showLinkPrompt && <PopupLinkPrompt
-            onClose={() => {
-                setTimeout(() => {
-                    setShowLinkPrompt(false)
-                    applyLink()
-                }, 150)
-            }}
-            onApply={applyLink}
-            style={insertLinkOffsetRef.current as any}
-        />}
-        {showRubyPrompt && <PopupRubyTextPrompt
-            onClose={() => { setTimeout(() => applyRubyText(), 150) }}
-            onApply={applyRubyText}
-            style={rubyTextOffsetRef.current as any}
-        />}
         {!hideToolbar && ((!customToolbar || Array.isArray(customToolbar)) ? <div className='row' style={{ gap: 2 }}>
             {Array.isArray(customToolbar) ? customToolbar.map((tb, i) => {
                 switch (tb) {
@@ -523,6 +506,32 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
                     {returnRubyText()}
                 </>}
         </div> : customToolbar)}
+        {showLinkDetails && <PopupLinkDetails
+            element={showLinkDetails}
+            onClose={() => {
+                setTimeout(applyLinkToATag, 150)
+            }}
+            onRemove={() => {
+                showLinkDetails.replaceWith(...showLinkDetails.childNodes)
+            }}
+            onApply={applyLinkToATag}
+            style={insertLinkOffsetRef.current as any}
+        />}
+        {showLinkPrompt && <PopupLinkPrompt
+            onClose={() => {
+                setTimeout(() => {
+                    setShowLinkPrompt(false)
+                    applyLink()
+                }, 150)
+            }}
+            onApply={applyLink}
+            style={insertLinkOffsetRef.current as any}
+        />}
+        {showRubyPrompt && <PopupRubyTextPrompt
+            onClose={() => { setTimeout(() => applyRubyText(), 150) }}
+            onApply={applyRubyText}
+            style={rubyTextOffsetRef.current as any}
+        />}
         {isOpenEmoji && <PopupEmojiPicker
             onClose={() => { setTimeout(() => { setIsOpenEmoji(undefined) }, 150) }}
             style={emojiOffsetRef.current as any}
