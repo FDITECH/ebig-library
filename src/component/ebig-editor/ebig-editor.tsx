@@ -384,7 +384,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/text/bold'
             className="icon-button size24 light"
-            size={14}
+            size={13}
             color={activeStyles.bold ? "var(--primary-main-color)" : undefined}
             style={activeStyles.bold ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
@@ -422,7 +422,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         return <Ebigicon
             key={k}
             src='outline/user-interface/hyperlink'
-            className='icon-button size32'
+            className='icon-button size24 light'
             size={16}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : handleLink}
@@ -446,7 +446,6 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         style={{ '--helper-text-color': helperTextColor ?? '#e14337', ...style } as CSSProperties}
         helper-text={helperText}
     >
-        <Popup ref={popupRef} />
         <div ref={inputContentRef}
             className={`${styles["ebig-editor-input"]}`}
             suppressContentEditableWarning
@@ -462,6 +461,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onBlur={(disabled || readOnly) ? undefined : (() => { onBlur?.(inputContentRef.current!.innerHTML, inputContentRef.current!) })}
             {...(placeholder ? { placeholder: placeholder } : {})}
         />
+        <Popup ref={popupRef} />
         {showLinkDetails && <PopupLinkDetails
             element={showLinkDetails}
             onClose={() => {
