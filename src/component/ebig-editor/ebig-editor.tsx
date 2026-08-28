@@ -362,9 +362,6 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             onClick={(disabled || readOnly) ? undefined : ((ev: any) => {
                 if (isOpenEmoji) return null;
                 const rect = ev.target.closest("div").getBoundingClientRect()
-                const tmp = document.createElement("div")
-                tmp.style.position = "fixed"
-                ev.currentTarget.after(tmp)
                 let offset: any = { left: rect.x, top: rect.bottom + 1 }
                 if (offset.left + 268 >= document.body.offsetWidth) {
                     delete offset.left
@@ -426,7 +423,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/text/underline'
             className="icon-button size24 light"
-            size={14}
+            size={15}
             color={activeStyles.underline ? "var(--primary-main-color)" : undefined}
             style={activeStyles.underline ? { backgroundColor: "var(--primary-background)" } : undefined}
             onMouseDown={(ev) => { ev.preventDefault() }}
@@ -439,7 +436,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
             key={k}
             src='outline/user-interface/hyperlink'
             className='icon-button size24 light'
-            size={16}
+            size={15}
             onMouseDown={(ev) => { ev.preventDefault() }}
             onClick={(disabled || readOnly) ? undefined : handleLink}
         />
