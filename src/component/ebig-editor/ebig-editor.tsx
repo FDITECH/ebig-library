@@ -236,6 +236,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         document.execCommand(command, false);
         inputContentRef.current?.focus();
         updateActiveStyles();
+        onChange?.(inputContentRef.current!.innerHTML, inputContentRef.current!);
     }, []);
 
     const handleHeading = useCallback(() => {
@@ -269,6 +270,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
     const applyLinkToATag = (url?: string) => {
         if (url) showLinkDetails!.href = url
         setShowLinkDetails(null)
+        onChange?.(inputContentRef.current!.innerHTML, inputContentRef.current!);
     }
 
     const applyLink = (url?: string) => {
@@ -284,6 +286,7 @@ export const EbigEditor = forwardRef<RefProps, Props>(({ id, onChange, onBlur, d
         }
         selectedLink.href = url
         updateActiveStyles();
+        onChange?.(inputContentRef.current!.innerHTML, inputContentRef.current!);
     };
 
     const handleRubyText = () => {
