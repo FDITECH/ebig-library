@@ -69,9 +69,10 @@
 
 .ebig-editor-input a {
     font-size: 1.1em;
-    font-weight: 600;
-    background-color: var(--infor-background, light-dark(#ECF3FE, #031630));
     color: var(--primary-main-color, #287CF0);
+}
+
+.ebig-editor-input a:hover {
     text-decoration: underline;
 }
 
