@@ -109,7 +109,6 @@ interface RenderLayerElementProps extends Props {
     onSubmit?: () => void
 }
 
-export const pageAllRefs: { [p: string]: any } = {}
 export const RenderLayerElement = (props: RenderLayerElementProps) => {
     const findId = props.item.Setting?.id ?? props.item.Id
     if (props.itemData && props.itemData[findId] && (props.type !== "card" || (props.itemData[findId] as any)(props.indexItem, props.index, props.methods))) {
@@ -129,13 +128,6 @@ export const getValidLink = (link: string) => {
 export const AsyncFunction = Object.getPrototypeOf(async function () { }).constructor;
 const CaculateLayer = (props: RenderLayerElementProps) => {
     const findId = props.item.Setting?.id ?? props.item.Id
-    // init refs
-    if (props.item.Type.toLowerCase() === ComponentType.form.toLowerCase() || props.item.Type.toLowerCase() === ComponentType.card.toLowerCase()) {
-        pageAllRefs[findId] = (props.propsData?.[findId] as any)?.ref ?? useRef(null)
-    }
-    useEffect(() => {
-        return () => { delete pageAllRefs[findId] }
-    }, [])
     /** declare parameters */
     const ebigContextData = useEbigContext()
     const popupRef = useRef<any>(null)
@@ -297,7 +289,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                 break;
                             case ActionType.submit:
                                 if (actItem.To === "this form") props.onSubmit?.()
-                                else pageAllRefs[actItem.To]?.current?.onSubmit()
                                 return;
                             case ActionType.setValue:
                                 props.methods!.setValue(actItem.NameField, new Function((isNaN(Number(actItem.Caculate)) && actItem.Calculate !== "true" && actItem.Calculate !== "false" && actItem.Calculate !== "null") ? `return \`${actItem.Caculate}\`` : `return ${actItem.Caculate}`)())
@@ -343,14 +334,6 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                                     if (asyncFuncResponse === false) return;
                                 }
                                 break;
-                            case ActionType.loadMore:
-                                if (pageAllRefs[actItem.loadingId]) {
-                                    const cardData = pageAllRefs[actItem.loadingId].current?.data
-                                    if (cardData.totalCount && cardData.data.length < cardData.totalCount) {
-                                        pageAllRefs[actItem.loadingId].current.getData(Math.floor(cardData.data.length / pageAllRefs[actItem.loadingId].current.controller.size) + 1)
-                                    }
-                                }
-                                return;
                             default:
                                 break;
                         }
@@ -847,17 +830,17 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
     const htmlElementRef = useRef<any | any[]>(null)
 
     useEffect(() => {
-        if (customActions?.onInit) customActions.onInit(pageAllRefs[findId]?.current ?? htmlElementRef.current)
+        if (customActions?.onInit) customActions.onInit(htmlElementRef.current)
     }, [!!customActions?.onInit])
 
     useEffect(() => {
         if (customActions?.onDimiss) {
-            return () => { customActions.onDimiss(pageAllRefs[findId]?.current ?? htmlElementRef.current) }
+            return () => { customActions.onDimiss(htmlElementRef.current) }
         }
     }, [!!customActions?.onDimiss])
 
     useEffect(() => {
-        if (customActions?.onLocationChange) customActions.onLocationChange(pageAllRefs[findId]?.current ?? htmlElementRef.current)
+        if (customActions?.onLocationChange) customActions.onLocationChange(htmlElementRef.current)
     }, [!!customActions?.onLocationChange, location.pathname, location.search, JSON.stringify(params), JSON.stringify(location.state)])
 
     const getDataLisener = useMemo(() => {
@@ -875,13 +858,14 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                 case ComponentType.chart:
                     const getDataFunc = async () => {
                         let asyncFuncResponse = await (new AsyncFunction(
-                            "entityData", "entityIndex", "tableName", "tableTitle", ...funcParamNames,
+                            "entityData", "entityIndex", "tableName", "tableTitle", "event", ...funcParamNames,
                             `${customProps.data}` // This string can now safely contain the 'await' keyword
                         ))(
                             props.indexItem ?? props.methods?.getValues(),
                             props.index,
                             props.tbName,
                             props.tbName?.split("_").map((e, i) => (i ? e.toLowerCase() : e)).join(" "),
+                            htmlElementRef.current,
                             ...funcParams
                         )
                         return asyncFuncResponse
@@ -892,7 +876,7 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                     break;
             }
         }
-    }, [customProps.data, getDataLisener?.pathname, getDataLisener?.search, getDataLisener?.params, getDataLisener?.state, getDataLisener?.language, getDataLisener?.globalData, getDataLisener?.userData, getDataLisener?.watch, getDataLisener?.indexItem])
+    }, [customProps.data, getDataLisener?.pathname, getDataLisener?.search, getDataLisener?.params, getDataLisener?.state, getDataLisener?.language, getDataLisener?.globalData, getDataLisener?.userData, getDataLisener?.watch, getDataLisener?.indexItem, htmlElementRef.current])
 
 
     // not functions of react 
@@ -1048,28 +1032,28 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
             }
         case ComponentType.chart:
             if (customProps.data) typeProps.data = handleFormCardViewData
-            return <ChartById {...typeProps} {...restOfActions} id={typeProps.chartId} ref={pageAllRefs[findId]} />
+            return <ChartById {...typeProps} {...restOfActions} id={typeProps.chartId} ref={htmlElementRef} />
         case "form":
         case ComponentType.form:
             if (props.itemData) typeProps.itemData = typeProps.itemData ? { ...props.itemData, ...typeProps.itemData } : props.itemData
             if (props.childrenData) typeProps.childrenData = typeProps.childrenData ? { ...props.childrenData, ...typeProps.childrenData } : props.childrenData
             if (props.propsData) typeProps.propsData = typeProps.propsData ? { ...props.propsData, ...typeProps.propsData } : props.propsData
             if (customProps.data) typeProps.data = handleFormCardViewData
-            return <FormById  {...typeProps} id={typeProps.formId} ref={pageAllRefs[findId]} />
+            return <FormById {...typeProps} id={typeProps.formId} ref={htmlElementRef} />
         case "card":
         case ComponentType.card:
             if (props.itemData) typeProps.itemData = typeProps.itemData ? { ...props.itemData, ...typeProps.itemData } : props.itemData
             if (props.childrenData) typeProps.childrenData = typeProps.childrenData ? { ...props.childrenData, ...typeProps.childrenData } : props.childrenData
             if (props.propsData) typeProps.propsData = typeProps.propsData ? { ...props.propsData, ...typeProps.propsData } : props.propsData
             if (customProps.data) typeProps.data = handleFormCardViewData ?? { data: [] }
-            return <CardById {...typeProps} {...restOfActions} id={typeProps.cardId} ref={pageAllRefs[findId]} />
+            return <CardById {...typeProps} {...restOfActions} id={typeProps.cardId} ref={htmlElementRef} />
         case "view":
         case ComponentType.view:
             if (props.itemData) typeProps.itemData = typeProps.itemData ? { ...props.itemData, ...typeProps.itemData } : props.itemData
             if (props.childrenData) typeProps.childrenData = typeProps.childrenData ? { ...props.childrenData, ...typeProps.childrenData } : props.childrenData
             if (props.propsData) typeProps.propsData = typeProps.propsData ? { ...props.propsData, ...typeProps.propsData } : props.propsData
             if (customProps.data) typeProps.data = handleFormCardViewData
-            return <ViewById {...typeProps} {...restOfActions} id={typeProps.viewId} ref={pageAllRefs[findId]} />
+            return <ViewById {...typeProps} {...restOfActions} id={typeProps.viewId} ref={htmlElementRef} />
         case ComponentType.button:
             return <SimpleButton ref={htmlElementRef} {...typeProps} {...restOfActions} />
         case ComponentType.textField:
