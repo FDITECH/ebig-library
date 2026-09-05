@@ -45,7 +45,8 @@ interface CardRef {
     data: { data: Array<{ [p: string]: any }>, totalCount?: number };
     controller: "all" | { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } } } | { ids: string, maxLength?: number | "none" };
     setData: Dispatch<SetStateAction<{ data: Array<{ [p: string]: any }>, totalCount?: number }>>;
-    relativeData?: { [p: string]: Array<{ [p: string]: any }> }
+    relativeData?: { [p: string]: Array<{ [p: string]: any }> };
+    methods: UseFormReturn;
 }
 
 interface CardContextProps {
@@ -248,7 +249,7 @@ export const CardById = forwardRef<CardRef, CardProps>((props, ref) => {
         controller: controller,
         setData: setData,
         methods: stateMethods,
-        relativeData: getRelativeData
+        relativeData: getRelativeData,
     }), [data, cardItem, controller, getRelativeData, stateMethods]);
 
     return <CardContext.Provider value={{ tbName: cardItem?.TbName, data, getData, setData, methods: stateMethods, staticProps: staticProps.current }}>

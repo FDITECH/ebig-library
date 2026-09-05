@@ -1,4 +1,4 @@
-import { createContext, CSSProperties, ReactNode, useContext, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { createContext, CSSProperties, Dispatch, forwardRef, ReactNode, SetStateAction, useContext, useDeferredValue, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { useForm, UseFormReturn } from "react-hook-form"
 import { CustomHTMLProps, globalTableCache, RenderLayerElement } from "../page/pageById"
 import { DataController, SettingDataController } from "../../controller/data"
@@ -24,6 +24,12 @@ interface Props {
     onLoaded?: (ev: { data: { [p: string]: any } }) => void,
 }
 
+interface ViewRef {
+    methods: UseFormReturn;
+    data?: { [p: string]: any };
+    setData: Dispatch<SetStateAction<{ [p: string]: any }>>;
+}
+
 interface ViewContextProps {
     tbName: string,
     data: { [p: string]: any } | undefined,
@@ -35,7 +41,7 @@ interface ViewContextProps {
 
 const ViewContext = createContext<ViewContextProps | undefined>(undefined)
 const globalViewCache = new Map()
-export const ViewById = (props: Props) => {
+export const ViewById = forwardRef<ViewRef, Props>((props, ref) => {
     const methods = useForm({ shouldFocusError: false })
     const [viewItem, setViewItem] = useState<{ [p: string]: any }>()
     const layers = useMemo(() => (viewItem?.Props ?? []).sort((a: any, b: any) => (a.Setting.style?.order ?? 0) - (b.Setting.style?.order ?? 0)), [viewItem])
@@ -190,6 +196,12 @@ export const ViewById = (props: Props) => {
         }
     }, [indexItem, layers, keyNames.length])
 
+    useImperativeHandle(ref, () => ({
+        methods,
+        data: indexItem,
+        setData: setIndexItem
+    }), [indexItem, extendData])
+
     return viewItem ? <RenderView
         key={viewItem.Id}
         {...props}
@@ -200,7 +212,7 @@ export const ViewById = (props: Props) => {
         getData={getInitData}
         setData={setIndexItem}
     /> : null
-}
+})
 
 interface RenderViewProps extends Props {
     layers: Array<{ [p: string]: any }>,
