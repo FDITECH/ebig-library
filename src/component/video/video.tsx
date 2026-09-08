@@ -9,6 +9,7 @@ interface VideoPlayerProps {
     style?: CSSProperties;
     className?: string;
     onPlay?: ReactEventHandler<HTMLVideoElement>;
+    onPause?: ReactEventHandler<HTMLVideoElement>;
     onEnded?: ReactEventHandler<HTMLVideoElement>;
     sources?: ReactNode;
     autoPlay?: boolean;
@@ -25,7 +26,7 @@ interface VideoPlayerRef {
     pause: () => void;
 }
 
-export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ controls = true, controlsList = "", src, className = "", onPlay, muted, autoPlay, onEnded, sources, width, height, loop, ...props }, ref) => {
+export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ controls = true, controlsList = "", src, className = "", onPlay, onPause, muted, autoPlay, onEnded, sources, width, height, loop, ...props }, ref) => {
     const videoRef = useRef<HTMLVideoElement | HTMLDivElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -48,6 +49,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({ contr
             className={`${styles["video-player"]} ${className}`}
             onPlay={onPlay}
             onEnded={onEnded}
+            onPause={onPause}
             autoPlay={autoPlay}
             muted={muted}
             width={width}

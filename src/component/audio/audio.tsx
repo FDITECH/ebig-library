@@ -9,6 +9,7 @@ interface AudioPlayerProps {
     style?: CSSProperties;
     className?: string;
     onPlay?: ReactEventHandler<HTMLAudioElement>;
+    onPause?: ReactEventHandler<HTMLAudioElement>;
     onEnded?: ReactEventHandler<HTMLAudioElement>;
     sources?: ReactNode;
     autoPlay?: boolean;
@@ -23,7 +24,7 @@ interface AudioPlayerRef {
     pause: () => void;
 }
 
-export const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ controls = true, controlsList = "", src, className = "", onPlay, muted, autoPlay, onEnded, sources, loop, ...props }, ref) => {
+export const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ controls = true, controlsList = "", src, className = "", onPlay, onPause, muted, autoPlay, onEnded, sources, loop, ...props }, ref) => {
     const audioRef = useRef<HTMLAudioElement | HTMLDivElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -45,6 +46,7 @@ export const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>(({ contr
             controlsList={controls ? controlsList : undefined}
             className={`${styles["audio-player"]} ${className}`}
             onPlay={onPlay}
+            onPause={onPause}
             onEnded={onEnded}
             autoPlay={autoPlay}
             muted={muted}

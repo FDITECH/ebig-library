@@ -401,6 +401,15 @@ const ElementUI = ({ findId, children, watchForCustomProps, replaceThisVariables
                         case TriggerType.blur:
                             tmpAct.onBlur = (ev: any) => handleEvent(triggerActions, ev)
                             break;
+                        case TriggerType.play:
+                            tmpAct.onPlay = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.pause:
+                            tmpAct.onPause = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
+                        case TriggerType.ended:
+                            tmpAct.onEnded = (ev: any) => handleEvent(triggerActions, ev)
+                            break;
                         case TriggerType.submit:
                             tmpAct.onSubmit = (ev: any) => handleEvent(triggerActions, ev)
                             break;

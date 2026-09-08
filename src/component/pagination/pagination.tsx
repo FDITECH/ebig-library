@@ -80,7 +80,7 @@ export function Pagination({ itemPerPage = 10, ...props }: Props) {
                     style={{ width: '4.8rem', textAlign: "center" }}
                     className="body-3 size24"
                     type="number"
-                    onBlur={(ev) => {
+                    onComplete={(ev: any) => {
                         const _tmp = ev.target.value.trim().length ? parseInt(ev.target.value.trim()) : undefined
                         if (_tmp && !isNaN(_tmp) && _tmp > 0 && _tmp <= Math.ceil(props.totalItem! / itemPerPage)) {
                             props.onChange?.({ page: _tmp, size: itemPerPage })
