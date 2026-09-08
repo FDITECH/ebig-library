@@ -1347,7 +1347,7 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
 
     return pageItem &&
         (props.onlyLayout ?
-            (!!layout.length && <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+            (!!layout.length && <LayoutContext.Provider key={pageItem.LayoutId} value={{ methods, staticProps: staticProps.current }}>
                 <RenderPageView
                     key={pageItem.LayoutId}
                     layers={layout}
@@ -1357,21 +1357,21 @@ export const PageById = ({ childrenData, ...props }: PageByIdProps) => {
                 />
             </LayoutContext.Provider>)
             : props.onlyBody ?
-                (!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
-                    <RenderPageView
+                <PageContext.Provider key={pageItem.Id} value={{ methods, staticProps: staticProps.current }}>
+                    {!loading && <RenderPageView
                         key={pageItem.Id}
                         layers={layers}
                         {...props}
                         childrenData={childrenData}
                         methods={props.methods ?? methods}
-                    />
-                </PageContext.Provider>)
+                    />}
+                </PageContext.Provider>
                 : (pageItem && !!layout.length &&
-                    <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                    <LayoutContext.Provider key={pageItem.LayoutId} value={{ methods, staticProps: staticProps.current }}>
                         <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                            {!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
-                                <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
-                            </PageContext.Provider>}
+                            <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
+                            </PageContext.Provider>
                         </RenderPageView>
                     </LayoutContext.Provider>)
         )
@@ -1491,7 +1491,7 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
 
     return pageItem &&
         (props.onlyLayout ?
-            (!!layout.length && <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+            (!!layout.length && <LayoutContext.Provider key={pageItem.LayoutId} value={{ methods, staticProps: staticProps.current }}>
                 <RenderPageView
                     key={pageItem.LayoutId}
                     layers={layout}
@@ -1501,21 +1501,21 @@ export const PageByUrl = ({ childrenData, ...props }: PageByUrlProps) => {
                 />
             </LayoutContext.Provider>)
             : props.onlyBody ?
-                (!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
-                    <RenderPageView
+                <PageContext.Provider key={pageItem.Id} value={{ methods, staticProps: staticProps.current }}>
+                    {!loading && <RenderPageView
                         key={pageItem.Id}
                         layers={layers}
                         {...props}
                         childrenData={childrenData}
                         methods={props.methods ?? methods}
-                    />
-                </PageContext.Provider>)
+                    />}
+                </PageContext.Provider>
                 : (pageItem && !!layout.length &&
-                    <LayoutContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                    <LayoutContext.Provider key={pageItem.LayoutId} value={{ methods, staticProps: staticProps.current }}>
                         <RenderPageView key={pageItem.LayoutId} layers={layout} {...props} childrenData={childrenData} methods={props.methods ?? methods}>
-                            {!loading && <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
-                                <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />
-                            </PageContext.Provider>}
+                            <PageContext.Provider value={{ methods, staticProps: staticProps.current }}>
+                                {!loading && <RenderPageView key={pageItem.Id} layers={layers} {...props} childrenData={childrenData} methods={props.methods ?? methods} bodyId={layoutBody?.Id} />}
+                            </PageContext.Provider>
                         </RenderPageView>
                     </LayoutContext.Provider>)
         )
