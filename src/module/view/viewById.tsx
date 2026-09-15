@@ -250,7 +250,7 @@ const RenderView = (props: RenderViewProps) => {
     return <ViewContext.Provider value={{ tbName: props.tbName!, data: props.indexItem, getData: props.getData, setData: props.setData, methods, staticProps: staticProps.current }}>
         {props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
             return <RenderLayerElement
-                key={e.Id}
+                key={`${e.Id}-${props.indexItem?.Id}`}
                 item={e}
                 list={props.layers}
                 style={props.style}
