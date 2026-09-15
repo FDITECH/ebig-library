@@ -1,11 +1,12 @@
 import { CSSProperties, useEffect, useRef } from "react";
-import ReactPaginate from "react-paginate";
 import styles from './pagination.module.css';
 import { Text } from "../text/text";
 import { TextField, TextFieldRef } from "../text-field/text-field";
 import { Ebigicon } from "../icon/ebig-icon";
 import { useTranslation } from "react-i18next";
 import { SelectDropdown } from "../dropdown/select-dropdown";
+import * as RP from 'react-paginate';
+const ReactPaginate = ((RP as any).default?.default ?? (RP as any).default ?? RP) as typeof RP.default;
 
 interface Props {
     id?: string,
