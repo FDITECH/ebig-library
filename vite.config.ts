@@ -1,51 +1,61 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import pkg from "./package.json";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Không đóng gói bất kỳ dependency / peerDependency nào vào dist.
+ * Consumer sẽ tự cài và dùng chung một bản (tránh 2 React, 2 i18next, 2 router context...).
+ */
+const external = [
+  ...Object.keys(pkg.dependencies ?? {}),
+  ...Object.keys(pkg.peerDependencies ?? {}),
+  /^react(\/.*)?$/, // react, react/jsx-runtime, react/jsx-dev-runtime
+  /^react-dom(\/.*)?$/, // react-dom, react-dom/client
+  /^react-router(-dom)?(\/.*)?$/,
+  /^ckeditor5(\/.*)?$/, // ckeditor5, ckeditor5/ckeditor5.css, ...
+  /^@ckeditor\/.*/,
+  /^echarts(\/.*)?$/,
+  /^i18next(\/.*)?$/,
+  /^react-i18next(\/.*)?$/,
+  /^date-fns(\/.*)?$/,
+];
 
 export default defineConfig({
-  plugins: [react(), dts()],
-  build: {
-    cssCodeSplit: true,
-    lib: {
-      entry: path.resolve(__dirname, "src/index.tsx"),
-      name: "ebig-library",
-      fileName: (format) => `index.${format}.js`,
-      formats: ["es", "cjs"],
-    },
-    rollupOptions: {
-      external: [
-        "react",
-        "react-dom",
-        "react-router-dom",
-        "ckeditor5",           // ✅ externalize the whole package
-        "@ckeditor/ckeditor5-react",
-        /^ckeditor5\/.*/,      // ✅ externalize ALL ckeditor5 sub-paths including ckeditor5/ckeditor5.css
-      ],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-          ckeditor5: "CKEDITOR",
-          "@ckeditor/ckeditor5-react": "CKEditorReact",
-        },
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name?.endsWith(".css")) return "style.css";
-          return assetInfo.name!;
-        },
-      },
-    },
-    sourcemap: true,
-    emptyOutDir: true,
-  },
+  plugins: [
+    react(),
+    dts({
+      tsconfigPath: "./tsconfig.app.json",
+      include: ["src"],
+      insertTypesEntry: true,
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
     },
-    extensions: [".tsx", ".ts", ".js"],
+  },
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, "src/index.tsx"),
+      name: "EbigLibrary",
+      formats: ["es", "cjs"],
+      fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
+    },
+    rollupOptions: {
+      external,
+      output: {
+        // Gom CSS thành 1 file dist/style.css để consumer import "ebig-library/style.css"
+        assetFileNames: (assetInfo) =>
+          assetInfo.names?.some((n) => n.endsWith(".css")) ? "style.css" : "[name][extname]",
+      },
+    },
+    sourcemap: true,
+    emptyOutDir: true,
+    target: "es2020",
   },
 });

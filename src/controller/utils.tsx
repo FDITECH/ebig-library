@@ -616,4 +616,4 @@ export function formatNumberConvert(num: number) {
     return num.toString();
 }
 
-export const randomGID = () => crypto.randomUUID().replaceAll("-", "")
+export const randomGID = () => crypto.randomUUID().replace(/-/g, "")

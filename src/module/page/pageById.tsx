@@ -119,7 +119,7 @@ export const RenderLayerElement = (props: RenderLayerElementProps) => {
 
 export const getValidLink = (link: string) => {
     if (!link) return ""
-    let tmpLink = link.trim().replaceAll("\\", "/")
+    let tmpLink = link.trim().replace(/\\/g, "/")
     if (tmpLink.startsWith("http")) return tmpLink
     if (ConfigData.regexGuid.test(tmpLink) || !tmpLink.startsWith("/")) return ConfigData.imgUrlId + tmpLink
     else return ConfigData.fileUrl + tmpLink

@@ -2,27 +2,38 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
-    "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+    "useDefineForClassFields": true,
+
+    /* Interop */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+
+    /* tsc chỉ type-check; .d.ts do vite-plugin-dts sinh ra */
     "noEmit": true,
-    "jsx": "react-jsx",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Khớp với alias "@" trong vite.config.ts */
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
 }
