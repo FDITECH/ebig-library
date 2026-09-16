@@ -91,6 +91,8 @@ export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link,
         }
     }, [showTooltip])
 
+    const isLoading = !svgData && (!!src || !!link)
+
     return <>
         <div
             ref={divRef}
@@ -99,8 +101,8 @@ export const Ebigicon = forwardRef<EbigIconRef, EbigIconProps>(({ id, src, link,
             onClick={onClick}
             onDoubleClick={onDoubleClick}
             onMouseDown={onMouseDown}
-            className={`${styles['ebig-icon']} ${simpleStyle ? styles["simple-icon"] : ""} ${onClick ? styles['clickable'] : ''} ${className ?? ''} ${src ? `${src.split("/")[0]}-icon` : ''}${link ? ' link-icon' : ""}`}
-            style={{ ...style, fontSize: size, color: color }} dangerouslySetInnerHTML={{ __html: svgData ?? '' }}
+            className={`${styles['ebig-icon']} ${simpleStyle ? styles["simple-icon"] : ""} ${onClick ? styles['clickable'] : ''} ${className ?? ''} ${src ? `${src.split("/")[0]}-icon` : ''}${link ? ' link-icon' : ""}${isLoading ? ' skeleton-loading' : ''}`}
+            style={{ ...style, fontSize: size, color, ...(isLoading ? { width: '1em', height: '1em', borderRadius: '20%', display: 'inline-block' } : {}) }} dangerouslySetInnerHTML={{ __html: svgData ?? '' }}
             onMouseMove={() => {
                 if (tooltip && !timoutRef.current) timoutRef.current = setTimeout(() => { setShowTooltip(true) }, 800)
             }}

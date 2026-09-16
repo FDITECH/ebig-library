@@ -28,6 +28,7 @@ interface ViewRef {
     methods: UseFormReturn;
     data?: { [p: string]: any };
     setData: Dispatch<SetStateAction<{ [p: string]: any }>>;
+    staticProps: { [p: string]: any }
 }
 
 interface ViewContextProps {
@@ -199,19 +200,25 @@ export const ViewById = forwardRef<ViewRef, Props>((props, ref) => {
     useImperativeHandle(ref, () => ({
         methods,
         data: indexItem,
-        setData: setIndexItem
+        setData: setIndexItem,
+        staticProps: staticProps.current
     }), [indexItem, extendData])
+    const viewStateMethods = useForm({ shouldFocusError: false })
+    const staticProps = useRef({})
 
-    return viewItem ? <RenderView
-        key={viewItem.Id}
-        {...props}
-        layers={layers}
-        indexItem={indexItem}
-        extendData={extendData}
-        tbName={viewItem.TbName}
-        getData={getInitData}
-        setData={setIndexItem}
-    /> : null
+    return <ViewContext.Provider value={{ tbName: viewItem?.tbName, data: indexItem, getData: getInitData, setData: setIndexItem, methods: viewStateMethods, staticProps: staticProps.current }}>
+        {viewItem ? <RenderView
+            key={viewItem.Id}
+            {...props}
+            methods={viewStateMethods}
+            layers={layers}
+            indexItem={indexItem}
+            extendData={extendData}
+            tbName={viewItem.TbName}
+            getData={getInitData}
+            setData={setIndexItem}
+        /> : null}
+    </ViewContext.Provider>
 })
 
 interface RenderViewProps extends Props {
@@ -221,14 +228,13 @@ interface RenderViewProps extends Props {
     tbName?: string,
     getData: () => Promise<void>,
     setData: React.Dispatch<React.SetStateAction<{ [p: string]: any } | undefined>>,
+    methods: UseFormReturn,
 }
 
 const RenderView = (props: RenderViewProps) => {
-    const methods = useForm({ shouldFocusError: false })
     const [rels, setRels] = useState<Array<{ [p: string]: any }>>([])
     const [cols, setCols] = useState<Array<{ [p: string]: any }>>([])
     const [extendData, setExtendData] = useState<{ [p: string]: any }>({})
-    const staticProps = useRef({})
 
     useEffect(() => {
         const tmp: { [p: string]: any } = {}
@@ -240,34 +246,32 @@ const RenderView = (props: RenderViewProps) => {
         if (Object.keys(tmp).length) setExtendData(tmp)
     }, [props.extendData])
 
-    const viewStateData = useMemo(() => methods.watch(), [JSON.stringify(methods.watch())])
+    const viewStateData = useMemo(() => props.methods.watch(), [JSON.stringify(props.methods.watch())])
     const finalStateData = useDeferredValue(viewStateData)
 
     useEffect(() => {
         if (props.onChange) props.onChange({ data: props.indexItem, state: finalStateData })
     }, [finalStateData, props.indexItem])
 
-    return <ViewContext.Provider value={{ tbName: props.tbName!, data: props.indexItem, getData: props.getData, setData: props.setData, methods, staticProps: staticProps.current }}>
-        {props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
-            return <RenderLayerElement
-                key={`${e.Id}-${props.indexItem?.Id}`}
-                item={e}
-                list={props.layers}
-                style={props.style}
-                className={props.className}
-                type={"view"}
-                cols={cols}
-                rels={rels}
-                methods={methods}
-                indexItem={props.indexItem}
-                propsData={props.propsData}
-                childrenData={props.childrenData}
-                itemData={props.itemData}
-                options={extendData}
-                tbName={props.tbName}
-            />
-        })}
-    </ViewContext.Provider>
+    return props.layers.filter((e: any) => !e.ParentId).map((e: any) => {
+        return <RenderLayerElement
+            key={`${e.Id}-${props.indexItem?.Id}`}
+            item={e}
+            list={props.layers}
+            style={props.style}
+            className={props.className}
+            type={"view"}
+            cols={cols}
+            rels={rels}
+            methods={props.methods}
+            indexItem={props.indexItem}
+            propsData={props.propsData}
+            childrenData={props.childrenData}
+            itemData={props.itemData}
+            options={extendData}
+            tbName={props.tbName}
+        />
+    })
 }
 
 export const useViewContext = () => {
