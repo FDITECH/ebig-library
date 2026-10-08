@@ -17,7 +17,22 @@ export const specialCharsRegex = /[^a-zA-Z0-9]/g;
 
 export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
 
-const maxFileSize = 200 * 1024 * 1024
+const maxFileSize = 2 * 1024 * 1024 * 1024        // tối đa 2GB / file
+const directBatchLimit = 25 * 1024 * 1024         // file nhỏ đi qua BE (Cloud Run giới hạn 32MB / request)
+const directMaxFiles = 12                         // BE nhận tối đa 12 file / request
+
+// PUT thẳng lên R2 bằng XHR: không kèm header pid/Authorization (sẽ làm hỏng chữ ký) và có tiến trình
+const putToR2 = (url: string, file: File, contentType: string, onProgress?: (loaded: number) => void) =>
+    new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open("PUT", url)
+        xhr.setRequestHeader("Content-Type", contentType)
+        xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress?.(e.loaded) }
+        xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(new Error(`Upload to storage failed (${xhr.status})`))
+        xhr.onerror = () => reject(new Error("Network error while uploading"))
+        xhr.send(file)
+    })
+
 export class BaseDA {
     static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {
@@ -95,65 +110,101 @@ export class BaseDA {
         }
     }
 
-    static uploadFiles = async (listFile: File[] | { id: string, file: File }[], headers?: { [k: string]: any }) => {
+    static uploadFiles = async (
+        listFile: File[] | { id: string, file: File }[],
+        headers?: { [k: string]: any },
+        onProgress?: (percent: number) => void,
+    ) => {
         const loader = document.createElement("div")
         loader.className = "loader"
         document.body.appendChild(loader)
 
-        listFile = [...listFile] as any
-        // Extract files and IDs
-        const files = listFile.map(e => e instanceof File ? e : e.file);
-        const ids = listFile.map(e => e instanceof File ? null : e.id).filter(Boolean);
-
-        const headersObj: any = { pid: ConfigData.pid, ...headers }
-        // Remove Content-Type - browser will set it with boundary for multipart
-
-        const listRequest: Array<{ files: File[], ids: string[] }> = [{ files: [], ids: [] }]
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const id = ids[i] || null;
-
-            if (file.size > maxFileSize) {
-                ToastMessage.errors('File size must be not more than 200MB')
-                loader.remove()
+        try {
+            const entries = ([...listFile] as Array<File | { id: string, file: File }>).map(e =>
+                e instanceof File ? { file: e, id: undefined as string | undefined } : { file: e.file, id: e.id }
+            )
+            if (entries.some(e => e.file.size > maxFileSize)) {
+                ToastMessage.errors('File size must be not more than 2GB')
                 return null
-            } else {
-                const tmp = listRequest[listRequest.length - 1];
-                const totalSize = [...tmp.files, file].map(f => f.size).reduce((a, b) => a + b, 0);
+            }
 
-                // Check if need to create new batch
-                if (tmp.files.length >= 12 || totalSize > maxFileSize) {
-                    listRequest.push({ files: [file], ids: id ? [id] : [] })
-                } else {
-                    tmp.files.push(file);
-                    if (id) tmp.ids.push(id);
+            const headersObj: any = { pid: ConfigData.pid, ...headers }
+            const results: any[] = new Array(entries.length)
+            const loaded: number[] = new Array(entries.length).fill(0)
+            const totalBytes = entries.reduce((a, e) => a + e.file.size, 0) || 1
+            const report = () => onProgress?.(Math.min(100, Math.round(loaded.reduce((a, b) => a + b, 0) / totalBytes * 100)))
+
+            // Chia file nhỏ (qua BE như cũ) / file lớn (PUT thẳng lên R2)
+            const small: number[] = []
+            const large: number[] = []
+            entries.forEach((e, i) => (e.file.size <= directBatchLimit ? small : large).push(i))
+
+            // File có id xếp trước để ids khớp vị trí file trên server
+            small.sort((a, b) => Number(!!entries[b].id) - Number(!!entries[a].id))
+            const batches: number[][] = []
+            let cur: number[] = []
+            let curSize = 0
+            for (const i of small) {
+                const size = entries[i].file.size
+                if (cur.length && (cur.length >= directMaxFiles || curSize + size > directBatchLimit)) {
+                    batches.push(cur)
+                    cur = []
+                    curSize = 0
+                }
+                cur.push(i)
+                curSize += size
+            }
+            if (cur.length) batches.push(cur)
+
+            const smallJobs = batches.map(async (batch) => {
+                const formData = new FormData()
+                batch.forEach(i => formData.append("files", entries[i].file))
+                const ids = batch.map(i => entries[i].id).filter(Boolean) as string[]
+                if (ids.length) formData.append("ids", ids.join(","))
+                const res = await BaseDA.postFile(ConfigData.url + 'file/uploadfiles', { headers: headersObj, body: formData })
+                if (res?.code !== 200) throw new Error(res?.message ?? "Failed to upload files")
+                if (!Array.isArray(res.data) || res.data.length !== batch.length) throw new Error("Some files failed to upload")
+                batch.forEach((i, j) => {
+                    results[i] = res.data[j]
+                    loaded[i] = entries[i].file.size
+                })
+                report()
+            })
+
+            // File lớn: xin URL -> PUT thẳng lên R2 -> xác nhận (lần lượt từng file)
+            const largeJob = async () => {
+                for (const i of large) {
+                    const { file, id } = entries[i]
+                    const contentType = file.type || "application/octet-stream"
+                    const pre = await BaseDA.post(ConfigData.url + 'file/presignUpload', {
+                        headers: headersObj,
+                        body: { id, type: contentType, size: file.size },
+                    })
+                    if (pre?.code !== 200) throw new Error(pre?.message ?? "Failed to get upload url")
+                    await putToR2(pre.data.uploadUrl, file, contentType, (n) => {
+                        loaded[i] = n
+                        report()
+                    })
+                    const done = await BaseDA.post(ConfigData.url + 'file/confirmUpload', {
+                        headers: headersObj,
+                        body: { id: pre.data.id, name: file.name, overwrite: !!id },
+                    })
+                    if (done?.code !== 200) throw new Error(done?.message ?? "Failed to confirm upload")
+                    results[i] = done.data[0]
+                    loaded[i] = file.size
+                    report()
                 }
             }
-        }
 
-        const response = await Promise.all(listRequest.map(rq => {
-            const formData = new FormData();
-            rq.files.forEach(e => {
-                formData.append("files", e);
-            })
-            // Add IDs if provided
-            if (rq.ids.length > 0) {
-                formData.append("ids", rq.ids.join(","));
-            }
-            return BaseDA.postFile(ConfigData.url + 'file/uploadfiles', {
-                headers: headersObj,
-                body: formData,
-            })
-        }))
-
-        loader.remove()
-        if (response.every(r => r.code === 200)) {
-            return response.map(r => r.data).flat(Infinity)
-        } else {
-            ToastMessage.errors(response.find(r => r.code !== 200)?.message ?? "Failed to upload files")
+            await Promise.all([...smallJobs, largeJob()])
+            return results
+        } catch (err: any) {
+            console.error("Failed to upload files:", err)
+            ToastMessage.errors(err?.message ?? "Failed to upload files")
+            return null
+        } finally {
+            loader.remove()
         }
-        return null;
     }
 
     static getFilesInfor = async (ids: Array<string>) => {
